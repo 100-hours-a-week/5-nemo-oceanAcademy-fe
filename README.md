@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+# 바다서원 (NemoOceanAcademy) - 클라이언트
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**바다서원**(**NemoOceanAcademy**)은 라이브 강의를 제공하는 교육용 플랫폼입니다. 이제 교육은 단순한 강의가 아닌, 몰입과 성장을 위한 완벽한 경험으로 거듭납니다.
+<br>
+줌과 같은 화상 미팅 도구는 일회성 강의로 그날의 수업을 마무리하지만, 바다서원은 다릅니다. 바다서원은 강의 그 이상의 것을 제공합니다. 우리가 직접 구축한 라이브 강의 플랫폼에서 수업을 듣고, 즉각적인 피드백을 받으며, 교육용 교재와 과제 채점 기능까지 원활하게 이용하세요.
+<br>
+유튜브나 트위치의 잡음 속에서 집중력을 잃지 마세요. 바다서원은 오직 교육을 위해 설계된 플랫폼입니다. 강의에 몰입하고, 실시간으로 소통하며, 당신의 학습 여정을 완벽하게 지원하는 바다서원에서 진정한 학습의 가치를 경험해보세요.
+<br>
+교육을 위한 진정한 플랫폼, 바다서원에서 미래를 준비하세요.
 
-## Available Scripts
+## 서비스 소개
 
-In the project directory, you can run:
+바다서원은 WebRTC 기술을 활용하여 강사와 학생 간의 실시간 소통을 지원하는 라이브 강의 플랫폼입니다. 사용자 친화적인 인터페이스와 안정적인 스트리밍 환경을 제공하여 최상의 교육 경험을 제공합니다.
 
-### `npm start`
+## 기술 스택
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+바다서원의 프론트엔드 애플리케이션은 다음과 같은 기술 스택을 사용하여 개발되었습니다:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **React**: 사용자 인터페이스를 구축하기 위한 JavaScript 라이브러리
+- **Recoil**: 전역 상태 관리를 위한 상태 관리 라이브러리
+- **TypeScript**: 정적 타입을 제공하는 JavaScript의 상위 집합 언어
+- **CSS Modules**: 컴포넌트 단위의 스타일링을 위한 CSS 관리 방법론
 
-### `npm test`
+## 기능
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **라이브 강의**: WebRTC를 활용한 실시간 비디오 스트리밍
+- **강사-학생 간 소통**: 실시간 채팅 및 화면 공유 기능 제공
 
-### `npm run build`
+## CI/CD 구축
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+바다서원 클라이언트는 **AWS**와 **GitHub Actions**를 사용하여 CI/CD 파이프라인이 완전히 구축되어 있습니다. 이 파이프라인은 코드 변경 사항이 푸시되면 자동으로 빌드, 테스트, 배포 과정을 실행하여 안정적인 배포를 보장합니다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 설치 및 실행
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+다음은 로컬 환경에서 바다서원 클라이언트 애플리케이션을 실행하는 방법입니다.
 
-### `npm run eject`
+### 요구 사항
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Node.js (v14 이상)
+- npm 또는 yarn
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 설치
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+git clone https://github.com/100-hours-a-week/NemoOceanAcademy_fe.git
+cd NemoOceanAcademy_fe
+npm install
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 실행
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npm start
+```
