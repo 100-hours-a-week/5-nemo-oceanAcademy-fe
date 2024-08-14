@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import adapter from 'webrtc-adapter';
 
-const WebRTCComponent = () => {
-  const videoRef = useRef(null);
+const WebRTCComponent: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const startWebcam = async () => {
@@ -22,7 +22,7 @@ const WebRTCComponent = () => {
     // 컴포넌트 언마운트 시 웹캠 스트림 정지
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
+        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach(track => track.stop());
       }
     };
