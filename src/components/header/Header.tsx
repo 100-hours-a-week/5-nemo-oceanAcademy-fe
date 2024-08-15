@@ -10,10 +10,10 @@ const Header: React.FC = () => {
 
   return (
     <header className={styles.header}>
-      <div onClick={handleLogoClick}
-      className={styles.logo}>
-        Ocean Academy
-      </div>
+        <div onClick={handleLogoClick}
+        className={styles.logo}>
+          Ocean Academy
+        </div>
     </header>
   );
 };
