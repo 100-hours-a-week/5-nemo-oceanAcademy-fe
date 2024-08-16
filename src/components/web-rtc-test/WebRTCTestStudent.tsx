@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { subscribeToStream } from './utils/client';
-import { connectToServerAsStudent} from './utils/student/studentClient';
+import { connectToServerAsStudent, subscribeToStreamAsStudent} from './utils/student/studentClient';
 
 
 const WebRTCTestStudent: React.FC = () => {
@@ -15,8 +14,13 @@ const WebRTCTestStudent: React.FC = () => {
     };
 
     const handleSubscribe = async () => {
-        await subscribeToStream(roomId, setSubStatus, setIsSubscriptionDisabled);
+        await subscribeToStreamAsStudent(roomId, setSubStatus, setIsSubscriptionDisabled);
     };
+
+    const joinLiveLecture = async () => {
+        await handleConnect();
+        await handleSubscribe();
+    }
 
     return (
     <div>

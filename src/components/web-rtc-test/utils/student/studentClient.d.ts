@@ -5,3 +5,9 @@ export declare function connectToServerAsStudent(
     setConnectionStatus: (status: string) => void, 
     setIsSubscriptionDisabled: (disabled: boolean) => void
 ): Promise<void>;
+
+export declare function subscribeToStreamAsStudent(
+    roomId: string,
+    setSubscriptionStatus: (status: string) => void,
+    setSubscriptionDisabled: (disabled: boolean) => void
+): Promise<void>;
