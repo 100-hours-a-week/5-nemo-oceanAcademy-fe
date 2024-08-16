@@ -1,41 +1,112 @@
-import React, { useEffect, useRef } from 'react';
-import adapter from 'webrtc-adapter';
+import React, { useState } from 'react';
+import { connectToServer } from './utils/client';
 
 const WebRTCTestComponent: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  useEffect(() => {
-    const startWebcam = async () => {
-      try {
-        // 웹캠 스트림을 가져와서 비디오 요소에 설정
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error('웹캠 접근 중 오류 발생:', error);
-      }
-    };
+  const [roomId, setRoomId] = useState('');
+  const [connectionStatus, setConnectionStatus] = useState('');
+  const [webcamStatus, setWebcamStatus] = useState('');
+  const [screenStatus, setScreenStatus] = useState('');
+  const [subStatus, setSubStatus] = useState('');
+  const [isPublishingDisabled, setIsPublishingDisabled] = useState(true);
+  const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
+  const [useSimulcast, setUseSimulcast] = useState(false);
 
-    startWebcam();
+  const handleConnect = async () => {
+    // 연결 로직
+    // setConnectionStatus('Connected');
+    // setIsPublishingDisabled(false);
+    // setIsSubscriptionDisabled(false);
+    await connectToServer(roomId, setConnectionStatus, setIsPublishingDisabled, setIsSubscriptionDisabled);
+  };
 
-    // 컴포넌트 언마운트 시 웹캠 스트림 정지
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
-        tracks.forEach(track => track.stop());
-      }
-    };
-  }, []);
+  const handleWebcam = () => {
+    // 웹캠 시작 로직
+    setWebcamStatus('Webcam Started');
+  };
+
+  const handleScreenShare = () => {
+    // 화면 공유 로직
+    setScreenStatus('Screen Sharing Started');
+  };
+
+  const handleSubscribe = () => {
+    // 구독 로직
+    setSubStatus('Subscribed');
+  };
 
   return (
     <div>
-      <h1>WebRTC 테스트</h1>
-      <h5>안녕하세요 저희는 니모예요 저희의 바다서원을 많이 사랑해주세요</h5>
-      <h5>주디의 CICD 완성! 이제 HTTPS 해볼게용</h5>
-      <video ref={videoRef} autoPlay playsInline />
+      <input
+        type="text"
+        placeholder="Enter Room ID"
+        value={roomId}
+        onChange={(e) => setRoomId(e.target.value)}
+      />
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <div>Local</div>
+              <video id="local_video" controls autoPlay playsInline></video>
+            </td>
+            <td>
+              <div>Remote</div>
+              <video id="remote_video" controls autoPlay playsInline></video>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <fieldset id="fs_connection">
+                <legend>Connection</legend>
+                <div>
+                  <button onClick={handleConnect}>Connect</button> 
+                  <span>{connectionStatus}</span>
+                </div>
+              </fieldset>
+            </td>
+            <td>
+              <fieldset id="fs_publish" disabled={isPublishingDisabled}>
+                <legend>Publishing</legend>
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={useSimulcast}
+                      onChange={(e) => setUseSimulcast(e.target.checked)}
+                    />
+                    Use Simulcast
+                  </label>
+                </div>
+                <div>
+                  <button onClick={handleWebcam}>Start Webcam</button> 
+                  <span>{webcamStatus}</span>
+                </div>
+                <div>
+                  <button onClick={handleScreenShare}>Share Screen</button> 
+                  <span>{screenStatus}</span>
+                </div>
+              </fieldset>
+            </td>
+            <td>
+              <fieldset id="fs_subscribe" disabled={isSubscriptionDisabled}>
+                <legend>Subscription</legend>
+                <div>
+                  <button onClick={handleSubscribe}>Subscribe</button> 
+                  <span>{subStatus}</span>
+                </div>
+              </fieldset>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
-};
+}
 
 export default WebRTCTestComponent;
