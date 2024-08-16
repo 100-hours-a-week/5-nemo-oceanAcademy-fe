@@ -30,18 +30,13 @@ const WebRTCTestStudent: React.FC = () => {
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
         />
-        <fieldset id="fs_connection">
-        <legend>Connection</legend>
+        <fieldset id="그냥 이뻐서 넣음">
         <div>
-            <button onClick={handleConnect}>Connect</button> 
-            <span>{connectionStatus}</span>
+            <button onClick={joinLiveLecture}>강의 참여하기</button>
         </div>
-        </fieldset>
-        <fieldset id="fs_subscribe" disabled={isSubscriptionDisabled}>
-        <legend>Subscription</legend>
+        <span>{connectionStatus}</span>
         <div>
-            <button onClick={handleSubscribe}>Subscribe</button> 
-            <span>{subStatus}</span>
+        <span>{subStatus}</span>
         </div>
         </fieldset>
         <div>
