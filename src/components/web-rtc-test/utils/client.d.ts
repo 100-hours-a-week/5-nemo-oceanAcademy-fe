@@ -20,12 +20,16 @@ export declare function publishStream(
 ): Promise<void>;
     
 
-export declare const subscribeToStream: (
-    setSubscriptionStatus: (status: string) => void
-) => Promise<void>;
+export declare function subscribeToStream(
+    roomId: string,
+    setSubscriptionStatus: (status: string) => void,
+    setSubscriptionDisabled: (disabled: boolean) => void
+): Promise<void>;
+
 
 export declare function consume(
-    transport: any // transport의 정확한 타입을 알고 있다면 이를 변경해야 합니다.
+    transport: any, // transport의 정확한 타입을 알고 있다면 이를 변경해야 합니다.
+    roomId: string
 ): Promise<MediaStream>;
 
 export declare function getUserMedia(

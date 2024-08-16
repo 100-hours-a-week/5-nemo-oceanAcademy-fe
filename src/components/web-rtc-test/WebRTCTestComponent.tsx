@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connectToServer, publishStream } from './utils/client';
+import { connectToServer, publishStream, subscribeToStream } from './utils/client';
 
 const WebRTCTestComponent: React.FC = () => {
 
@@ -44,10 +44,16 @@ const WebRTCTestComponent: React.FC = () => {
     }
   };
 
-  const handleSubscribe = () => {
-    // 구독 로직
-    setSubStatus('Subscribed');
+  const handleSubscribe = async () => {
+    setSubStatus('Starting Subscription...');
+    try {
+        await subscribeToStream(roomId, setSubStatus, setIsSubscriptionDisabled);
+    } catch (error) {
+        setSubStatus('Failed to subscribe');
+        console.error('Error during subscription:', error);
+    }
   };
+
 
   return (
     <div>

@@ -231,84 +231,99 @@ export const getUserMedia = async (transport, isWebcam) => {
     return stream;
 }
 
-// /*
-// 5. subscribe()
-// 기능: 비디오 스트림을 구독합니다.
-// */
-// async function subscribe() {
-//     const roomId = $txtRoomIdInput.value.trim(); // 방 ID 입력값 가져오기
+export const subscribeToStream = async (
+    roomId, 
+    setSubscriptionStatus, 
+    setSubscriptionDisabled
+) => {
+    try {
+        const data = await socket.request('createConsumerTransport', {
+            roomId, // 방 ID 전달
+            forceTcp: false,
+        });
 
-//     const data = await socket.request('createConsumerTransport', {
-//         roomId, // 방 ID 전달
-//         forceTcp: false,
-//     });
-//     if (data.error) {
-//         console.error(data.error);
-//         return;
-//     }
+        if (data.error) {
+            console.error(data.error);
+            setSubscriptionStatus('failed');
+            return;
+        }
 
-//     const transport = device.createRecvTransport(data);
-//     transport.on('connect', ({ dtlsParameters }, callback, errback) => {
-//         socket.request('connectConsumerTransport', {
-//         roomId, // 방 ID 전달
-//         transportId: transport.id,
-//         dtlsParameters,
-//         })
-//         .then(callback)
-//         .catch(errback);
-//     });
+        const transport = device.createRecvTransport(data);
 
-//     transport.on('connectionstatechange', async (state) => {
-//         switch (state) {
-//         case 'connecting':
-//             $txtSubscription.innerHTML = 'subscribing...';
-//             $fsSubscribe.disabled = true;
-//             break;
+        transport.on('connect', ({ dtlsParameters }, callback, errback) => {
+            socket.request('connectConsumerTransport', {
+                roomId, // 방 ID 전달
+                transportId: transport.id,
+                dtlsParameters,
+            })
+            .then(callback)
+            .catch(errback);
+        });
 
-//         case 'connected':
-//             document.querySelector('#remote_video').srcObject = await stream;
-//             await socket.request('resume', { roomId }); // 방 ID 전달
-//             $txtSubscription.innerHTML = 'subscribed';
-//             $fsSubscribe.disabled = true;
-//             break;
+        transport.on('connectionstatechange', async (state) => {
+            switch (state) {
+                case 'connecting':
+                    setSubscriptionStatus('subscribing...');
+                    setSubscriptionDisabled(true);
+                    break;
 
-//         case 'failed':
-//             transport.close();
-//             $txtSubscription.innerHTML = 'failed';
-//             $fsSubscribe.disabled = false;
-//             break;
+                case 'connected':
+                    const stream = await consume(transport, roomId);
+                    document.querySelector('#remote_video').srcObject = stream;
+                    await socket.request('resume', { roomId }); // 방 ID 전달
+                    setSubscriptionStatus('subscribed');
+                    setSubscriptionDisabled(true);
+                    break;
 
-//         default: break;
-//         }
-//     });
+                case 'failed':
+                    transport.close();
+                    setSubscriptionStatus('failed');
+                    setSubscriptionDisabled(false);
+                    break;
 
-//     const stream = await consume(transport);
-// }
+                default:
+                    break;
+            }
+        });
+
+        const stream = await consume(transport, roomId);
+    } catch (error) {
+        console.error('Error during subscription setup:', error);
+        setSubscriptionStatus('failed');
+    }
+};
 
 /*
 6. consume(transport)
 기능: 서버에서 전송된 스트림을 소비합니다.
 */
-export const consume = async (transport) => {
-    // const roomId = $txtRoomIdInput.value.trim(); // 방 ID 입력값 가져오기
-    // const { rtpCapabilities } = device;
-    // const data = await socket.request('consume', { roomId, rtpCapabilities }); // 방 ID 전달
-    // const {
-    //     producerId,
-    //     id,
-    //     kind,
-    //     rtpParameters,
-    // } = data;
+export const consume = async (transport, roomId) => {
+    console.log(transport);
+    console.log(roomId);
+    const { rtpCapabilities } = device;
+    const data = await socket.request('consume', { roomId, rtpCapabilities }); // 방 ID 전달
 
-    // let codecOptions = {};
-    // const consumer = await transport.consume({
-    //     id,
-    //     producerId,
-    //     kind,
-    //     rtpParameters,
-    //     codecOptions,
-    // });
-    // const stream = new MediaStream();
-    // stream.addTrack(consumer.track);
-    // return stream;
-}
+    if (!data) {
+        throw new Error('No data received from consume request');
+    }
+
+    const {
+        producerId,
+        id,
+        kind,
+        rtpParameters,
+    } = data;
+
+    let codecOptions = {};
+    const consumer = await transport.consume({
+        id,
+        producerId,
+        kind,
+        rtpParameters,
+        codecOptions,
+    });
+    const stream = new MediaStream();
+    stream.addTrack(consumer.track);
+    return stream;
+};
+
