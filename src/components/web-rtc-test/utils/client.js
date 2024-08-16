@@ -1,5 +1,5 @@
-import mediasoup from 'mediasoup-client';
-import socketClient from 'socket.io-client';
+import * as mediasoup from 'mediasoup-client';
+import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../utils/promise';
 
 const serverUrl = "https://192.168.36.125:3000";
@@ -120,16 +120,39 @@ export const connectToServer = async (roomId, setConnectionStatus, setIsPublishi
 2. loadDevice(routerRtpCapabilities)
 기능: mediasoup.Device를 로드하여 비디오 및 오디오 스트림을 전송할 수 있도록 설정합니다.
 */
-async function loadDevice(routerRtpCapabilities) {
+export const loadDevice = async (routerRtpCapabilities) => {
     try {
+        console.log('Attempting to create mediasoup.Device...');
         device = new mediasoup.Device();
+        console.log('Device created:', device);  // device 객체 출력
     } catch (error) {
+        console.error('Failed to create Device:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);  // 에러가 발생한 스택 트레이스 출력
+
         if (error.name === 'UnsupportedError') {
-        console.error('browser not supported');
+            console.error('Browser not supported for mediasoup.');
+        } else {
+            console.error('Unexpected error during Device creation:', error);
         }
+        return;  // 생성 실패 시 함수 종료
     }
-    await device.load({ routerRtpCapabilities });
-}
+
+    if (!device) {
+        console.error('Device is undefined after creation attempt.');
+        return;
+    }
+
+    try {
+        await device.load({ routerRtpCapabilities });
+        console.log('Device loaded successfully');
+    } catch (loadError) {
+        console.error('Error loading device:', loadError);
+    }
+};
+
+
 
 // /*
 // 3. publish(e)
