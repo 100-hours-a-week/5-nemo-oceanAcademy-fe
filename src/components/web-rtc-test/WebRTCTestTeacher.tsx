@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {connectToServerAsTeacher, publishStreamAsTeacher} from './utils/teacher/teacherClient';
 
-const Teacher: React.FC = () => {
+const WebRTCTestTeacher: React.FC = () => {
 
     const [roomId, setRoomId] = useState('');
     const [connectionStatus, setConnectionStatus] = useState('');
@@ -73,4 +73,4 @@ const Teacher: React.FC = () => {
     );
 }
 
-export default Teacher;
+export default WebRTCTestTeacher;

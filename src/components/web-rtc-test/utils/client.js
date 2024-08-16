@@ -2,7 +2,7 @@ import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../utils/promise';
 
-const serverUrl = "https://192.168.36.125:3000";
+const serverUrl = "https://192.168.200.222:3000";
 
 let device;
 let socket;
@@ -56,14 +56,6 @@ export const connectToServer = async (roomId, setConnectionStatus, setIsPublishi
         setConnectionStatus('Connection failed');
     }
 };
-
-
-// if (typeof navigator.mediaDevices.getDisplayMedia === 'undefined') {
-//     $txtScreen.innerHTML = 'Not supported';
-//     $btnScreen.disabled = true;
-// }
-
-
 
 /*
 2. loadDevice(routerRtpCapabilities)
@@ -237,6 +229,7 @@ export const subscribeToStream = async (
     setSubscriptionDisabled
 ) => {
     try {
+        console.log(roomId)
         const data = await socket.request('createConsumerTransport', {
             roomId, // 방 ID 전달
             forceTcp: false,
