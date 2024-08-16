@@ -63,58 +63,7 @@ export const connectToServer = async (roomId, setConnectionStatus, setIsPublishi
 //     $btnScreen.disabled = true;
 // }
 
-// /*
-// 1. connect()
-// 기능: 서버와 연결을 설정하고 방에 참가합니다.
-// */
-// async function connect() {
-//     $btnConnect.disabled = true;
-//     $txtConnection.innerHTML = 'Connecting...';
 
-//     const opts = {
-//         path: '/server',
-//         transports: ['websocket'],
-//     };
-
-//     socket = socketClient(serverUrl, opts); // 연결
-//     socket.request = socketPromise(socket);
-
-//     socket.on('connect', async () => {
-//         $txtConnection.innerHTML = 'Connected';
-//         $fsPublish.disabled = false;
-//         $fsSubscribe.disabled = false;
-
-//         // 특정 방에 연결 요청
-//         const roomId = $txtRoomIdInput.value.trim(); // 방 ID 입력값 가져오기
-//         if (!roomId) {
-//         alert('Please enter a room ID.');
-//         return;
-//         }
-//         socket.emit('joinRoom', roomId);
-
-//         $txtConnection.innerHTML = `Connected to room ${roomId}`;
-
-//         const data = await socket.request('getRouterRtpCapabilities');
-//         await loadDevice(data);
-//     });
-
-//     socket.on('disconnect', () => {
-//         $txtConnection.innerHTML = 'Disconnected';
-//         $btnConnect.disabled = false;
-//         $fsPublish.disabled = true;
-//         $fsSubscribe.disabled = true;
-//     });
-
-//     socket.on('connect_error', (error) => {
-//         console.error('could not connect to %s%s (%s)', serverUrl, opts.path, error.message);
-//         $txtConnection.innerHTML = 'Connection failed';
-//         $btnConnect.disabled = false;
-//     });
-
-//     socket.on('newProducer', () => {
-//         $fsSubscribe.disabled = false;
-//     });
-// }
 
 /*
 2. loadDevice(routerRtpCapabilities)
@@ -154,115 +103,133 @@ export const loadDevice = async (routerRtpCapabilities) => {
 
 
 
-// /*
-// 3. publish(e)
-// 기능: 비디오 스트림을 게시합니다.
-// */
-// async function publish(e) {
-//     const isWebcam = (e.target.id === 'btn_webcam');
-//     $txtPublish = isWebcam ? $txtWebcam : $txtScreen;
+/*
+3. publish(e)
+기능: 비디오 스트림을 게시합니다.
+*/
+export const publishStream = async (
+    isWebcam, 
+    roomId, 
+    useSimulcast, 
+    setPublishStatus, 
+    setPublishingDisabled, 
+    setSubscriptionDisabled
+) => {
+    try {
+        const data = await socket.request('createProducerTransport', {
+            roomId, // 방 ID 전달
+            forceTcp: false,
+            rtpCapabilities: device.rtpCapabilities,
+        });
 
-//     const roomId = $txtRoomIdInput.value.trim(); // 방 ID 입력값 가져오기
+        if (data.error) {
+            console.error(data.error);
+            setPublishStatus('failed');
+            return;
+        }
 
-//     const data = await socket.request('createProducerTransport', {
-//         roomId, // 방 ID 전달
-//         forceTcp: false,
-//         rtpCapabilities: device.rtpCapabilities,
-//     });
-//     if (data.error) {
-//         console.error(data.error);
-//         return;
-//     }
+        const transport = device.createSendTransport(data);
 
-//     const transport = device.createSendTransport(data);
-//     transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-//         socket.request('connectProducerTransport', { roomId, dtlsParameters }) // 방 ID 전달
-//         .then(callback)
-//         .catch(errback);
-//     });
+        transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+            try {
+                await socket.request('connectProducerTransport', { roomId, dtlsParameters });
+                callback();
+            } catch (error) {
+                errback(error);
+            }
+        });
 
-//     transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
-//         try {
-//         const { id } = await socket.request('produce', {
-//             roomId, // 방 ID 전달
-//             transportId: transport.id,
-//             kind,
-//             rtpParameters,
-//         });
-//         callback({ id });
-//         } catch (err) {
-//         errback(err);
-//         }
-//     });
+        transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
+            try {
+                const { id } = await socket.request('produce', {
+                    roomId, // 방 ID 전달
+                    transportId: transport.id,
+                    kind,
+                    rtpParameters,
+                });
+                callback({ id });
+            } catch (error) {
+                errback(error);
+            }
+        });
 
-//     transport.on('connectionstatechange', (state) => {
-//         switch (state) {
-//         case 'connecting':
-//             $txtPublish.innerHTML = 'publishing...';
-//             $fsPublish.disabled = true;
-//             $fsSubscribe.disabled = true;
-//             break;
+        transport.on('connectionstatechange', (state) => {
+            switch (state) {
+                case 'connecting':
+                    setPublishStatus('publishing...');
+                    setPublishingDisabled(true);
+                    setSubscriptionDisabled(true);
+                    break;
 
-//         case 'connected':
-//             document.querySelector('#local_video').srcObject = stream;
-//             $txtPublish.innerHTML = 'published';
-//             $fsPublish.disabled = true;
-//             $fsSubscribe.disabled = false;
-//             break;
+                case 'connected':
+                    document.querySelector('#local_video').srcObject = stream;
+                    setPublishStatus('published');
+                    setPublishingDisabled(true);
+                    setSubscriptionDisabled(false);
+                    break;
 
-//         case 'failed':
-//             transport.close();
-//             $txtPublish.innerHTML = 'failed';
-//             $fsPublish.disabled = false;
-//             $fsSubscribe.disabled = true;
-//             break;
+                case 'failed':
+                    transport.close();
+                    setPublishStatus('failed');
+                    setPublishingDisabled(false);
+                    setSubscriptionDisabled(true);
+                    break;
 
-//         default: break;
-//         }
-//     });
+                default:
+                    break;
+            }
+        });
 
-//     let stream;
-//     try {
-//         stream = await getUserMedia(transport, isWebcam);
-//         const track = stream.getVideoTracks()[0];
-//         const params = { track };
-//         if ($chkSimulcast.checked) {
-//         params.encodings = [
-//             { maxBitrate: 100000 },
-//             { maxBitrate: 300000 },
-//             { maxBitrate: 900000 },
-//         ];
-//         params.codecOptions = {
-//             videoGoogleStartBitrate: 1000,
-//         };
-//         }
-//         producer = await transport.produce(params);
-//     } catch (err) {
-//         $txtPublish.innerHTML = 'failed';
-//     }
-// }
+        let stream;
+        try {
+            stream = await getUserMedia(transport, isWebcam);
+            const track = stream.getVideoTracks()[0];
+            const params = { track };
 
-// /*
-// 4. getUserMedia(transport, isWebcam)
-// 기능: 사용자의 웹캠 또는 화면에서 비디오 스트림을 가져옵니다.
-// */
-// async function getUserMedia(transport, isWebcam) {
-//     if (!device.canProduce('video')) {
-//         console.error('cannot produce video');
-//         return;
-//     }
+            if (useSimulcast) {
+                params.encodings = [
+                    { maxBitrate: 100000 },
+                    { maxBitrate: 300000 },
+                    { maxBitrate: 900000 },
+                ];
+                params.codecOptions = {
+                    videoGoogleStartBitrate: 1000,
+                };
+            }
 
-//     let stream;
-//     try {
-//         stream = isWebcam ?
-//         await navigator.mediaDevices.getUserMedia({ video: true }) :
-//         await navigator.mediaDevices.getDisplayMedia({ video: true });
-//     } catch (err) {
-//         console.error('getUserMedia() failed:', err.message);
-//         throw err;
-//     }
-//     return stream;
-// }
+            producer = await transport.produce(params);
+        } catch (err) {
+            setPublishStatus('failed');
+            console.error('Error during stream publication:', err);
+        }
+    } catch (error) {
+        setPublishStatus('failed');
+        console.error('Error during publish stream setup:', error);
+    }
+};
+
+
+/*
+4. getUserMedia(transport, isWebcam)
+기능: 사용자의 웹캠 또는 화면에서 비디오 스트림을 가져옵니다.
+*/
+export const getUserMedia = async (transport, isWebcam) => {
+    if (!device.canProduce('video')) {
+        console.error('cannot produce video');
+        return;
+    }
+
+    let stream;
+    try {
+        stream = isWebcam ?
+        await navigator.mediaDevices.getUserMedia({ video: true }) :
+        await navigator.mediaDevices.getDisplayMedia({ video: true });
+    } catch (err) {
+        console.error('getUserMedia() failed:', err.message);
+        throw err;
+    }
+    return stream;
+}
 
 // /*
 // 5. subscribe()
@@ -318,30 +285,30 @@ export const loadDevice = async (routerRtpCapabilities) => {
 //     const stream = await consume(transport);
 // }
 
-// /*
-// 6. consume(transport)
-// 기능: 서버에서 전송된 스트림을 소비합니다.
-// */
-// async function consume(transport) {
-//     const roomId = $txtRoomIdInput.value.trim(); // 방 ID 입력값 가져오기
-//     const { rtpCapabilities } = device;
-//     const data = await socket.request('consume', { roomId, rtpCapabilities }); // 방 ID 전달
-//     const {
-//         producerId,
-//         id,
-//         kind,
-//         rtpParameters,
-//     } = data;
+/*
+6. consume(transport)
+기능: 서버에서 전송된 스트림을 소비합니다.
+*/
+export const consume = async (transport) => {
+    // const roomId = $txtRoomIdInput.value.trim(); // 방 ID 입력값 가져오기
+    // const { rtpCapabilities } = device;
+    // const data = await socket.request('consume', { roomId, rtpCapabilities }); // 방 ID 전달
+    // const {
+    //     producerId,
+    //     id,
+    //     kind,
+    //     rtpParameters,
+    // } = data;
 
-//     let codecOptions = {};
-//     const consumer = await transport.consume({
-//         id,
-//         producerId,
-//         kind,
-//         rtpParameters,
-//         codecOptions,
-//     });
-//     const stream = new MediaStream();
-//     stream.addTrack(consumer.track);
-//     return stream;
-// }
+    // let codecOptions = {};
+    // const consumer = await transport.consume({
+    //     id,
+    //     producerId,
+    //     kind,
+    //     rtpParameters,
+    //     codecOptions,
+    // });
+    // const stream = new MediaStream();
+    // stream.addTrack(consumer.track);
+    // return stream;
+}

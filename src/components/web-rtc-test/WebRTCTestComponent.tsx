@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connectToServer } from './utils/client';
+import { connectToServer, publishStream } from './utils/client';
 
 const WebRTCTestComponent: React.FC = () => {
 
@@ -14,20 +14,34 @@ const WebRTCTestComponent: React.FC = () => {
 
   const handleConnect = async () => {
     // 연결 로직
-    // setConnectionStatus('Connected');
-    // setIsPublishingDisabled(false);
-    // setIsSubscriptionDisabled(false);
     await connectToServer(roomId, setConnectionStatus, setIsPublishingDisabled, setIsSubscriptionDisabled);
   };
 
-  const handleWebcam = () => {
-    // 웹캠 시작 로직
-    setWebcamStatus('Webcam Started');
+  const handleWebcam = async () => {
+    setWebcamStatus('Publishing...');
+    try {
+      await publishStream(
+        true, // 웹캠을 사용
+        roomId,
+        useSimulcast,
+        setWebcamStatus,
+        setIsPublishingDisabled,
+        setIsSubscriptionDisabled
+      );
+    } catch (error) {
+      console.error('Error starting webcam:', error);
+      setWebcamStatus('Failed to start webcam');
+    }
   };
 
-  const handleScreenShare = () => {
-    // 화면 공유 로직
-    setScreenStatus('Screen Sharing Started');
+  const handleScreenShare = async () => {
+    setScreenStatus('Starting Screen Share...');
+    try {
+        await publishStream(false, roomId, useSimulcast, setScreenStatus, setIsPublishingDisabled, setIsSubscriptionDisabled);
+    } catch (error) {
+        setScreenStatus('Failed to start Screen Share');
+        console.error('Error starting screen share stream:', error);
+    }
   };
 
   const handleSubscribe = () => {
