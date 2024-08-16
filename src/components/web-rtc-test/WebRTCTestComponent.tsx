@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connectToServer, publishStream, subscribeToStream } from './utils/client';
 
 const WebRTCTestComponent: React.FC = () => {
@@ -11,6 +11,14 @@ const WebRTCTestComponent: React.FC = () => {
   const [isPublishingDisabled, setIsPublishingDisabled] = useState(true);
   const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
   const [useSimulcast, setUseSimulcast] = useState(false);
+  const [isScreenShareSupported, setIsScreenShareSupported] = useState(true);
+
+  useEffect(() => {
+    if (typeof navigator.mediaDevices.getDisplayMedia === 'undefined') {
+      setScreenStatus('Not supported');
+      setIsScreenShareSupported(false);
+    }
+  }, []);
 
   const handleConnect = async () => {
     // 연결 로직
@@ -108,7 +116,7 @@ const WebRTCTestComponent: React.FC = () => {
                   <span>{webcamStatus}</span>
                 </div>
                 <div>
-                  <button onClick={handleScreenShare}>Share Screen</button> 
+                  <button onClick={handleScreenShare} disabled={!isScreenShareSupported}>Share Screen</button> 
                   <span>{screenStatus}</span>
                 </div>
               </fieldset>
