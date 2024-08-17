@@ -5,13 +5,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid purple;
   }
   
   .logo {
-    border: 1px solid blue;
     font-family: 'Kavoon', cursive;
-    font-size: 24px;
+    font-size: 25px;
     color: white;
     margin: 0;
     cursor: pointer;
