@@ -2,13 +2,13 @@ import React from 'react';
 import styles from './Button.module.css';
 
 interface ButtonProps {
-  text: string;
-
+    text: string;
+    onClick?: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({ text }) => {
+const Button: React.FC<ButtonProps> = ({ text, onClick }) => {
   return (
-    <button className={styles.button}>
+    <button className={styles.button} onClick={onClick}>
       {text}
     </button>
   );
