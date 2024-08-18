@@ -12,3 +12,27 @@ export declare function publishStreamAsTeacher(
     useSimulcast: boolean, 
     setStreamStatus: (status: string) => void
 ): Promise<void>;
+
+
+export function startWebcamStream(
+    roomId: string, 
+    useSimulcast: boolean, 
+    setStreamStatus: SetStreamStatus
+): Promise<Producer | null>;
+
+export function startScreenShareStream(
+    roomId: string, 
+    useSimulcast: boolean, 
+    setStreamStatus: SetStreamStatus
+): Promise<Producer | null>;
+
+
+export function stopWebcamStream(
+    producer: Producer | null, 
+    setStreamStatus: SetStreamStatus
+): void;
+
+export function stopScreenShareStream(
+    producer: Producer | null, 
+    setStreamStatus: SetStreamStatus
+): void;

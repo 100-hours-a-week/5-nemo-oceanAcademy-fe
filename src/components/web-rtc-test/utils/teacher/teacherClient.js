@@ -2,13 +2,40 @@ import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
 
-const serverUrl = "https://192.168.200.222:3000";
+const serverUrl = "https://192.168.36.125:3000";
 
 let device;
 let socket;
 let producer;
 
-// teacherClient.js
+/** 
+* 웹 캠 스트리밍 코드
+*/
+export const startWebcamStream = async (roomId, useSimulcast, setStreamStatus) => {
+    return await createProducer(roomId, useSimulcast, true, setStreamStatus);
+};
+
+export const stopWebcamStream = (webCamProducer, setStreamStatus) => {
+    if (webCamProducer) {
+        webCamProducer.close();
+        setStreamStatus('Webcam Stopped');
+    }
+};
+
+/**
+* 화면 공유 스트리밍 코드
+*/
+export const startScreenShareStream = async (roomId, useSimulcast, setStreamStatus) => {
+    return await createProducer(roomId, useSimulcast, false, setStreamStatus);
+};
+
+export const stopScreenShareStream = (screenProducer, setStreamStatus) => {
+    if (screenProducer) {
+        screenProducer.close();
+        setStreamStatus('Screen Sharing Stopped');
+    }
+};
+
 export const connectToServerAsTeacher = async (
     roomId, 
     setConnectionStatus, 
@@ -59,18 +86,39 @@ export const connectToServerAsTeacher = async (
             setConnectionStatus('Connection failed');
         }
     };
-    
+
 export const publishStreamAsTeacher = async (
-        isWebcam, 
-        roomId, 
-        useSimulcast, 
-        setStreamStatus
-    ) => {
+    roomId, 
+    useSimulcast, 
+    setStreamStatus
+) => {
     try {
         setStreamStatus('Publishing...');
-        
+
+        // 웹캠 스트림과 화면 공유 스트림을 위한 두 개의 프로듀서 생성
+        const webcamProducer = await createProducer(roomId, useSimulcast, true, setStreamStatus);
+        const screenShareProducer = await createProducer(roomId, useSimulcast, false, setStreamStatus);
+
+        if (webcamProducer && screenShareProducer) {
+            setStreamStatus('Both Webcam and Screen Sharing Started');
+        } else if (webcamProducer) {
+            setStreamStatus('Webcam Started, Screen Sharing failed');
+        } else if (screenShareProducer) {
+            setStreamStatus('Screen Sharing Started, Webcam failed');
+        } else {
+            setStreamStatus('Failed to start streams');
+        }
+
+    } catch (error) {
+        console.error('Error starting streams:', error);
+        setStreamStatus('Failed to start streams');
+    }
+};
+
+const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus) => {
+    try {
         const data = await socket.request('createProducerTransport', {
-            roomId, // 방 ID 전달
+            roomId,
             forceTcp: false,
             rtpCapabilities: device.rtpCapabilities,
         });
@@ -78,7 +126,7 @@ export const publishStreamAsTeacher = async (
         if (data.error) {
             console.error(data.error);
             setStreamStatus('failed');
-            return;
+            return null;
         }
 
         const transport = device.createSendTransport(data);
@@ -95,7 +143,7 @@ export const publishStreamAsTeacher = async (
         transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
             try {
                 const { id } = await socket.request('produce', {
-                    roomId, // 방 ID 전달
+                    roomId,
                     transportId: transport.id,
                     kind,
                     rtpParameters,
@@ -113,7 +161,9 @@ export const publishStreamAsTeacher = async (
                     break;
 
                 case 'connected':
-                    document.querySelector('#local_video').srcObject = stream;
+                    if (isWebcam) {
+                        document.querySelector('#local_video').srcObject = stream;
+                    }
                     setStreamStatus('published');
                     break;
 
@@ -144,25 +194,19 @@ export const publishStreamAsTeacher = async (
                 };
             }
 
-            producer = await transport.produce(params);
+            return await transport.produce(params);
         } catch (err) {
             setStreamStatus('failed');
             console.error('Error during stream publication:', err);
+            return null;
         }
 
-        if (isWebcam) {
-            // 웹캠 스트림 시작
-            setStreamStatus('Webcam Started');
-        } else {
-            // 화면 공유 스트림 시작
-            setStreamStatus('Screen Sharing Started');
-        }
-        } catch (error) {
+    } catch (error) {
         console.error('Error starting stream:', error);
         setStreamStatus('Failed to start stream');
+        return null;
     }
 };
-
 
 
 /*
