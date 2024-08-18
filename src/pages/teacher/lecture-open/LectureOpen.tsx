@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import InputField from '../../../components/input-field/InputField';
 import FileUpload from '../../../components/file-upload/FileUpload';
 import Button from '../../../components/button/Button';
@@ -6,10 +7,14 @@ import Navigation from '../../../components/navigation/Navigation';
 import styles from './LectureOpen.module.css';
 
 const LectureOpen: React.FC = () => {
+  const navigate = useNavigate();
   const [isFormValid, setIsFormValid] = useState(false); // 필수값이 모두 입력되었는지 확인
 
   const handleSubmit = () => {
     // TODO: 강의 개설 API 요청
+
+    navigate('/teacher/lecture-created'); 
+    // 강의 개설 후 LectureCreated 페이지로 이동
   };
 
   return (

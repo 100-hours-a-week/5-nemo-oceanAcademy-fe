@@ -9,7 +9,7 @@ const LectureInfo: React.FC = () => {
 
   const handleEnrollment = () => {
     // TODO: 수강신청 API 요청
-    navigate('/student/enrollment'); // API 요청이 성공하면 Enrollment 페이지로 이동
+    navigate('/lecture/enrollment'); // API 요청이 성공하면 Enrollment 페이지로 이동
   };
 
   const isEnrolled = false; // 수강신청 상태를 확인하는 변수 (예시로 false로 설정)
