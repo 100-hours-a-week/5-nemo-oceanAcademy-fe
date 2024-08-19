@@ -1,11 +1,25 @@
 .container {
-  padding: 20px;
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
 }
 
-.sectionTitle {
-  font-size: 18px;
-  font-weight: bold;
+.adSection {
   margin-top: 20px;
+}
+.link {
+  margin-top: 0;
+  margin-left: 20px;
+}
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px;
+  margin-bottom: 5px;
 }
 
 .link {
