@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {connectToServerAsTeacher, publishStreamAsTeacher} from './utils/teacher/teacherClient';
+import React, { useState, useEffect, useRef } from 'react';
+import {connectToServerAsTeacher, publishStreamAsTeacher, startWebcamStream, startScreenShareStream, stopScreenShareStream, stopWebcamStream} from './utils/teacher/teacherClient';
 
 const WebRTCTestTeacher: React.FC = () => {
 
@@ -10,6 +10,43 @@ const WebRTCTestTeacher: React.FC = () => {
     const [isPublishingDisabled, setIsPublishingDisabled] = useState(true);
     const [useSimulcast, setUseSimulcast] = useState(false);
     const [isScreenShareSupported, setIsScreenShareSupported] = useState(true);
+
+    const [webcamProducer, setWebcamProducer] = useState(null);
+    const [screenShareProducer, setScreenShareProducer] = useState(null);
+    const [streamStatus, setStreamStatus] = useState('');
+
+    // Ref to store video elements
+    const webcamVideoRef = useRef(null);
+    const screenShareVideoRef = useRef(null);
+
+
+    const handleStartWebcam = async () => {
+        if (!webcamProducer) {
+            const producer = await startWebcamStream(roomId, useSimulcast, setStreamStatus);
+            setWebcamProducer(producer);
+        }
+    };
+
+    const handleStopWebcam = () => {
+        if (webcamProducer) {
+            stopWebcamStream(webcamProducer, setStreamStatus);
+            setWebcamProducer(null);
+        }
+    };
+
+    const handleStartScreenShare = async () => {
+        if (!screenShareProducer) {
+            const producer = await startScreenShareStream(roomId, useSimulcast, setStreamStatus);
+            setScreenShareProducer(producer);
+        }
+    };
+
+    const handleStopScreenShare = () => {
+        if (screenShareProducer) {
+            stopScreenShareStream(screenShareProducer, setStreamStatus);
+            setScreenShareProducer(null);
+        }
+    };
 
     useEffect(() => {
         if (typeof navigator.mediaDevices.getDisplayMedia === 'undefined') {
@@ -58,12 +95,14 @@ const WebRTCTestTeacher: React.FC = () => {
             </label>
             </div>
             <div>
-            <button onClick={handleWebcam}>Start Webcam</button> 
-            <span>{webcamStatus}</span>
+                <button onClick={handleStartWebcam} disabled={!!webcamProducer}>Start Webcam</button>
+                <button onClick={handleStopWebcam} disabled={!webcamProducer}>Stop Webcam</button>
+                <span>{webcamStatus}</span>
             </div>
             <div>
-            <button onClick={handleScreenShare} disabled={!isScreenShareSupported}>Share Screen</button> 
-            <span>{screenStatus}</span>
+                <button onClick={handleStartScreenShare} disabled={!!screenShareProducer}>Start Screen Share</button>
+                <button onClick={handleStopScreenShare} disabled={!screenShareProducer}>Stop Screen Share</button>
+                <span>{screenStatus}</span>
             </div>
         </fieldset>
         <div>

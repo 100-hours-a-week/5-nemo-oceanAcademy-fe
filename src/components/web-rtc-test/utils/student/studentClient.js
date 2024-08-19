@@ -2,7 +2,7 @@ import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import {promise as socketPromise} from '../../utils/promise';
 
-const serverUrl = "https://192.168.36.125:3000";
+const serverUrl = "https://52.79.217.180:3000";
 
 let socket;
 let device;

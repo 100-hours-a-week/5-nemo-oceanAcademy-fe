@@ -2,7 +2,7 @@ import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
 
-const serverUrl = "https://192.168.36.125:3000";
+const serverUrl = "https://52.79.217.180:3000";
 
 let device;
 let socket;
@@ -114,6 +114,113 @@ export const publishStreamAsTeacher = async (
         setStreamStatus('Failed to start streams');
     }
 };
+
+
+export const __publishStreamAsTeacher = async (
+    isWebcam, 
+    roomId, 
+    useSimulcast, 
+    setStreamStatus
+) => {
+try {
+    setStreamStatus('Publishing...');
+    
+    const data = await socket.request('createProducerTransport', {
+        roomId, // 방 ID 전달
+        forceTcp: false,
+        rtpCapabilities: device.rtpCapabilities,
+    });
+
+    if (data.error) {
+        console.error(data.error);
+        setStreamStatus('failed');
+        return;
+    }
+
+    const transport = device.createSendTransport(data);
+
+    transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
+            await socket.request('connectProducerTransport', { roomId, dtlsParameters });
+            callback();
+        } catch (error) {
+            errback(error);
+        }
+    });
+
+    transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
+        try {
+            const { id } = await socket.request('produce', {
+                roomId, // 방 ID 전달
+                transportId: transport.id,
+                kind,
+                rtpParameters,
+            });
+            callback({ id });
+        } catch (error) {
+            errback(error);
+        }
+    });
+
+    transport.on('connectionstatechange', (state) => {
+        switch (state) {
+            case 'connecting':
+                setStreamStatus('publishing...');
+                break;
+
+            case 'connected':
+                document.querySelector('#local_video').srcObject = stream;
+                setStreamStatus('published');
+                break;
+
+            case 'failed':
+                transport.close();
+                setStreamStatus('failed');
+                break;
+
+            default:
+                break;
+        }
+    });
+
+    let stream;
+    try {
+        stream = await getUserMedia(transport, isWebcam);
+        const track = stream.getVideoTracks()[0];
+        const params = { track };
+
+        if (useSimulcast) {
+            params.encodings = [
+                { maxBitrate: 100000 },
+                { maxBitrate: 300000 },
+                { maxBitrate: 900000 },
+            ];
+            params.codecOptions = {
+                videoGoogleStartBitrate: 1000,
+            };
+        }
+
+        producer = await transport.produce(params);
+    } catch (err) {
+        setStreamStatus('failed');
+        console.error('Error during stream publication:', err);
+    }
+
+    if (isWebcam) {
+        // 웹캠 스트림 시작
+        setStreamStatus('Webcam Started');
+    } else {
+        // 화면 공유 스트림 시작
+        setStreamStatus('Screen Sharing Started');
+    }
+    } catch (error) {
+    console.error('Error starting stream:', error);
+    setStreamStatus('Failed to start stream');
+}
+};
+
+
+
 
 const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus) => {
     try {
