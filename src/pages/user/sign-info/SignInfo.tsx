@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './SignInfo.module.css';
+import WideButton from '../../../components/wide-button/WideButton';
 
 const SignInfo: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [nickname, setNickname] = useState<string>('');
+  const [helperText, setHelperText] = useState('');
+  const navigate = useNavigate();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -15,6 +19,33 @@ const SignInfo: React.FC = () => {
       alert('Invalid file. Please select a .jpg or .png file under 5MB.');
     }
   };
+
+  const handleSignupComplete = () => {
+    // 회원 정보 전송하는 API 요청
+    // 예시: api.sendUserData({ nickname, preview }).then(response => {...});
+
+    if (!nickname) {
+      setHelperText('닉네임을 입력해주세요.');
+      return;
+    }
+
+    // API 요청 작성할 것. 
+    fetch('/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ nickname }),
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('회원가입이 완료되었습니다.');
+        navigate('/');
+      } else {
+        alert('회원가입에 실패하였습니다. 다시 시도해주세요.');
+      }
+    })
+  }
 
   return (
     <div className={styles.container}>
@@ -60,6 +91,7 @@ const SignInfo: React.FC = () => {
             onChange={(e) => setNickname(e.target.value)}
           />
       </div>
+      <WideButton text="회원 가입 완료" onClick={handleSignupComplete} />
     </div>
   );
 };

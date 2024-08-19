@@ -1,0 +1,28 @@
+.wideButton {
+    width: 380px;
+    height: 40px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.wideButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.wideButton:hover:disabled {
+    background-color: #ccc;
+}
+
+.wideButton:hover {
+    background-color: #5a6599;
+}
