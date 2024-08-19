@@ -14,6 +14,7 @@
   }
   
   .navItem {
+    width: 70px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,15 +24,13 @@
   .icon {
     width: 30px;
     height: 30px;
-    border: 1px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 10px;
-    margin-bottom: 5px;
+    font-size: 25px;
   }
   
   .label {
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 10px;
+    font-weight: 600;
   }

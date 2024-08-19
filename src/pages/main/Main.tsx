@@ -24,7 +24,7 @@ const Main: React.FC = () => {
     { classId: 4, name: '프랑스 요리의 비밀', bannerImage: '', instructor: '앤디', category: '요리' },
     { classId: 5, name: '요가로 시작하는 하루', bannerImage: '', instructor: '엘', category: '운동' },
     { classId: 6, name: '초보자를 위한 DSLR 강의', bannerImage: '', instructor: '미아', category: '사진' },
-    { classId: 7, name: '프랑스어 발음 마스터', bannerImage: '', instructor: '지키', category: '외국어' },
+    { classId: 7, name: '프랑스어 발음 마스터', bannerImage: '', instructor: '준', category: '외국어' },
     { classId: 8, name: 'UX/UI 디자인의 기본', bannerImage: '', instructor: '에리카', category: '디자인' },
     { classId: 9, name: '천문학 입문', bannerImage: '', instructor: '제이미', category: '과학' },
     { classId: 10, name: '리더십 기초 트레이닝', bannerImage: '', instructor: '홍', category: '비즈니스 스킬' },
@@ -37,7 +37,7 @@ const Main: React.FC = () => {
         </section>
 
         <section className={styles.liveSection}>
-          <h1 className={styles.sectionTitle}>인기를 끌고 있는 라이브 강의! 지금 바로 수강 레쯔ㅋ고</h1>
+          <h1 className={styles.sectionTitle}>인기를 끌고 있는 라이브 강의!<br/> 지금 바로 수강 레쯔ㅋ고</h1>
           <span className={styles.link} onClick={() => navigate('/lecture/live-list')}>
             라이브 중인 강의 보러 가기 &gt;
           </span>
