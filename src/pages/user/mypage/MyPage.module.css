@@ -1,0 +1,79 @@
+.container {
+    padding: 20px;
+  }
+  
+  .profileContainer {
+    width: 366px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .profilePicture {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+  
+  .profilePictureEditing {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: lightgray;
+  }
+  
+  .username {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .usernameInput {
+    width: 200px;
+    height: 30px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+  }
+  
+  .editButton {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .lecturesHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .addLectureButton {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .noLecturesContainer {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .placeholderImage {
+    width: 200px;
+    height: 200px;
+    background-color: #e0e0e0;
+    margin: 20px auto;
+    border-radius: 8px;
+  }
+  
+  .lectureGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }

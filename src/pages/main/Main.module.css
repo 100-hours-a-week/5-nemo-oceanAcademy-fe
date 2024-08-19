@@ -1,34 +1,38 @@
 .container {
-    border: 1px solid black;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 390px;
-    gap: 40px;
-  }
-  
-  .adSection,
-  .liveLectureSection,
-  .topLecturesSection {
-    padding: 30px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .adContent,
-  .liveLectureContent,
-  .topLecturesContent {
-    margin-top: 10px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 5px;
-    min-height: 150px; /* 각 섹션의 높이를 임의로 설정 */
-  }
-  
-  h2 {
-    margin: 0;
-    font-size: 24px;
-    color: #333;
-  }
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+.adSection {
+  margin-top: 20px;
+}
+.link {
+  margin-top: 0;
+  margin-left: 20px;
+}
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px;
+  margin-bottom: 5px;
+}
+
+.link {
+  font-size: 14px;
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.lectureGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
