@@ -1,3 +1,5 @@
+// SignInfo Page - 회원가입 중 프로필 사진 및 닉네임 등 추가 정보 입력
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './SignInfo.module.css';
