@@ -56,21 +56,6 @@ const WebRTCTestTeacher: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        console.log('webcamVideoRef:', webcamVideoRef);
-        console.log('webcamVideoRef.current:', webcamVideoRef.current);
-        console.log('screenShareVideoRef:', screenShareVideoRef);
-        console.log('screenShareVideoRef.current:', screenShareVideoRef.current);
-        
-        // 만약 current가 없다면, 컴포넌트가 제대로 렌더링되고 있는지 확인해야 합니다.
-        if (!webcamVideoRef.current) {
-            console.warn('webcamVideoRef.current is not defined');
-        }
-        if (!screenShareVideoRef.current) {
-            console.warn('screenShareVideoRef.current is not defined');
-        }
-    }, []); // 빈 배열을 의존성으로 하여 컴포넌트가 처음 렌더링될 때만 실행
-
 
     return (
         <div>

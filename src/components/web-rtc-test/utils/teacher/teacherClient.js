@@ -1,14 +1,26 @@
 import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
-
-const serverUrl = "https://192.168.36.125:3000";
+import { getServerUrl } from '../../secret';
 
 let device;
 let socket;
 let producer;
 
+const Producers = {
+    WEBCAM_VIDEO: 'webcamVideo',
+    WEBCAM_AUDIO: 'webcamAudio',
+    SCREEN_SHARE_VIDEO: 'screenShareVideo',
+    SCREEN_SHARE_AUDIO: 'screenShareAudio'
+}
 
+
+/**
+ * 
+ * @param {*} roomId 방 번호
+ * @param {*} setConnectionStatus 연결 상태 (화면 출력용)
+ * @param {*} setIsPublishingDisabled 
+ */
 export const connectToServerAsTeacher = async (
     roomId, 
     setConnectionStatus, 
@@ -22,7 +34,7 @@ export const connectToServerAsTeacher = async (
                 transports: ['websocket'],
             };
     
-            socket = socketClient(serverUrl, opts);
+            socket = socketClient(getServerUrl(), opts);
             socket.request = socketPromise(socket);
     
             socket.on('connect', async () => {
@@ -33,7 +45,7 @@ export const connectToServerAsTeacher = async (
                     alert('Please enter a room ID.');
                     return;
                 }
-                socket.emit('joinRoom', roomId);
+                socket.emit('startRoom', roomId);
     
                 setConnectionStatus(`Connected to room ${roomId}`);
     
@@ -47,10 +59,18 @@ export const connectToServerAsTeacher = async (
             });
     
             socket.on('connect_error', (error) => {
-                console.error(`Could not connect to ${serverUrl}${opts.path}: ${error.message}`);
+                console.error(`Could not connect to ${getServerUrl()}${opts.path}: ${error.message}`);
+                console.error('Error details:', {
+                    message: error.message,
+                    name: error.name,
+                    stack: error.stack,
+                    code: error.code,
+                    type: error.type,
+                });
+                console.error(error);
                 setConnectionStatus('Connection failed');
             });
-    
+
             socket.on('newProducer', (producer) => {
                 console.log('New producer:', producer);
             });
@@ -120,7 +140,7 @@ export const loadDevice = async (routerRtpCapabilities) => {
 };
 
 
-const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus, videoRef) => {
+const createProducer = async (roomId, useSimulcast, isWebcam, isVideo, setStreamStatus, videoRef) => {
     try {
         const data = await socket.request('createProducerTransport', {
             roomId,
@@ -147,12 +167,23 @@ const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus, v
 
         transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
             try {
+
+                const producerKind = isWebcam 
+                ? (isVideo ? Producers.WEBCAM_VIDEO : Producers.WEBCAM_AUDIO) 
+                : (isVideo ? Producers.SCREEN_SHARE_VIDEO : Producers.SCREEN_SHARE_AUDIO);
+
                 const { id } = await socket.request('produce', {
                     roomId,
                     transportId: transport.id,
                     kind,
                     rtpParameters,
+                    producerKind
                 });
+                
+                console.log('Producer ID:', id); // 로그 추가
+                console.log('Producer Kind:', producerKind); // 로그 추가
+
+                socket.emit('newProducer', { roomId, producerId: id, producerKind });
                 callback({ id });
             } catch (error) {
                 errback(error);
@@ -164,20 +195,16 @@ const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus, v
                 case 'connecting':
                     setStreamStatus('Publishing...');
                     break;
-
                 case 'connected':
-                    console.log(videoRef);
-                    console.log(videoRef.current);
-                    console.log(stream);
-                    videoRef.srcObject = stream;
+                    if (isVideo && videoRef) {
+                        videoRef.srcObject = stream;
+                    }
                     setStreamStatus('Published');
                     break;
-
                 case 'failed':
                     transport.close();
                     setStreamStatus('Failed');
                     break;
-
                 default:
                     break;
             }
@@ -185,12 +212,16 @@ const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus, v
 
         let stream;
         try {
-            console.log("create producer", isWebcam);
-            stream = await getUserMedia(isWebcam);
-            const track = stream.getVideoTracks()[0];
+            stream = isVideo 
+                ? (isWebcam 
+                    ? await navigator.mediaDevices.getUserMedia({ video: true }) 
+                    : await navigator.mediaDevices.getDisplayMedia({ video: true })) 
+                : await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+            const track = isVideo ? stream.getVideoTracks()[0] : stream.getAudioTracks()[0];
             const params = { track };
 
-            if (useSimulcast) {
+            if (useSimulcast && isVideo) {
                 params.encodings = [
                     { maxBitrate: 100000 },
                     { maxBitrate: 300000 },
@@ -208,13 +239,13 @@ const createProducer = async (roomId, useSimulcast, isWebcam, setStreamStatus, v
             console.error('Error during stream publication:', err);
             return null;
         }
-
     } catch (error) {
         console.error('Error starting stream:', error);
         setStreamStatus('Failed to start stream');
         return null;
     }
 };
+
 
 export const stopScreenShareStream = (producer, setStreamStatus) => {
     if (producer) {
@@ -226,7 +257,7 @@ export const stopScreenShareStream = (producer, setStreamStatus) => {
 export const startScreenShareStream = async (roomId, useSimulcast, setStreamStatus, videoRef) => {
     try {
         console.log(videoRef.current);
-        const producer = await createProducer(roomId, useSimulcast, false, setStreamStatus, videoRef);
+        const producer = await createProducer(roomId, useSimulcast, false, true, setStreamStatus, videoRef);
         return producer;
     } catch (error) {
         console.error('Error starting screen share stream:', error);
@@ -244,7 +275,7 @@ export const stopWebcamStream = (producer, setStreamStatus) => {
 
 export const startWebcamStream = async (roomId, useSimulcast, setStreamStatus, videoRef) => {
     try {
-        const producer = await createProducer(roomId, useSimulcast, true, setStreamStatus, videoRef);
+        const producer = await createProducer(roomId, useSimulcast, true, true, setStreamStatus, videoRef);
         return producer;
     } catch (error) {
         console.error('Error starting webcam stream:', error);

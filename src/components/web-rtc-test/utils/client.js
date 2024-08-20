@@ -1,8 +1,8 @@
 import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../utils/promise';
+import { getServerUrl } from '../secret';
 
-const serverUrl = "https://192.168.36.125:3000";
 
 let device;
 let socket;
@@ -17,7 +17,7 @@ export const connectToServer = async (roomId, setConnectionStatus, setIsPublishi
             transports: ['websocket'],
         };
 
-        socket = socketClient(serverUrl, opts);
+        socket = socketClient(getServerUrl(), opts);
         socket.request = socketPromise(socket);
 
         socket.on('connect', async () => {
@@ -44,7 +44,7 @@ export const connectToServer = async (roomId, setConnectionStatus, setIsPublishi
         });
 
         socket.on('connect_error', (error) => {
-            console.error(`Could not connect to ${serverUrl}${opts.path}: ${error.message}`);
+            console.error(`Could not connect to ${getServerUrl()}${opts.path}: ${error.message}`);
             setConnectionStatus('Connection failed');
         });
 
