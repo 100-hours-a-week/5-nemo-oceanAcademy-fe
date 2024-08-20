@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
 import Announcement from '../../../components/dashboard/Announcement';
@@ -8,6 +9,8 @@ import InfoSection from '../../../components/dashboard/InfoSection';
 import styles from './DashboardStudent.module.css';
 
 const DashboardStudent: React.FC = () => {
+    const navigate = useNavigate();
+
     // 더미 데이터
     const lectureData = {
         instructor: '헤이즐리',
@@ -42,7 +45,7 @@ const DashboardStudent: React.FC = () => {
             <InfoSection title="강의 소개" content={lectureData.description} />
             <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
             <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
-            <button className={styles.wideButton}>라이브 강의 입장</button>
+            <button className={styles.wideButton} onClick={() => navigate('/live/student')}>라이브 강의 입장</button>
         </div>
     );
 };

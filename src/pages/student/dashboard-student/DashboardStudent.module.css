@@ -1,8 +1,11 @@
 .container {
+    width: 390px;
     display: flex;
     flex-direction: column;
+    text-align: left;
     align-items: center;
-    padding: 20px;
+    justify-content: center;
+    background-color: white;
 }
 
 .primaryButton {
