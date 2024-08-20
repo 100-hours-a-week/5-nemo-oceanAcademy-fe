@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.primaryButton {
+    width: 150px;
+    height: 30px;
+    background-color: #00A0E9; /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+
+.wideButton {
+    width: 344px;
+    height: 40px;
+    background-color: #00A0E9; /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+}
