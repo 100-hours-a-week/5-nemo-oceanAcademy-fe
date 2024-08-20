@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
+import './index.css';
 import WebRTCComponent from './components/web-rtc/WebRTCComponent';
 import Header from './components/header/Header';
 import Main from './pages/main/Main';
