@@ -1,0 +1,31 @@
+.container {
+    width: 390px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
+  }
+  
+  .lectureGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .noClasses {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .noClasses p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #555;
+  }

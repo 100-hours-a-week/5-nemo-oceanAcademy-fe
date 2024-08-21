@@ -1,0 +1,77 @@
+.container {
+    padding: 20px;
+  }
+  
+  .leaveButton {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .videoSection {
+    margin-top: 20px;
+  }
+  
+  .video {
+    width: 350px;
+    height: 200px;
+    background-color: #B2B6D0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .title {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .instructor {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .chatSection {
+    margin-top: 20px;
+  }
+  
+  .chatWindow {
+    width: 350px;
+    height: 400px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    overflow-y: scroll;
+    padding: 10px;
+  }
+  
+  .chatInput {
+    display: flex;
+    margin-top: 10px;
+  }
+  
+  .chatInput input {
+    flex: 1;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .chatInput button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
