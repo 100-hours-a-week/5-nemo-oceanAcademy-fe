@@ -1,0 +1,42 @@
+.list-container {
+    width: 355px;
+    height: 600px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .table th {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .table td {
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
