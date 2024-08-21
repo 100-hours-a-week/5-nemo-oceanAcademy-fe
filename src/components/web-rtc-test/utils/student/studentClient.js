@@ -118,29 +118,47 @@ export const connectToServerAsStudent = async (
             console.log('Received Producer Kind:', producerKind); // 로그 추가
         
             const transport = await createConsumerTransport(roomId, producerKind); 
-            const consumer = await createConsumer(transport, roomId, producerKind);
+
+            transport.on('connect', ({ dtlsParameters }, callback, errback) => {
+            console.log("transport connect!!!");
+            socket.request('connectConsumerTransport', {
+                roomId, // 방 ID 전달
+                //  [x] 서버 코드 수정 필요
+                producerKind,
+                transportId: transport.id,
+                dtlsParameters,
+            })
+                .then(callback)
+                .catch(errback);
+            });
+
+            // consume() 함수 내용
             
+            const consumer = await createConsumer(transport, roomId, producerKind);
+
             if (consumer && consumer.track.kind === 'video') {
                 const stream = new MediaStream([consumer.track]);
 
-                if (producerKind === 'webcamVideo' && webcamVideoRef.current) {
+                if (producerKind == Producers.WEBCAM_VIDEO && webcamVideoRef.current) {
                     webcamVideoRef.current.srcObject = stream;
-                } else if (producerKind === 'screenShareVideo' && screenShareVideoRef.current) {
+                } else if (producerKind == Producers.SCREEN_SHARE_VIDEO && screenShareVideoRef.current) {
                     screenShareVideoRef.current.srcObject = stream;
                 }
             } else if (consumer && consumer.track.kind === 'audio') {
                 const stream = new MediaStream([consumer.track]);
 
-                if (producerKind === 'webcamAudio') {
+                if (producerKind == Producers.WEBCAM_AUDIO) {
                     const audioElement = document.createElement('audio');
                     audioElement.srcObject = stream;
                     audioElement.play();
-                } else if (producerKind === 'screenShareAudio') {
+                } else if (producerKind == Producers.SCREEN_SHARE_AUDIO) {
                     const audioElement = document.createElement('audio');
                     audioElement.srcObject = stream;
                     audioElement.play();
                 }
             }
+            await socket.request('resume', {roomId, producerKind});
+        
         });
     } catch (error) {
         console.error('Error connecting to server:', error);

@@ -185,7 +185,7 @@ const createProducer = async (roomId, producerKind, useSimulcast, isWebcam, isVi
                 console.log('Producer ID:', id); // 로그 추가
                 console.log('Producer Kind:', producerKind); // 로그 추가
 
-                socket.emit('newProducer', { roomId, producerId: id, producerKind });
+                // socket.emit('newProducer', { roomId, producerId: id, producerKind });
                 callback({ id });
             } catch (error) {
                 errback(error);
