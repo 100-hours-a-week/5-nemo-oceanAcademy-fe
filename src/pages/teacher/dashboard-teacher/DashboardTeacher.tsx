@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
@@ -6,10 +6,13 @@ import Announcement from '../../../components/dashboard/Announcement';
 import ScheduleList from '../../../components/dashboard/ScheduleList';
 import StudentCount from '../../../components/dashboard/StudentCount';
 import InfoSection from '../../../components/dashboard/InfoSection';
+import Modal from '../../../components/modal/Modal';
 import styles from './DashboardTeacher.module.css';
+import { Container } from '../../../styles/GlobalStyles'
 
 const DashboardTeacher: React.FC = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 더미 데이터
   const lectureData = {
@@ -29,28 +32,68 @@ const DashboardTeacher: React.FC = () => {
     precourse: '밀가루와 물을 사전에 준비해 주세요.',
   };
 
+  const handleDeleteClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleModalDelete = async () => {
+    try {
+      // 강의 삭제 API 요청
+      const response = await fetch('/api/delete-lecture', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ classId: 1 }), // 예시로 classId를 1로 지정
+      });
+
+      if (response.ok) {
+        navigate('/');
+      } else {
+        alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
+      }
+    } catch (error) {
+      console.error('Error deleting lecture:', error);
+      alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
+    }
+  };
+
   return (
-    <div className={styles.container}>
+    <Container>
       <LectureMeta
                 instructor={lectureData.instructor}
                 title={lectureData.title}
                 category={lectureData.category}
             />
-            <button className={styles.primaryButton} onClick={() => navigate('/lecture/info')}>강의 소개 보러가기</button>
-            <Banner image={lectureData.bannerImage} />
-            <Announcement content={lectureData.announcement} />
-            <ScheduleList schedules={lectureData.schedules} isTeacher />
-            <StudentCount count={lectureData.studentCount} onViewStudents={() => navigate('/lecture/students')} />
-            <InfoSection title="강의 목표" content={lectureData.objective} />
-            <InfoSection title="강의 소개" content={lectureData.description} />
-            <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
-            <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
-            <div className={styles.bottomButtons}>
-                <button className={styles.editButton}>정보 수정하기</button>
-                <button className={styles.deleteButton}>강의 삭제하기</button>
-            </div>
-            <button className={styles.wideButton} onClick={() => navigate('/live/teacher')}>라이브 강의 시작</button>
-    </div>
+      <button className={styles.primaryButton} onClick={() => navigate('/lecture/info')}>강의 소개 보러가기</button>
+      <Banner image={lectureData.bannerImage} />
+      <Announcement content={lectureData.announcement} />
+      <ScheduleList schedules={lectureData.schedules} isTeacher />
+      <StudentCount count={lectureData.studentCount} onViewStudents={() => navigate('/lecture/students')} />
+      <InfoSection title="강의 목표" content={lectureData.objective} />
+      <InfoSection title="강의 소개" content={lectureData.description} />
+      <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
+      <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
+      <div className={styles.bottomButtons}>
+        <button className={styles.editButton} onClick={() => navigate('/dashboard/edit')}>정보 수정하기</button>
+        <button className={styles.deleteButton} onClick={handleDeleteClick}>강의 삭제하기</button>
+      </div>
+      <button className={styles.wideButton} onClick={() => navigate('/live/teacher')}>라이브 강의 시작</button>
+      {isModalOpen && (
+        <Modal
+          title="강의를 삭제하시겠습니까?"
+          content="삭제한 강의는 복구할 수 없습니다. 그래도 삭제하시겠습니까?"
+          leftButtonText="취소"
+          rightButtonText="강의 삭제"
+          onLeftButtonClick={handleModalCancel}
+          onRightButtonClick={handleModalDelete}
+        />
+      )}
+    </Container>
   );
 };
 
