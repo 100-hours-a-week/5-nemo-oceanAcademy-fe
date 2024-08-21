@@ -39,7 +39,7 @@ const LectureList: React.FC = () => {
   return (
     <Container>
       <section className={styles.adSection}>
-        <Advertisement />
+        <Advertisement size="large" />
       </section>
 
       <section className={styles.filterSection}>
