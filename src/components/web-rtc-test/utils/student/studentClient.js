@@ -46,6 +46,60 @@ export const connectToServerAsStudent = async (
 
             const data = await socket.request('getRouterRtpCapabilities');
             await loadDevice(data);
+
+            const mediaProducers = await socket.request('getProducers', roomId);
+            console.log("mediaProducer 출력 : ", mediaProducers);
+
+            // 각 프로듀서에 대해 존재 여부를 확인하고 작업 수행
+            Object.values(Producers).forEach( async (producerKind) => {
+                const producer = mediaProducers[producerKind];
+                
+                if (producer) {
+                    // [ ] 프로듀서가 존재하는 경우, consumer를 만들어서 재생할 수 있어야 함
+                    console.log(`Producer ${producerKind} is present.`);
+
+                    const transport = await createConsumerTransport(roomId, producerKind); 
+
+                    transport.on('connect', ({ dtlsParameters }, callback, errback) => {
+                    socket.request('connectConsumerTransport', {
+                        roomId, // 방 ID 전달
+                        //  [ ] 서버 코드 수정 필요
+                        producerKind,
+                        transportId: transport.id,
+                        dtlsParameters,
+                    })
+                        .then(callback)
+                        .catch(errback);
+                    });
+
+                    // consume() 함수 내용
+                    
+                    const consumer = await createConsumer(transport, roomId, producerKind);
+
+                    if (consumer && consumer.track.kind === 'video') {
+                        const stream = new MediaStream([consumer.track]);
+
+                        if (producerKind == Producers.WEBCAM_VIDEO && webcamVideoRef.current) {
+                            webcamVideoRef.current.srcObject = stream;
+                        } else if (producerKind == Producers.SCREEN_SHARE_VIDEO && screenShareVideoRef.current) {
+                            screenShareVideoRef.current.srcObject = stream;
+                        }
+                    } else if (consumer && consumer.track.kind === 'audio') {
+                        const stream = new MediaStream([consumer.track]);
+
+                        if (producerKind == Producers.WEBCAM_AUDIO) {
+                            const audioElement = document.createElement('audio');
+                            audioElement.srcObject = stream;
+                            audioElement.play();
+                        } else if (producerKind == Producers.SCREEN_SHARE_AUDIO) {
+                            const audioElement = document.createElement('audio');
+                            audioElement.srcObject = stream;
+                            audioElement.play();
+                        }
+                    }
+                    await socket.request('resume', {roomId, producerKind});
+                } 
+            });
         });
 
         socket.on('disconnect', () => {
@@ -58,17 +112,12 @@ export const connectToServerAsStudent = async (
             setConnectionStatus('Connection failed');
         });
 
-        const transport = await createConsumerTransport(roomId);
-
-        // [ ] Producer 4개 (있는 것만) 받는 로직
-        socket.on('getProducers', ()=>{
-            
-        });
 
         socket.on('newProducer', async ({ roomId, producerKind }) => {
             console.log('Received Room ID:', roomId); // 로그 추가
             console.log('Received Producer Kind:', producerKind); // 로그 추가
         
+            const transport = await createConsumerTransport(roomId, producerKind); 
             const consumer = await createConsumer(transport, roomId, producerKind);
             
             if (consumer && consumer.track.kind === 'video') {
@@ -125,9 +174,10 @@ export const loadDevice = async (routerRtpCapabilities) => {
 3. createConsumerTransport
 기능: 클라이언트가 서버에서 ConsumerTransport를 생성하도록 요청합니다.
 */
-const createConsumerTransport = async (roomId) => {
+const createConsumerTransport = async (roomId, producerKind) => {
     const data = await socket.request('createConsumerTransport', {
         roomId, // 방 ID 전달
+        producerKind,
         forceTcp: false,
     });
 
@@ -137,15 +187,16 @@ const createConsumerTransport = async (roomId) => {
 
     const transport = device.createRecvTransport(data);
 
-    transport.on('connect', ({ dtlsParameters }, callback, errback) => {
-        socket.request('connectConsumerTransport', {
-            roomId,
-            transportId: transport.id,
-            dtlsParameters,
-        })
-        .then(callback)
-        .catch(errback);
-    });
+    // transport.on('connect', ({ dtlsParameters }, callback, errback) => {
+    //     socket.request('connectConsumerTransport', {
+    //         roomId,
+    //         transportId: transport.id,
+    //         dtlsParameters,
+    //         producerKind
+    //     })
+    //     .then(callback)
+    //     .catch(errback);
+    // });
 
     return transport;
 };
@@ -157,7 +208,8 @@ const createConsumerTransport = async (roomId) => {
 const createConsumer = async (transport, roomId, producerKind) => {
     try {
         const { rtpCapabilities } = device;
-        // [ ] consume 하는데, roomId랑 producerKind를 전달해야함
+        console.log(device)
+        // [x] consume 하는데, roomId랑 producerKind를 전달해야함
         const data = await socket.request('consume', {
             roomId,
             producerKind,
@@ -167,24 +219,29 @@ const createConsumer = async (transport, roomId, producerKind) => {
         if (!data) {
             throw new Error('No data received from consume request');
         }
+        console.log(data);
 
         const {
             id,
             kind,
             rtpParameters,
-            producerId: returnedProducerId,
+            producerId,
         } = data;
 
         if (!id || !kind || !rtpParameters) {
             throw new Error('Invalid data received from consume request');
         }
 
+        let codecOptions = {};
+        console.log(111);
         const consumer = await transport.consume({
             id,
-            producerId: returnedProducerId,
+            producerId,
             kind,
-            rtpParameters
+            rtpParameters,
+            codecOptions
         });
+        console.log("consumer는", consumer);
 
         return consumer;
     } catch (error) {

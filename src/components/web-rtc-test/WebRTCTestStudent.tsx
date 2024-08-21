@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { connectToServerAsStudent } from './utils/student/studentClient';
 
 const WebRTCTestStudent: React.FC = () => {
@@ -25,6 +25,63 @@ const WebRTCTestStudent: React.FC = () => {
         await handleConnect();
     }
 
+    useEffect(() => {
+        const handleWebcamLoadedMetadata = () => {
+            console.log('Webcam video metadata loaded');
+        };
+
+        const handleWebcamCanPlay = () => {
+            console.log('Webcam video can play');
+        };
+
+        const handleWebcamPlaying = () => {
+            console.log('Webcam video is playing');
+        };
+
+        const handleScreenShareLoadedMetadata = () => {
+            console.log('Screen share video metadata loaded');
+        };
+
+        const handleScreenShareCanPlay = () => {
+            console.log('Screen share video can play');
+        };
+
+        const handleScreenSharePlaying = () => {
+            console.log('Screen share video is playing');
+        };
+
+        if (webcamVideoRef.current) {
+            const webcamVideo = webcamVideoRef.current;
+            webcamVideo.addEventListener('loadedmetadata', handleWebcamLoadedMetadata);
+            webcamVideo.addEventListener('canplay', handleWebcamCanPlay);
+            webcamVideo.addEventListener('playing', handleWebcamPlaying);
+        }
+
+        if (screenShareVideoRef.current) {
+            const screenShareVideo = screenShareVideoRef.current;
+            screenShareVideo.addEventListener('loadedmetadata', handleScreenShareLoadedMetadata);
+            screenShareVideo.addEventListener('canplay', handleScreenShareCanPlay);
+            screenShareVideo.addEventListener('playing', handleScreenSharePlaying);
+        }
+
+        return () => {
+            if (webcamVideoRef.current) {
+                const webcamVideo = webcamVideoRef.current;
+                webcamVideo.removeEventListener('loadedmetadata', handleWebcamLoadedMetadata);
+                webcamVideo.removeEventListener('canplay', handleWebcamCanPlay);
+                webcamVideo.removeEventListener('playing', handleWebcamPlaying);
+            }
+
+            if (screenShareVideoRef.current) {
+                const screenShareVideo = screenShareVideoRef.current;
+                screenShareVideo.removeEventListener('loadedmetadata', handleScreenShareLoadedMetadata);
+                screenShareVideo.removeEventListener('canplay', handleScreenShareCanPlay);
+                screenShareVideo.removeEventListener('playing', handleScreenSharePlaying);
+            }
+        };
+    }, []);
+    
+
     return (
         <div>
             <input
@@ -48,14 +105,14 @@ const WebRTCTestStudent: React.FC = () => {
                     autoPlay 
                     muted 
                     playsInline 
-                    style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 
+                    style={{ border: '1px solid black', width: '400px', height: 'auto', maxWidth: '100%' }} 
                 ></video>
                 <video 
                     ref={screenShareVideoRef} 
                     autoPlay 
                     muted 
                     playsInline 
-                    style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 
+                    style={{ border: '1px solid black', width: '400px', height: 'auto', maxWidth: '100%' }} 
                 ></video>
             </div>
         </div>

@@ -45,6 +45,7 @@ export const connectToServerAsTeacher = async (
                     alert('Please enter a room ID.');
                     return;
                 }
+
                 socket.emit('startRoom', roomId);
     
                 setConnectionStatus(`Connected to room ${roomId}`);
@@ -140,10 +141,11 @@ export const loadDevice = async (routerRtpCapabilities) => {
 };
 
 
-const createProducer = async (roomId, useSimulcast, isWebcam, isVideo, setStreamStatus, videoRef) => {
+const createProducer = async (roomId, producerKind, useSimulcast, isWebcam, isVideo, setStreamStatus, videoRef) => {
     try {
         const data = await socket.request('createProducerTransport', {
             roomId,
+            producerKind,
             forceTcp: false,
             rtpCapabilities: device.rtpCapabilities,
         });
@@ -158,7 +160,7 @@ const createProducer = async (roomId, useSimulcast, isWebcam, isVideo, setStream
 
         transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
             try {
-                await socket.request('connectProducerTransport', { roomId, dtlsParameters });
+                await socket.request('connectProducerTransport', { roomId, producerKind, dtlsParameters });
                 callback();
             } catch (error) {
                 errback(error);
@@ -257,7 +259,7 @@ export const stopScreenShareStream = (producer, setStreamStatus) => {
 export const startScreenShareStream = async (roomId, useSimulcast, setStreamStatus, videoRef) => {
     try {
         console.log(videoRef.current);
-        const producer = await createProducer(roomId, useSimulcast, false, true, setStreamStatus, videoRef);
+        const producer = await createProducer(roomId, Producers.SCREEN_SHARE_VIDEO, useSimulcast, false, true, setStreamStatus, videoRef);
         return producer;
     } catch (error) {
         console.error('Error starting screen share stream:', error);
@@ -275,7 +277,7 @@ export const stopWebcamStream = (producer, setStreamStatus) => {
 
 export const startWebcamStream = async (roomId, useSimulcast, setStreamStatus, videoRef) => {
     try {
-        const producer = await createProducer(roomId, useSimulcast, true, true, setStreamStatus, videoRef);
+        const producer = await createProducer(roomId, Producers.WEBCAM_VIDEO,useSimulcast, true, true, setStreamStatus, videoRef);
         return producer;
     } catch (error) {
         console.error('Error starting webcam stream:', error);
