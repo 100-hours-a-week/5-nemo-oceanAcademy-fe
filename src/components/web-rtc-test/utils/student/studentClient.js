@@ -55,7 +55,7 @@ export const connectToServerAsStudent = async (
                 const producer = mediaProducers[producerKind];
                 
                 if (producer) {
-                    // [ ] 프로듀서가 존재하는 경우, consumer를 만들어서 재생할 수 있어야 함
+                    // [x] 프로듀서가 존재하는 경우, consumer를 만들어서 재생할 수 있어야 함
                     console.log(`Producer ${producerKind} is present.`);
 
                     const transport = await createConsumerTransport(roomId, producerKind); 
@@ -63,7 +63,7 @@ export const connectToServerAsStudent = async (
                     transport.on('connect', ({ dtlsParameters }, callback, errback) => {
                     socket.request('connectConsumerTransport', {
                         roomId, // 방 ID 전달
-                        //  [ ] 서버 코드 수정 필요
+                        //  [x] 서버 코드 수정 필요
                         producerKind,
                         transportId: transport.id,
                         dtlsParameters,
@@ -186,17 +186,6 @@ const createConsumerTransport = async (roomId, producerKind) => {
     }
 
     const transport = device.createRecvTransport(data);
-
-    // transport.on('connect', ({ dtlsParameters }, callback, errback) => {
-    //     socket.request('connectConsumerTransport', {
-    //         roomId,
-    //         transportId: transport.id,
-    //         dtlsParameters,
-    //         producerKind
-    //     })
-    //     .then(callback)
-    //     .catch(errback);
-    // });
 
     return transport;
 };

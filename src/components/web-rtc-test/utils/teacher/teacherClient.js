@@ -215,10 +215,17 @@ const createProducer = async (roomId, producerKind, useSimulcast, isWebcam, isVi
         let stream;
         try {
             stream = isVideo 
-                ? (isWebcam 
+            if (isVideo) {
+                stream = isWebcam 
                     ? await navigator.mediaDevices.getUserMedia({ video: true }) 
-                    : await navigator.mediaDevices.getDisplayMedia({ video: true })) 
-                : await navigator.mediaDevices.getUserMedia({ audio: true });
+                    : await navigator.mediaDevices.getDisplayMedia({ video: true });
+            } else {
+                stream = isWebcam
+                    ? await navigator.mediaDevices.getUserMedia({ audio: true })
+                    : await getSystemAudioStream();
+            }
+                
+                
                 
             const track = isVideo ? stream.getVideoTracks()[0] : stream.getAudioTracks()[0];
             const params = { track };
@@ -245,6 +252,16 @@ const createProducer = async (roomId, producerKind, useSimulcast, isWebcam, isVi
         console.error('Error starting stream:', error);
         setStreamStatus('Failed to start stream');
         return null;
+    }
+};
+
+const getSystemAudioStream = async () => {
+    try {
+        const systemAudioStream = await navigator.mediaDevices.getDisplayMedia({ audio: true });
+        return systemAudioStream;
+    } catch (err) {
+        console.error('Error capturing system audio:', err.message);
+        throw err;
     }
 };
 
@@ -283,5 +300,41 @@ export const startWebcamStream = async (roomId, useSimulcast, setStreamStatus, v
         console.error('Error starting webcam stream:', error);
         setStreamStatus('Failed to start webcam');
         return null;
+    }
+};
+
+export const startMicrophoneStream = async (roomId, setStreamStatus) => {
+    try {
+        const producer = await createProducer(roomId, Producers.WEBCAM_AUDIO, false, true, false, setStreamStatus);
+        return producer;
+    } catch (error) {
+        console.error('Error starting microphone stream:', error);
+        setStreamStatus('Failed to start microphone stream');
+        return null;
+    }
+};
+
+export const stopMicrophoneStream = (producer, setStreamStatus) => {
+    if (producer) {
+        producer.close();
+        setStreamStatus('Microphone stream stopped');
+    }
+};
+
+export const startSystemAudioStream = async (roomId, setStreamStatus) => {
+    try {
+        const producer = await createProducer(roomId, Producers.SCREEN_SHARE_AUDIO, false, false, false, setStreamStatus);
+        return producer;
+    } catch (error) {
+        console.error('Error starting system audio stream:', error);
+        setStreamStatus('Failed to start system audio stream');
+        return null;
+    }
+};
+
+export const stopSystemAudioStream = (producer, setStreamStatus) => {
+    if (producer) {
+        producer.close();
+        setStreamStatus('System audio stream stopped');
     }
 };

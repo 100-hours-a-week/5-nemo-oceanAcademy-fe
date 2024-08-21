@@ -158,3 +158,24 @@ export function stopScreenShareStream(
     producer: Producer | null, 
     setStreamStatus: SetStreamStatus
 ): void;
+
+export declare const startMicrophoneStream: (
+    roomId: string, 
+    setStreamStatus: (status: string) => void
+) => Promise<mediasoupClient.types.Producer | null>;
+
+export declare const stopMicrophoneStream: (
+    producer: mediasoupClient.types.Producer | null, 
+    setStreamStatus: (status: string) => void
+) => void;
+
+export declare const startSystemAudioStream: (
+    roomId: string, 
+    setStreamStatus: (status: string) => void
+) => Promise<mediasoupClient.types.Producer | null>;
+
+export declare const stopSystemAudioStream: (
+    producer: mediasoupClient.types.Producer | null, 
+    setStreamStatus: (status: string) => void
+) => void;
+ㄴ

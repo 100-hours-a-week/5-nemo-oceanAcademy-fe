@@ -1,17 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Producer, connectToServerAsTeacher, startWebcamStream, stopWebcamStream, startScreenShareStream, stopScreenShareStream } from './utils/teacher/teacherClient';
+import {
+    Producer,
+    connectToServerAsTeacher,
+    startWebcamStream,
+    stopWebcamStream,
+    startScreenShareStream,
+    stopScreenShareStream,
+    startMicrophoneStream,
+    stopMicrophoneStream,
+    startSystemAudioStream,
+    stopSystemAudioStream
+} from './utils/teacher/teacherClient';
 
 const WebRTCTestTeacher: React.FC = () => {
     const [roomId, setRoomId] = useState('');
     const [connectionStatus, setConnectionStatus] = useState('');
     const [webcamStatus, setWebcamStatus] = useState('');
     const [screenStatus, setScreenStatus] = useState('');
+    const [microphoneStatus, setMicrophoneStatus] = useState('');
+    const [systemAudioStatus, setSystemAudioStatus] = useState('');
     const [isPublishingDisabled, setIsPublishingDisabled] = useState(true);
     const [useSimulcast, setUseSimulcast] = useState(false);
     const [isScreenShareSupported, setIsScreenShareSupported] = useState(true);
 
     const [webcamProducer, setWebcamProducer] = useState<Producer | null>(null);
     const [screenShareProducer, setScreenShareProducer] = useState<Producer | null>(null);
+    const [microphoneProducer, setMicrophoneProducer] = useState<Producer | null>(null);
+    const [systemAudioProducer, setSystemAudioProducer] = useState<Producer | null>(null);
 
     const webcamVideoRef = useRef<HTMLVideoElement>(null);
     const screenShareVideoRef = useRef<HTMLVideoElement>(null);
@@ -19,7 +34,6 @@ const WebRTCTestTeacher: React.FC = () => {
     const handleConnect = async () => {
         await connectToServerAsTeacher(roomId, setConnectionStatus, setIsPublishingDisabled);
     };
-    
 
     useEffect(() => {
         if (typeof navigator.mediaDevices.getDisplayMedia === 'undefined') {
@@ -56,6 +70,33 @@ const WebRTCTestTeacher: React.FC = () => {
         }
     };
 
+    const handleStartMicrophone = async () => {
+        if (!microphoneProducer) {
+            const producer = await startMicrophoneStream(roomId, setMicrophoneStatus);
+            setMicrophoneProducer(producer);
+        }
+    };
+
+    const handleStopMicrophone = () => {
+        if (microphoneProducer) {
+            stopMicrophoneStream(microphoneProducer, setMicrophoneStatus);
+            setMicrophoneProducer(null);
+        }
+    };
+
+    const handleStartSystemAudio = async () => {
+        if (!systemAudioProducer) {
+            const producer = await startSystemAudioStream(roomId, setSystemAudioStatus);
+            setSystemAudioProducer(producer);
+        }
+    };
+
+    const handleStopSystemAudio = () => {
+        if (systemAudioProducer) {
+            stopSystemAudioStream(systemAudioProducer, setSystemAudioStatus);
+            setSystemAudioProducer(null);
+        }
+    };
 
     return (
         <div>
@@ -94,22 +135,32 @@ const WebRTCTestTeacher: React.FC = () => {
                     <button onClick={handleStopScreenShare} disabled={!screenShareProducer}>Stop Screen Share</button>
                     <span>{screenStatus}</span>
                 </div>
+                <div>
+                    <button onClick={handleStartMicrophone} disabled={!!microphoneProducer}>Start Microphone</button>
+                    <button onClick={handleStopMicrophone} disabled={!microphoneProducer}>Stop Microphone</button>
+                    <span>{microphoneStatus}</span>
+                </div>
+                <div>
+                    <button onClick={handleStartSystemAudio} disabled={!!systemAudioProducer}>Start System Audio</button>
+                    <button onClick={handleStopSystemAudio} disabled={!systemAudioProducer}>Stop System Audio</button>
+                    <span>{systemAudioStatus}</span>
+                </div>
             </fieldset>
             <div>
-            <video 
-                ref={webcamVideoRef} 
-                autoPlay 
-                muted 
-                playsInline 
-                style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 
-            ></video>
-            <video 
-                ref={screenShareVideoRef} 
-                autoPlay 
-                muted 
-                playsInline 
-                style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 
-            ></video>
+                <video 
+                    ref={webcamVideoRef} 
+                    autoPlay 
+                    muted 
+                    playsInline 
+                    style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 
+                ></video>
+                <video 
+                    ref={screenShareVideoRef} 
+                    autoPlay 
+                    muted 
+                    playsInline 
+                    style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 
+                ></video>
             </div>
         </div>
     );
