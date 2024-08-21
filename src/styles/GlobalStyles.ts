@@ -1,4 +1,17 @@
+// CommonStyles.ts - 공통적인 스타일 정의 
 import styled from 'styled-components';
+
+// 공통적인 컨테이너 스타일
+export const Container = styled.div`
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding-bottom: 80px;
+`;
 
 // 공통적인 버튼 스타일
 export const Button = styled.button`
@@ -15,13 +28,6 @@ export const Button = styled.button`
   }
 `;
 
-// 공통적인 컨테이너 스타일
-export const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
 // 공통적인 제목 스타일
 export const Title = styled.h1`
   font-size: 2rem;
@@ -29,20 +35,3 @@ export const Title = styled.h1`
   color: #333;
   margin-bottom: 10px;
 `;
-
-/** 
- * 사용 방법~
- * import React from 'react';
-import { Button, Container, Title } from './styles/CommonStyles';
-
-function App() {
-  return (
-    <Container>
-      <Title>Hello World!</Title>
-      <Button>Click Me</Button>
-    </Container>
-  );
-}
-
-export default App;
- */

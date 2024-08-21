@@ -3,7 +3,7 @@ import styles from './InfoSection.module.css';
 
 interface InfoSectionProps {
     title: string;
-    content: string;
+    content: string | JSX.Element;
 }
 
 const InfoSection: React.FC<InfoSectionProps> = ({ title, content }) => {

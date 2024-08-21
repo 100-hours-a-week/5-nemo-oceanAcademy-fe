@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Announcement.module.css';
 
 interface AnnouncementProps {
-    content: string;
+    content: string | JSX.Element;
 }
 
 const Announcement: React.FC<AnnouncementProps> = ({ content }) => {

@@ -3,8 +3,8 @@ import styles from './LectureMeta.module.css';
 
 interface LectureMetaProps {
     instructor: string;
-    title: string;
-    category: string;
+    title: string | JSX.Element; 
+    category: string | JSX.Element;
 }
 
 const LectureMeta: React.FC<LectureMetaProps> = ({ instructor, title, category }) => {

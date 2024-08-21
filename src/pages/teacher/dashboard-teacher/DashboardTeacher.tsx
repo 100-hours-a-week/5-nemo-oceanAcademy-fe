@@ -36,11 +36,11 @@ const DashboardTeacher: React.FC = () => {
                 title={lectureData.title}
                 category={lectureData.category}
             />
-            <button className={styles.primaryButton}>강의 소개 보러가기</button>
+            <button className={styles.primaryButton} onClick={() => navigate('/lecture/info')}>강의 소개 보러가기</button>
             <Banner image={lectureData.bannerImage} />
             <Announcement content={lectureData.announcement} />
             <ScheduleList schedules={lectureData.schedules} isTeacher />
-            <StudentCount count={lectureData.studentCount} onViewStudents={() => {}} />
+            <StudentCount count={lectureData.studentCount} onViewStudents={() => navigate('/lecture/students')} />
             <InfoSection title="강의 목표" content={lectureData.objective} />
             <InfoSection title="강의 소개" content={lectureData.description} />
             <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
