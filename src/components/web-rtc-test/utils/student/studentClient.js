@@ -97,7 +97,7 @@ export const connectToServerAsStudent = async (
                             audioElement.play();
                         }
                     }
-                    await socket.request('resume', {roomId, producerKind});
+                    await socket.request('resume', {roomId, producerKind, consumerId: consumer.id});
                 } 
             });
         });
@@ -157,7 +157,7 @@ export const connectToServerAsStudent = async (
                     audioElement.play();
                 }
             }
-            await socket.request('resume', {roomId, producerKind});
+            await socket.request('resume', {roomId, producerKind, consumerId: consumer.id});
         
         });
     } catch (error) {
@@ -220,6 +220,7 @@ const createConsumer = async (transport, roomId, producerKind) => {
         const data = await socket.request('consume', {
             roomId,
             producerKind,
+            transportId: transport.id,
             rtpCapabilities
         });
 
