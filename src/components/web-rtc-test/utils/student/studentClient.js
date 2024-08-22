@@ -97,9 +97,7 @@ export const connectToServerAsStudent = async (
                             audioElement.play();
                         }
                     }
-                    //(1)//////////////////////////////////////////////////////////////////////////
                     await socket.request('resume', {roomId, producerKind, consumerId: consumer.id});
-                    ///////////////////////////////////////////////////////////////////////////////
                 } 
             });
         });
@@ -159,10 +157,7 @@ export const connectToServerAsStudent = async (
                     audioElement.play();
                 }
             }
-            //(2)///////////////////////////////////////////////////////////////////////////////
-            //await socket.request('resume', {roomId, producerKind});
             await socket.request('resume', {roomId, producerKind, consumerId: consumer.id});
-            ///////////////////////////////////////////////////////////////////////////////////
         
         });
     } catch (error) {
