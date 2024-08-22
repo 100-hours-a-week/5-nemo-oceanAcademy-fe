@@ -1,11 +1,10 @@
 :root {
-  --primary-color: #727cb8;
+  --primary-color: #ABDDED;
 }
 
 body {
   margin: 0;
-  background-color: black;
-  /* background-color: #FCFAC5; */
+  background-color: #FCFAC5;
   display: flex;
   justify-content: center;
 }

@@ -11,8 +11,15 @@ interface AdvertisementProps {
 const Advertisement: React.FC<AdvertisementProps> = ({ size = 'small' }) => {
   const adImage = size === 'large' ? adImageLarge : adImageSmall;
 
+  const handleAdClick = () => {
+    window.location.href = 'https://goormkdx.notion.site/8-3f7349ec404f4c09aeb9ed240f60bb69';
+  };
+
   return (
-    <div className={`${styles.container} ${size === 'large' ? styles.large : styles.small}`}>
+    <div className={`${styles.container} ${size === 'large' ? styles.large : styles.small}`}
+      onClick={handleAdClick}
+      style={{ cursor: 'pointer' }} 
+    >
       <img src={adImage} alt="advertisement image" />
     </div>
   );
