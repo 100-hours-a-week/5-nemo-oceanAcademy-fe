@@ -22,6 +22,9 @@ import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import SignTerms from './pages/user/sign-terms/SignTerms';
 import SignUp from './pages/user/signup/SignUp';
+import WebRTCTestComponent from 'components/web-rtc-test/WebRTCTestComponent';
+import WebRTCTestStudent from 'components/web-rtc-test/WebRTCTestStudent';
+import WebRTCTestTeacher from 'components/web-rtc-test/WebRTCTestTeacher';
 
 const App: React.FC = () => {
   return (
@@ -60,6 +63,12 @@ const App: React.FC = () => {
 
         {/* CI/CD 구축할 때 사용한 테스트 페이지*/}
         <Route path="/webrtc" element={<WebRTCComponent />} />
+
+        {/* webRTC 테스트 페이지 */}
+        <Route path="/webrtc-test" element={<WebRTCTestComponent />} />
+        <Route path="/webrtc-student" element={<WebRTCTestStudent />} />
+        <Route path="/webrtc-teacher" element={<WebRTCTestTeacher />} />
+
       </Routes>
     </Router>
   );

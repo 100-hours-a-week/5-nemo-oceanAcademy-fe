@@ -1,14 +1,26 @@
 import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
-
-const serverUrl = "https://192.168.200.222:3000";
+import { getServerUrl } from '../../secret';
 
 let device;
 let socket;
 let producer;
 
-// teacherClient.js
+const Producers = {
+    WEBCAM_VIDEO: 'webcamVideo',
+    WEBCAM_AUDIO: 'webcamAudio',
+    SCREEN_SHARE_VIDEO: 'screenShareVideo',
+    SCREEN_SHARE_AUDIO: 'screenShareAudio'
+}
+
+
+/**
+ * 
+ * @param {*} roomId 방 번호
+ * @param {*} setConnectionStatus 연결 상태 (화면 출력용)
+ * @param {*} setIsPublishingDisabled 
+ */
 export const connectToServerAsTeacher = async (
     roomId, 
     setConnectionStatus, 
@@ -22,7 +34,7 @@ export const connectToServerAsTeacher = async (
                 transports: ['websocket'],
             };
     
-            socket = socketClient(serverUrl, opts);
+            socket = socketClient(getServerUrl(), opts);
             socket.request = socketPromise(socket);
     
             socket.on('connect', async () => {
@@ -33,7 +45,8 @@ export const connectToServerAsTeacher = async (
                     alert('Please enter a room ID.');
                     return;
                 }
-                socket.emit('joinRoom', roomId);
+
+                socket.emit('startRoom', roomId);
     
                 setConnectionStatus(`Connected to room ${roomId}`);
     
@@ -47,10 +60,18 @@ export const connectToServerAsTeacher = async (
             });
     
             socket.on('connect_error', (error) => {
-                console.error(`Could not connect to ${serverUrl}${opts.path}: ${error.message}`);
+                console.error(`Could not connect to ${getServerUrl()}${opts.path}: ${error.message}`);
+                console.error('Error details:', {
+                    message: error.message,
+                    name: error.name,
+                    stack: error.stack,
+                    code: error.code,
+                    type: error.type,
+                });
+                console.error(error);
                 setConnectionStatus('Connection failed');
             });
-    
+
             socket.on('newProducer', (producer) => {
                 console.log('New producer:', producer);
             });
@@ -59,123 +80,19 @@ export const connectToServerAsTeacher = async (
             setConnectionStatus('Connection failed');
         }
     };
-    
-export const publishStreamAsTeacher = async (
-        isWebcam, 
-        roomId, 
-        useSimulcast, 
-        setStreamStatus
-    ) => {
-    try {
-        setStreamStatus('Publishing...');
-        
-        const data = await socket.request('createProducerTransport', {
-            roomId, // 방 ID 전달
-            forceTcp: false,
-            rtpCapabilities: device.rtpCapabilities,
-        });
-
-        if (data.error) {
-            console.error(data.error);
-            setStreamStatus('failed');
-            return;
-        }
-
-        const transport = device.createSendTransport(data);
-
-        transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-            try {
-                await socket.request('connectProducerTransport', { roomId, dtlsParameters });
-                callback();
-            } catch (error) {
-                errback(error);
-            }
-        });
-
-        transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
-            try {
-                const { id } = await socket.request('produce', {
-                    roomId, // 방 ID 전달
-                    transportId: transport.id,
-                    kind,
-                    rtpParameters,
-                });
-                callback({ id });
-            } catch (error) {
-                errback(error);
-            }
-        });
-
-        transport.on('connectionstatechange', (state) => {
-            switch (state) {
-                case 'connecting':
-                    setStreamStatus('publishing...');
-                    break;
-
-                case 'connected':
-                    document.querySelector('#local_video').srcObject = stream;
-                    setStreamStatus('published');
-                    break;
-
-                case 'failed':
-                    transport.close();
-                    setStreamStatus('failed');
-                    break;
-
-                default:
-                    break;
-            }
-        });
-
-        let stream;
-        try {
-            stream = await getUserMedia(transport, isWebcam);
-            const track = stream.getVideoTracks()[0];
-            const params = { track };
-
-            if (useSimulcast) {
-                params.encodings = [
-                    { maxBitrate: 100000 },
-                    { maxBitrate: 300000 },
-                    { maxBitrate: 900000 },
-                ];
-                params.codecOptions = {
-                    videoGoogleStartBitrate: 1000,
-                };
-            }
-
-            producer = await transport.produce(params);
-        } catch (err) {
-            setStreamStatus('failed');
-            console.error('Error during stream publication:', err);
-        }
-
-        if (isWebcam) {
-            // 웹캠 스트림 시작
-            setStreamStatus('Webcam Started');
-        } else {
-            // 화면 공유 스트림 시작
-            setStreamStatus('Screen Sharing Started');
-        }
-        } catch (error) {
-        console.error('Error starting stream:', error);
-        setStreamStatus('Failed to start stream');
-    }
-};
-
-
 
 /*
 4. getUserMedia(transport, isWebcam)
 기능: 사용자의 웹캠 또는 화면에서 비디오 스트림을 가져옵니다.
 */
-export const getUserMedia = async (transport, isWebcam) => {
+const getUserMedia = async (isWebcam) => {
     if (!device.canProduce('video')) {
         console.error('cannot produce video');
         return;
     }
 
     let stream;
+    console.log(isWebcam);
     try {
         stream = isWebcam ?
         await navigator.mediaDevices.getUserMedia({ video: true }) :
@@ -220,5 +137,204 @@ export const loadDevice = async (routerRtpCapabilities) => {
         console.log('Device loaded successfully');
     } catch (loadError) {
         console.error('Error loading device:', loadError);
+    }
+};
+
+
+const createProducer = async (roomId, producerKind, useSimulcast, isWebcam, isVideo, setStreamStatus, videoRef) => {
+    try {
+        const data = await socket.request('createProducerTransport', {
+            roomId,
+            producerKind,
+            forceTcp: false,
+            rtpCapabilities: device.rtpCapabilities,
+        });
+
+        if (data.error) {
+            console.error(data.error);
+            setStreamStatus('Failed to create transport');
+            return null;
+        }
+
+        const transport = device.createSendTransport(data);
+
+        transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+            try {
+                await socket.request('connectProducerTransport', { roomId, producerKind, dtlsParameters });
+                callback();
+            } catch (error) {
+                errback(error);
+            }
+        });
+
+        transport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
+            try {
+
+                const producerKind = isWebcam 
+                ? (isVideo ? Producers.WEBCAM_VIDEO : Producers.WEBCAM_AUDIO) 
+                : (isVideo ? Producers.SCREEN_SHARE_VIDEO : Producers.SCREEN_SHARE_AUDIO);
+
+                const { id } = await socket.request('produce', {
+                    roomId,
+                    transportId: transport.id,
+                    kind,
+                    rtpParameters,
+                    producerKind
+                });
+                
+                console.log('Producer ID:', id); // 로그 추가
+                console.log('Producer Kind:', producerKind); // 로그 추가
+
+                // socket.emit('newProducer', { roomId, producerId: id, producerKind });
+                callback({ id });
+            } catch (error) {
+                errback(error);
+            }
+        });
+
+        transport.on('connectionstatechange', (state) => {
+            switch (state) {
+                case 'connecting':
+                    setStreamStatus('Publishing...');
+                    break;
+                case 'connected':
+                    if (isVideo && videoRef) {
+                        videoRef.srcObject = stream;
+                    }
+                    setStreamStatus('Published');
+                    break;
+                case 'failed':
+                    transport.close();
+                    setStreamStatus('Failed');
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        let stream;
+        try {
+            stream = isVideo 
+            if (isVideo) {
+                stream = isWebcam 
+                    ? await navigator.mediaDevices.getUserMedia({ video: true }) 
+                    : await navigator.mediaDevices.getDisplayMedia({ video: true });
+            } else {
+                stream = isWebcam
+                    ? await navigator.mediaDevices.getUserMedia({ audio: true })
+                    : await getSystemAudioStream();
+            }
+                
+                
+                
+            const track = isVideo ? stream.getVideoTracks()[0] : stream.getAudioTracks()[0];
+            const params = { track };
+
+            if (useSimulcast && isVideo) {
+                params.encodings = [
+                    { maxBitrate: 100000 },
+                    { maxBitrate: 300000 },
+                    { maxBitrate: 900000 },
+                ];
+                params.codecOptions = {
+                    videoGoogleStartBitrate: 1000,
+                };
+            }
+
+            const producer = await transport.produce(params);
+            return producer;
+        } catch (err) {
+            setStreamStatus('Failed to get user media');
+            console.error('Error during stream publication:', err);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error starting stream:', error);
+        setStreamStatus('Failed to start stream');
+        return null;
+    }
+};
+
+const getSystemAudioStream = async () => {
+    try {
+        const systemAudioStream = await navigator.mediaDevices.getDisplayMedia({ audio: true });
+        return systemAudioStream;
+    } catch (err) {
+        console.error('Error capturing system audio:', err.message);
+        throw err;
+    }
+};
+
+
+export const stopScreenShareStream = (producer, setStreamStatus) => {
+    if (producer) {
+        producer.close();
+        setStreamStatus('Screen sharing stopped');
+    }
+};
+
+export const startScreenShareStream = async (roomId, useSimulcast, setStreamStatus, videoRef) => {
+    try {
+        console.log(videoRef.current);
+        const producer = await createProducer(roomId, Producers.SCREEN_SHARE_VIDEO, useSimulcast, false, true, setStreamStatus, videoRef);
+        return producer;
+    } catch (error) {
+        console.error('Error starting screen share stream:', error);
+        setStreamStatus('Failed to start screen share');
+        return null;
+    }
+};
+
+export const stopWebcamStream = (producer, setStreamStatus) => {
+    if (producer) {
+        producer.close();
+        setStreamStatus('Webcam stopped');
+    }
+};
+
+export const startWebcamStream = async (roomId, useSimulcast, setStreamStatus, videoRef) => {
+    try {
+        const producer = await createProducer(roomId, Producers.WEBCAM_VIDEO,useSimulcast, true, true, setStreamStatus, videoRef);
+        return producer;
+    } catch (error) {
+        console.error('Error starting webcam stream:', error);
+        setStreamStatus('Failed to start webcam');
+        return null;
+    }
+};
+
+export const startMicrophoneStream = async (roomId, setStreamStatus) => {
+    try {
+        const producer = await createProducer(roomId, Producers.WEBCAM_AUDIO, false, true, false, setStreamStatus);
+        return producer;
+    } catch (error) {
+        console.error('Error starting microphone stream:', error);
+        setStreamStatus('Failed to start microphone stream');
+        return null;
+    }
+};
+
+export const stopMicrophoneStream = (producer, setStreamStatus) => {
+    if (producer) {
+        producer.close();
+        setStreamStatus('Microphone stream stopped');
+    }
+};
+
+export const startSystemAudioStream = async (roomId, setStreamStatus) => {
+    try {
+        const producer = await createProducer(roomId, Producers.SCREEN_SHARE_AUDIO, false, false, false, setStreamStatus);
+        return producer;
+    } catch (error) {
+        console.error('Error starting system audio stream:', error);
+        setStreamStatus('Failed to start system audio stream');
+        return null;
+    }
+};
+
+export const stopSystemAudioStream = (producer, setStreamStatus) => {
+    if (producer) {
+        producer.close();
+        setStreamStatus('System audio stream stopped');
     }
 };
