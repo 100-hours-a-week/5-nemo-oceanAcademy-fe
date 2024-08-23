@@ -3,17 +3,26 @@
     background-color: #F3F3F3;
     border-radius: 8px;
     padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 16px;
 }
 
 .viewButton {
-    background-color: #00A0E9; /* Primary color */
+    background-color:  var(--primary-color); /* Primary color */
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 4px 8px;
     cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.content{
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.count{
+    margin: 8px 4px;
 }

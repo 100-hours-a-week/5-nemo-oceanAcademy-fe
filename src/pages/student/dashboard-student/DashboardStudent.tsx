@@ -9,7 +9,8 @@ import styles from './DashboardStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles'
 import bn from '../../../assets/images/ad_big0.png';
 
-// [ ] 헤더 밑에 마진 or 패딩? 아무튼 빈 공간이 화면 사이즈에 따랏
+// [ ] 헤더 밑에 마진 or 패딩? 아무튼 빈 공간이 화면 사이즈에 따라서 바껴요
+// NOTE 확인해보니 dashboard/teacher 페이지는 안 그래서, 제가 뭘 잘못 만졌나봅니다... 시간 나실 때 도움주세요 ㅠㅠ
 
 const DashboardStudent: React.FC = () => {
     const navigate = useNavigate();

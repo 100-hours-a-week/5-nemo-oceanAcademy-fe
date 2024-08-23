@@ -1,6 +1,9 @@
 // 강의 일정
 
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+
 import styles from './ScheduleList.module.css';
 
 interface Schedule {
@@ -27,8 +30,11 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher }) => 
                                 <span className={styles.scheduleContent}>{`${schedule.content}`}</span>
                             </div>
                         <span>{`${schedule.start_time} - ${schedule.end_time}`}</span>
-                        {isTeacher && <button className={styles.deleteButton}>x</button>}
-
+                        {isTeacher && (
+                                <button className={styles.deleteButton}>
+                                    <FontAwesomeIcon icon={faTimesCircle} />
+                                </button>
+                            )}
                         </div>
                     </li>
                 ))}
