@@ -78,8 +78,8 @@ const Header: React.FC = () => {
       location.pathname === '/lecture/info' ||
       location.pathname === '/dashboard/teacher' ||
       location.pathname === '/dashboard/student' ||
-      location.pathname === '/student/list' ||
-      location.pathname === '/dashboard/edit'
+      location.pathname === '/dashboard/edit' ||
+      location.pathname === '/lecture/students'
     ) {
       return (
         <img
