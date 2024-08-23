@@ -8,18 +8,14 @@ import styles from './LectureList.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 
 const LectureList: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-  };
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   // 더미 데이터
   const lectures = [
-    { classId: 1, name: '강의 제목 1', bannerImage: '', instructor: '강사 이름 1', category: '프로그래밍' },
-    { classId: 2, name: '강의 제목 2', bannerImage: '', instructor: '강사 이름 2', category: '음악' },
-    { classId: 3, name: '강의 제목 3', bannerImage: '', instructor: '강사 이름 3', category: '요리' },
-    { classId: 4, name: '강의 제목 4', bannerImage: '', instructor: '강사 이름 4', category: '미술' },
+    { classId: 1, name: 'test', bannerImage: '', instructor: 'chldbsk', category: '프로그래밍' },
+    { classId: 2, name: 'data mapping', bannerImage: '', instructor: 'mia', category: '음악' },
+    { classId: 3, name: 'why not?', bannerImage: '', instructor: 'mui', category: '요리' },
+    { classId: 4, name: 'dog angry', bannerImage: '', instructor: 'meow', category: '미술' },
     { classId: 1, name: '모바일 앱 개발 실습', bannerImage: '', instructor: '첸', category: '개발' },
     { classId: 2, name: '기타 코드 마스터 클래스', bannerImage: '', instructor: '실비아', category: '음악' },
     { classId: 3, name: '초상화 그리기 워크숍', bannerImage: '', instructor: '테오', category: '미술' },
@@ -32,7 +28,7 @@ const LectureList: React.FC = () => {
     { classId: 10, name: '리더십 기초 트레이닝', bannerImage: '', instructor: '홍', category: '비즈니스 스킬' },
   ];
 
-  const filteredLectures = selectedCategory === 'All' 
+  const filteredLectures = selectedCategory === '' 
   ? lectures 
   : lectures.filter(lecture => lecture.category === selectedCategory);
 

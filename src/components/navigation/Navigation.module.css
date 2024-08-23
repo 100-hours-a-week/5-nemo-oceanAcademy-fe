@@ -1,6 +1,6 @@
 .navBar {
     width: 390px;
-    height: 50px;
+    height: 60px;
     background-color: black;
     position: fixed;
     bottom: 0;
@@ -23,16 +23,19 @@
   }
   
   .icon {
-    margin-top: 13px;
     width: 30px;
     height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 22px;
+    font-size: 20px;
   }
   
   .label {
     font-size: 10px;
     font-weight: 600;
+  }
+
+  .active .icon {
+    font-size: 25px;
   }
