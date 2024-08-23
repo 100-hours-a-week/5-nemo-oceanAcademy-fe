@@ -31,16 +31,17 @@ const Category: React.FC<CategoryProps> = ({ selected, onChange }) => {
                     <Select
                         labelId="category-select-label"
                         id="category-select"
-                        value={selected} 
+                        value={selected || "All"} 
                         label="카테고리"
                         onChange={handleChange}
                         sx={{ height: 40 }}  // 높이 설정
-                    >
+                        >
+                        <MenuItem value="All">전체</MenuItem>
                         {categories.map((category) => (
                             <MenuItem key={category} value={category}>
                                 {category}
                             </MenuItem>
-                        ))}
+                    ))}
                     </Select>
                 </FormControl>
             </Box>
