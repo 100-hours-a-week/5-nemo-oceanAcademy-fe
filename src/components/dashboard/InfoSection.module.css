@@ -5,3 +5,11 @@
     padding: 16px;
     margin-bottom: 16px;
 }
+
+.container p{
+    font-size: 14px;
+}
+
+.title{
+    margin: 6px 2px;
+}

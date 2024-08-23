@@ -10,9 +10,11 @@ interface InfoSectionProps {
 
 const InfoSection: React.FC<InfoSectionProps> = ({ title, content }) => {
     return (
-        <div className={styles.container}>
-            <h4>{title}</h4>
-            <p>{content}</p>
+        <div>
+            <h4 className={styles.title}>{title}</h4>
+            <div className={styles.container}>
+                <p>{content}</p>
+            </div>
         </div>
     );
 };

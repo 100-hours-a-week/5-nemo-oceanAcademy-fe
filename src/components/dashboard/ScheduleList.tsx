@@ -21,8 +21,15 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher }) => 
             <ul>
                 {schedules.map((schedule, index) => (
                     <li key={index} className={styles.scheduleItem}>
-                        <span>{`${schedule.content} (${schedule.start_time} - ${schedule.end_time})`}</span>
+                        <div className={styles.schedule}>
+                            <div className={styles.scheduleBox}>
+                                <span className={styles.scheduleItemNumber}>{`${index + 1}.`}</span>
+                                <span className={styles.scheduleContent}>{`${schedule.content}`}</span>
+                            </div>
+                        <span>{`${schedule.start_time} - ${schedule.end_time}`}</span>
                         {isTeacher && <button className={styles.deleteButton}>x</button>}
+
+                        </div>
                     </li>
                 ))}
             </ul>

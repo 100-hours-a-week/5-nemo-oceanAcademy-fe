@@ -8,8 +8,19 @@
 
 .scheduleItem {
     display: flex;
+    font-size: 13px;
+    margin: 6px 4px;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+}
+
+.scheduleItemNumber {
+    display: inline-block;
+    width: 10px;
+    text-align: right; 
+    margin-right: 8px;
+    margin-left: 2px;
+    align-self: flex-start;
 }
 
 .deleteButton {
@@ -18,4 +29,19 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.scheduleContent{
+    display: inline-block;
+    width: 190px;
+}
+
+.schedule{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.scheduleBox{
+    display: flex;
 }
