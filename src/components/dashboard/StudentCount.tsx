@@ -1,3 +1,5 @@
+// 수강 인원 
+
 import React from 'react';
 import styles from './StudentCount.module.css';
 

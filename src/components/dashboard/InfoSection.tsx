@@ -1,3 +1,5 @@
+// 강의 소개
+
 import React from 'react';
 import styles from './InfoSection.module.css';
 

@@ -1,3 +1,5 @@
+// 강의 일정
+
 import React from 'react';
 import styles from './ScheduleList.module.css';
 

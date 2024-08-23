@@ -4,9 +4,9 @@ import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
 import Announcement from '../../../components/dashboard/Announcement';
 import ScheduleList from '../../../components/dashboard/ScheduleList';
-import StudentCount from '../../../components/dashboard/StudentCount';
 import InfoSection from '../../../components/dashboard/InfoSection';
 import styles from './DashboardStudent.module.css';
+import { Container } from '../../../styles/GlobalStyles'
 
 const DashboardStudent: React.FC = () => {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const DashboardStudent: React.FC = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <Container>
             <LectureMeta
                 instructor={lectureData.instructor}
                 title={lectureData.title}
@@ -40,13 +40,12 @@ const DashboardStudent: React.FC = () => {
             <Banner image={lectureData.bannerImage} />
             <Announcement content={lectureData.announcement} />
             <ScheduleList schedules={lectureData.schedules} />
-            <StudentCount count={lectureData.studentCount} onViewStudents={() => {}} />
             <InfoSection title="강의 목표" content={lectureData.objective} />
             <InfoSection title="강의 소개" content={lectureData.description} />
             <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
             <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
             <button className={styles.wideButton} onClick={() => navigate('/live/student')}>라이브 강의 입장</button>
-        </div>
+        </Container>
     );
 };
 

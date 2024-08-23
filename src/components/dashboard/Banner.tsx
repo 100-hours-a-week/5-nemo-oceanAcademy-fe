@@ -1,3 +1,5 @@
+// 강의 배너 이미지 
+
 import React from 'react';
 import styles from './Banner.module.css';
 

@@ -1,3 +1,5 @@
+// 강의 공지
+
 import React from 'react';
 import styles from './Announcement.module.css';
 

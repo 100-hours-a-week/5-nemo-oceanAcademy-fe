@@ -1,3 +1,5 @@
+// 강의 메타 정보 - 강사 이름, 제목, 카테고리
+
 import React from 'react';
 import styles from './LectureMeta.module.css';
 
