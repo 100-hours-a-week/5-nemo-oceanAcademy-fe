@@ -1,3 +1,4 @@
+// #A-1: Main (/) - 메인 화면/랜딩페이지 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Main.module.css';
@@ -21,7 +22,9 @@ const Main: React.FC = () => {
   const [liveClasses, setLiveClasses] = useState<Lecture[]>([]);
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]);
 
-    // TODO: 더미 데이터 삭제하고 
+    // TODO: 더미 데이터 삭제하고 변수명 업데이트하기 
+    // popularClasses -> liveClasses
+    // toptenClasses -> topTenClasses 
     const popularClasses = [
       { classId: 11, name: '헤이즐리의 아트 클래스', bannerImage: bn, instructor: '헤이즐리', category: '아트' },
       { classId: 12, name: '토니의 작명소', bannerImage: bn, instructor: '토니', category: '작문' },

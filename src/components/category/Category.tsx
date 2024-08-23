@@ -12,6 +12,7 @@ interface CategoryProps {
 }
 
 const Category: React.FC<CategoryProps> = ({ selected, onChange }) => {
+    // TO DO: 카테고리 api로 가져오기 
     const categories = [
         '프로그래밍', '개발', '음악', '미술', '요리', '운동', 
         '사진', '외국어', '마케팅', '디자인', '심리학', '과학', '비즈니스 스킬', 
@@ -30,12 +31,11 @@ const Category: React.FC<CategoryProps> = ({ selected, onChange }) => {
                     <Select
                         labelId="category-select-label"
                         id="category-select"
-                        value={selected || "All"} 
+                        value={selected} 
                         label="카테고리"
                         onChange={handleChange}
                         sx={{ height: 40 }}  // 높이 설정
                     >
-                    <MenuItem value="All">전체</MenuItem>
                         {categories.map((category) => (
                             <MenuItem key={category} value={category}>
                                 {category}

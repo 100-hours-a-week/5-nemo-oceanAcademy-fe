@@ -1,6 +1,8 @@
 .container {
   width: 390px;
   min-height: 100vh;
+/* max-height: 100vh; */
+/* 이렇게 해놔야 화면 크기 줄일 때 왔다갔다 하지 않는다고 한다. 일단 이번 스프린트는 패스! */
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -11,7 +13,6 @@
 }
 
 .adSection {
-  margin-top: 20px;
   width: 100%; /* 수정: adSection의 너비를 전체로 설정하여 중앙에 위치하지 않도록 함 */
   display: flex; /* 수정: adSection을 flex 컨테이너로 설정 */
   justify-content: center; /* 수정: 내부 요소를 중앙 정렬 */

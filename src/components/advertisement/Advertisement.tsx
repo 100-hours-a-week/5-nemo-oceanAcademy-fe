@@ -18,7 +18,6 @@ const Advertisement: React.FC<AdvertisementProps> = ({ size = 'small' }) => {
   return (
     <div className={`${styles.container} ${size === 'large' ? styles.large : styles.small}`}
       onClick={handleAdClick}
-      style={{ cursor: 'pointer' }} 
     >
       <img src={adImage} alt="advertisement image" />
     </div>
