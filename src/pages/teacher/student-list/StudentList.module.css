@@ -1,42 +1,99 @@
-.list-container {
-    width: 355px;
-    height: 600px;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+.listContainer {
+  width: 390px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
   
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .table th, .table td {
-    text-align: left;
-    padding: 8px;
-  }
-  
-  .table th {
-    background-color: var(--primary-color);
-    color: white;
-  }
-  
-  .table td {
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .profileImage {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
+.title {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-weight: normal;
+
+  background-color: white;
+  border-radius: 8px;
+}
+
+.table thead th {
+  position: sticky; /* 고정 위치 설정 */
+  top: 0; /* 스크롤 시 고정할 위치 (상단) */
+  background-color: var(--primary-color); /* 배경색 설정 */
+  color: white; /* 텍스트 색상 */
+  z-index: 1; /* 다른 요소보다 위에 표시되도록 설정 */
+  padding: 8px;
+}
+
+.table th, .table td {
+  text-align: left;
+  padding: 8px;
+}
+
+.table th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+.table th:first-child {
+  border-top-left-radius: 8px; /* 왼쪽 상단 둥근 모서리 */
+}
+
+.table th:last-child {
+  border-top-right-radius: 8px; /* 오른쪽 상단 둥근 모서리 */
+}
+
+.table tr:last-child {
+  border-bottom-left-radius: 8px; /* 왼쪽 하단 둥근 모서리 */
+  border-bottom: none;
+}
+
+
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 10%; /* No. 열 */
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 10%; /* 프로필 열 */
+  align-items: center; /* 프로필 이미지 상하 중앙 정렬 */
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 50%; /* 닉네임 열 */
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 30%; /* 신청일자 열 */
+}
+
+.table td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.profileImage {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.tableContainer{
+  max-height: 600px; /* 최대 높이를 설정하여 이 높이를 초과하면 스크롤 */
+  overflow-y: auto; /* 세로 스크롤 허용 */
+  height: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
