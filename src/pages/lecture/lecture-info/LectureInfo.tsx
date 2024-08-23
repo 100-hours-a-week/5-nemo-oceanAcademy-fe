@@ -1,21 +1,23 @@
+// #H-1: LectureInfo (/lecture/info) - 강의 소개 페이지
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './LectureInfo.module.css';
+import { Container } from '../../../styles/GlobalStyles'
 
 const LectureInfo: React.FC = () => {
   const navigate = useNavigate();
 
   const handleEnrollment = () => {
     // TODO: 수강신청 API 요청
-    navigate('/lecture/enrollment'); // API 요청이 성공하면 Enrollment 페이지로 이동
+    navigate('/enrollment'); // API 요청이 성공하면 Enrollment 페이지로 이동
   };
 
   const isEnrolled = false; // 수강신청 상태를 확인하는 변수 (예시로 false로 설정)
 
   return (
-    <div className={styles.container}>
+    <Container>
       <p className={styles.instructor}>강사 이름</p>
       <h1 className={styles.title}>강의 제목</h1>
       <div className={styles.banner}></div>
@@ -49,7 +51,7 @@ const LectureInfo: React.FC = () => {
       </div>
 
       <Navigation />
-    </div>
+    </Container>
   );
 };
 

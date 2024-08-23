@@ -1,10 +1,26 @@
+// Advertisement - Main, LectureList의 광고 섹션
 import React from 'react';
 import styles from './Advertisement.module.css';
+import adImageSmall from '../../assets/images/ad_nemo3.png';
+import adImageLarge from '../../assets/images/ad_big0.png';
 
-const Advertisement: React.FC = () => {
+interface AdvertisementProps {
+  size?: 'small' | 'large';
+}
+
+const Advertisement: React.FC<AdvertisementProps> = ({ size = 'small' }) => {
+  const adImage = size === 'large' ? adImageLarge : adImageSmall;
+
+  const handleAdClick = () => {
+    window.location.href = 'https://goormkdx.notion.site/8-3f7349ec404f4c09aeb9ed240f60bb69';
+  };
+
   return (
-    <div className={styles.container}>
-      <p className={styles.text}>광고 올 자리 입니다. 8팀 프론트 급구</p>
+    <div className={`${styles.container} ${size === 'large' ? styles.large : styles.small}`}
+      onClick={handleAdClick}
+      style={{ cursor: 'pointer' }} 
+    >
+      <img src={adImage} alt="advertisement image" />
     </div>
   );
 };

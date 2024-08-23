@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
+import './index.css';
 import WebRTCComponent from './components/web-rtc/WebRTCComponent';
 import Header from './components/header/Header';
 import Main from './pages/main/Main';
@@ -34,25 +35,25 @@ const App: React.FC = () => {
         <Route path="/" element={<Main />} />
 
         {/* Lecture Routes */}
-        <Route path="/lecture/enrollment" element={<Enrollment />} />
+        <Route path="/enrollment" element={<Enrollment />} />
         <Route path="/lecture/info" element={<LectureInfo />} />
-        <Route path="/lecture/list" element={<LectureList />} />
-        <Route path="/lecture/live-list" element={<LiveList />} />
+        <Route path="/list" element={<LectureList />} />
+        <Route path="/live-list" element={<LiveList />} />
         
         {/* Live Routes */}
         <Route path="/live/student" element={<LiveStudent />} />
         <Route path="/live/teacher" element={<LiveTeacher />} />
         
         {/* Student Routes */}
-        <Route path="/student/classroom" element={<Classroom />} />
-        <Route path="/student/dashboard" element={<DashboardStudent />} />
+        <Route path="/classroom" element={<Classroom />} />
+        <Route path="/dashboard/student" element={<DashboardStudent />} />
         
         {/* Teacher Routes */}
-        <Route path="/teacher/dashboard" element={<DashboardTeacher />} />
-        <Route path="/teacher/edit-dashboard" element={<EditDashboard />} />
-        <Route path="/teacher/lecture-created" element={<LectureCreated />} />
-        <Route path="/teacher/lecture-open" element={<LectureOpen />} />
-        <Route path="/teacher/student-list" element={<StudentList />} />
+        <Route path="/dashboard/teacher" element={<DashboardTeacher />} />
+        <Route path="/dashboard/edit" element={<EditDashboard />} />
+        <Route path="/lecture/created" element={<LectureCreated />} />
+        <Route path="/lecture/open" element={<LectureOpen />} />
+        <Route path="/lecture/students" element={<StudentList />} />
         
         {/* User Routes */}
         <Route path="/login" element={<Login />} />

@@ -1,0 +1,40 @@
+.metaContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    width: 343px;
+}
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.instructor {
+    flex: 1; /* 강사 이름이 왼쪽에 위치 */
+    font-size: 15px;
+    opacity: 0.6;
+}
+
+.categoryBox {
+    background-color: #E9E9E9; /* 배경색 */
+    border-radius: 50px; /* 코너 반원 */
+    width: 85px; /* 너비 */
+    height: 20px; /* 높이 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.category {
+    margin: 0;
+    font-size: 12px;
+}
+
+.title {
+    margin-top: 2px; /* 제목이 위쪽 요소와 분리되도록 간격 조정 */
+    font-size: 18px;
+    font-weight: bold;
+}

@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   background-color: white;
+  padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
 }
 
 .adSection {
