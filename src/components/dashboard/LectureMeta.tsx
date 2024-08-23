@@ -12,11 +12,16 @@ interface LectureMetaProps {
 const LectureMeta: React.FC<LectureMetaProps> = ({ instructor, title, category }) => {
     return (
         <div className={styles.metaContainer}>
-            <p>{`강사 이름: ${instructor}`}</p>
-            <p>{`강의 제목: ${title}`}</p>
-            <p>{`카테고리: ${category}`}</p>
+            <div className={styles.topRow}>
+                <p className={styles.instructor}>{`${instructor}`}</p>
+                <div className={styles.categoryBox}>
+                    <p className={styles.category}>{`${category}`}</p>
+                </div>
+            </div>
+            <p className={styles.title}>{`${title}`}</p>
         </div>
     );
 };
+
 
 export default LectureMeta;

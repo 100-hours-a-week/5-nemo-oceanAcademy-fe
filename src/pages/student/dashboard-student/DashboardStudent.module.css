@@ -8,21 +8,29 @@
     background-color: white;
 }
 
+.buttonContainer {
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    margin-bottom: 8px; /* 아래 요소와의 간격 조절 */
+    width: 344px;
+}
+
 .primaryButton {
     width: 150px;
     height: 30px;
-    background-color: #00A0E9; /* Primary color */
+    background-color:  var(--primary-color); /* Primary color */
     color: white;
     border: none;
     border-radius: 8px;
-    margin-bottom: 16px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .wideButton {
     width: 344px;
     height: 40px;
-    background-color: #00A0E9; /* Primary color */
+    background-color:  var(--primary-color); /* Primary color */
     color: white;
     border: none;
     border-radius: 8px;

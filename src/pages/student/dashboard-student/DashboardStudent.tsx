@@ -36,7 +36,9 @@ const DashboardStudent: React.FC = () => {
                 title={lectureData.title}
                 category={lectureData.category}
             />
-            <button className={styles.primaryButton}>강의 소개 보러가기</button>
+            <div className={styles.buttonContainer}>
+                <button className={styles.primaryButton}>강의 소개 보러가기</button>
+            </div>
             <Banner image={lectureData.bannerImage} />
             <Announcement content={lectureData.announcement} />
             <ScheduleList schedules={lectureData.schedules} />
