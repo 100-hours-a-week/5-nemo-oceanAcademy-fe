@@ -1,6 +1,8 @@
 .banner {
-    width: 344px;
-    height: 170px;
-    background-color: #00A0E9; /* Primary color */
+    width: 340px;
+    height: 200px;
+    background-color: #e0e0e0;    
     border-radius: 8px;
+    background-size: cover;
+    background-position: center;
 }

@@ -51,4 +51,4 @@ jobs:
             docker pull judykimsohui/nemo-fe:latest
             docker stop myapp || true
             docker rm myapp || true
-            docker run -d --name myapp -p 80:3000 judykimsohui/nemo-fe:latest
+            docker run -d --name myapp -p 5000:3000 judykimsohui/nemo-fe:latest

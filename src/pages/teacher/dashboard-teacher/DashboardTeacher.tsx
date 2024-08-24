@@ -8,7 +8,9 @@ import StudentCount from '../../../components/dashboard/StudentCount';
 import InfoSection from '../../../components/dashboard/InfoSection';
 import Modal from '../../../components/modal/Modal';
 import styles from './DashboardTeacher.module.css';
-import { Container } from '../../../styles/GlobalStyles'
+import { Container } from '../../../styles/GlobalStyles';
+import bn from '../../../assets/images/ad_big0.png';
+import ScheduleForm from 'components/dashboard/ScheduleForm';
 
 const DashboardTeacher: React.FC = () => {
   const navigate = useNavigate();
@@ -19,12 +21,12 @@ const DashboardTeacher: React.FC = () => {
     instructor: '헤이즐리',
     title: '즐리가 만든 소금빵이 제일 맛있어',
     category: '쿠킹',
-    bannerImage: '', // 배너 이미지 URL
+    bannerImage: bn, // 배너 이미지 URL
     announcement: '8/2 수업 오후 10시 시작\n준비물 : 밀가루, 물, 치킨, 초콜릿, 감자, 해파리\n상담 가능 시간 : 8/1 오후 7시~',
     schedules: [
-        { content: '강의1', start_time: '13:00', end_time: '15:00' },
-        { content: '강의2', start_time: '13:00', end_time: '15:00' },
-    ],
+      { content: '헤이즐리의 말랑말랑 반죽 만들기', start_time: '13:00', end_time: '15:00' },
+      { content: '헤이즐리의 끄아아아앙아아앙아아아악 고라니 만들기', start_time: '13:00', end_time: '15:00' },
+],
     studentCount: 20,
     objective: '이 강의는 소금빵을 만드는 방법을 배우는 것을 목표로 합니다.',
     description: '소금빵의 다양한 레시피와 실습을 통해 최고의 소금빵을 만들 수 있습니다.',
@@ -69,10 +71,15 @@ const DashboardTeacher: React.FC = () => {
                 title={lectureData.title}
                 category={lectureData.category}
             />
-      <button className={styles.primaryButton} onClick={() => navigate('/lecture/info')}>강의 소개 보러가기</button>
+      <div className={styles.buttonContainer}>
+        <button className={styles.primaryButton} onClick={() => navigate('/lecture/info')}>강의 소개 보러가기</button>
+      </div>
       <Banner image={lectureData.bannerImage} />
       <Announcement content={lectureData.announcement} />
       <ScheduleList schedules={lectureData.schedules} isTeacher />
+      {/* 일정 추가하기 */}
+      <ScheduleForm classId={"1"} onScheduleAdded={() => window.location.reload()} />
+  
       <StudentCount count={lectureData.studentCount} onViewStudents={() => navigate('/lecture/students')} />
       <InfoSection title="강의 목표" content={lectureData.objective} />
       <InfoSection title="강의 소개" content={lectureData.description} />

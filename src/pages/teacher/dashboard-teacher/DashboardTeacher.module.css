@@ -8,27 +8,37 @@
     background-color: white;
 }
 
+.buttonContainer {
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    margin-bottom: 8px; /* 아래 요소와의 간격 조절 */
+    width: 344px;
+}
+
 .primaryButton {
     width: 150px;
     height: 30px;
-    background-color: var(--primary-color); /* Primary color */
+    background-color:  var(--primary-color); /* Primary color */
     color: white;
     border: none;
     border-radius: 8px;
-    margin-bottom: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .bottomButtons {
     display: flex;
     justify-content: space-between;
     width: 344px;
-    margin-top: 20px;
+    margin-top: 12px;
 }
 .editButton {
     color: #00A0E9;
     background: none;
     border: none;
     cursor: pointer;
+    font-size: 15px;
 }
 
 .deleteButton {
@@ -36,15 +46,29 @@
     background: none;
     border: none;
     cursor: pointer;
+    font-size: 15px;
 }
 
+
 .wideButton {
-    width: 344px;
+    width: 390px;
     height: 40px;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Primary color */
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     margin-top: 20px;
+    position: fixed; /* 화면에 고정 */
+    bottom: 6px; /* 화면의 맨 아래에서 20px 위에 위치 */
+    left: 50%; /* 수평 중앙에 위치 */
+    transform: translateX(-50%); /* 버튼의 중앙을 기준으로 정렬 */
+    z-index: 1000; /* 다른 요소들 위에 위치하도록 설정 */
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* 그림자 추가 */
+}
+
+.wideButton:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.1); /* Hover 시 더 진한 그림자 */
 }
