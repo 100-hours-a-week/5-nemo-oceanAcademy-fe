@@ -1,31 +1,46 @@
-.container {
-    width: 390px;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
-  }
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 350px;
+  margin-top: 10px;
+}
+
+.title {
+  font-size: 18px;
+  margin-left: 10px;
+}
   
-  .lectureGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
+.lectureSection {
+  min-height: 700px;
+}
+
+.lectureGrid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
   
-  .noClasses {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 362px;
+  gap: 10px;
+  p {
+      font-size: 10px;
   }
-  
-  .noClasses p {
-    margin-bottom: 20px;
-    font-size: 16px;
-    color: #555;
+  h5 {
+      font-size: 18px;
+      margin: 20px;
   }
+}
+
+.emptyImage {
+  margin: 10px;
+  margin-top: 100px;
+  width: 140px;
+}

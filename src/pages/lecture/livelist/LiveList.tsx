@@ -128,7 +128,7 @@ const LiveList: React.FC = () => {
           ) : filteredLectures.length === 0 ? (
             <div className={styles.emptyContainer}>
               <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-              <p>아직 강의가 없어요!</p>
+              <h5>아직 강의가 없어요!</h5>
             </div>
           ) : (
             <div className={styles.lectureGrid}>
