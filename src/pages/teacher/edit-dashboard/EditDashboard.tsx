@@ -79,45 +79,68 @@ const EditDashboard: React.FC = () => {
 */
   return (
     <Container>
-      <LectureMeta
-        instructor={lectureData.instructor}
-        title={
-          <input
-            className={styles.input}
-            value={lectureData.title}
-            onChange={(e) => handleInputChange('title', e.target.value)}
-          />
-        }
-        category={
-          <select
-            className={styles.select}
-            value={lectureData.category}
-            onChange={(e) => handleInputChange('category', e.target.value)}
-          >
-            <option value="프로그래밍">프로그래밍</option>
-            <option value="쿠킹">쿠킹</option>
-            <option value="미술">미술</option>
-            {/* 추가 카테고리 옵션 */}
-          </select>
-        }
-      />
-
-      <Banner image={lectureData.bannerImage}>
-        <input
-          type="file"
-          onChange={handleFileChange}
-          style={{ display: 'none' }}
-          id="bannerImageInput"
+        <LectureMeta
+            className="editSection"
+            instructor="주디주주디"
+            category={
+                <div />
+            }
         />
-        <button
-          className={styles.uploadButton}
-          onClick={() => document.getElementById('bannerImageInput')?.click()}
-        >
-          {lectureData.bannerImage ? '이미지 변경' : '이미지 등록'}
-        </button>
-      </Banner>
+        <div style={{"width" : "100%", "height" : "10px"}}/>
+
+        <InfoSection
+            className="editSection"
+            title="카테고리 선택"
+            helpertext=""
+            essential="*"
+            content={
+                <select
+                    style={{
+                        "border": "none",
+                        "width": "100%",
+                        "padding": "0",
+                        "margin": "0",
+                        "outline": "none",
+                        "fontSize":"14px"
+                    }}
+                    className={styles.select}
+                    value={lectureData.category}
+                    onChange={(e) => handleInputChange('category', e.target.value)}
+                >
+                    <option value="프로그래밍">프로그래밍</option>
+                    <option value="쿠킹">쿠킹</option>
+                    <option value="미술">미술</option>
+                    {/* 추가 카테고리 옵션 */}
+                </select>
+            }
+        />
+
+        <InfoSection
+            className="editSection"
+            title="강의 제목"
+            helpertext="* helpertext"
+            essential="*"
+            content={
+                <input
+                    style={{
+                        "border": "none",
+                        "width": "100%",
+                        "height": "10px",
+                        "padding": "0",
+                        "margin": "0",
+                        "outline": "none",
+                        "fontSize":"14px"
+                    }}
+                    className={styles.input}
+                    value={lectureData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                />
+
+            }
+        />
 
       <Announcement
+        className="editSection"
         content={
           <textarea
             className={styles.textarea}
@@ -128,7 +151,10 @@ const EditDashboard: React.FC = () => {
       />
 
       <InfoSection
+        className="editSection"
         title="강의 목표"
+        helpertext="* helpertext"
+        essential="*"
         content={
           <textarea
             className={styles.textarea}
@@ -139,7 +165,10 @@ const EditDashboard: React.FC = () => {
       />
 
       <InfoSection
+        className="editSection"
         title="강의 소개"
+        helpertext="* helpertext"
+        essential="*"
         content={
           <textarea
             className={styles.textarea}
@@ -150,7 +179,10 @@ const EditDashboard: React.FC = () => {
       />
 
       <InfoSection
-        title="강사 소개"
+        className="editSection"
+        title="강사 소개 (선택)"
+        helpertext="* helpertext"
+        essential=""
         content={
           <textarea
             className={styles.textarea}
@@ -161,7 +193,10 @@ const EditDashboard: React.FC = () => {
       />
 
       <InfoSection
-        title="사전 준비 사항"
+        className="editSection"
+        title="강의에 필요한 사전 지식 및 준비 안내 (선택)"
+        helpertext="* helpertext"
+        essential=""
         content={
           <textarea
             className={styles.textarea}
@@ -171,10 +206,39 @@ const EditDashboard: React.FC = () => {
         }
       />
 
+        <div className={styles.imagetitle}>
+            <h4>강의 배너 사진 업로드</h4>
+        </div>
+        <Banner image={lectureData.bannerImage}>
+
+            <input
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                id="bannerImageInput"
+            />
+            <button
+                className={styles.uploadButton}
+                onClick={() => document.getElementById('bannerImageInput')?.click()}
+            >
+                {lectureData.bannerImage ? '이미지 변경' : '이미지 등록'}
+            </button>
+        </Banner>
+
+        <div className={styles.warningtext}>
+            <li>사진은 1개만 업로드할 수 있습니다.</li>
+            <li>파일 사이즈는 350*100을 권장합니다.</li>
+            <li>파일 확장자는 .jpg, .png만 가능합니다</li>
+            <li>5MB이하의 파일만 업로드할 수 있습니다.</li>
+        </div>
+
       <div className={styles.buttonContainer}>
         <button className={styles.cancelButton} onClick={handleCancel}>취소</button>
         <button className={styles.saveButton}>수정 완료</button>
       </div>
+
+
+
     </Container>
   );
 };

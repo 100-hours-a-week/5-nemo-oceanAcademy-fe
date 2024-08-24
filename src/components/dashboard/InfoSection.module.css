@@ -6,10 +6,30 @@
     margin-bottom: 16px;
 }
 
+/* edit dashboard */
+.editSection {
+    padding: 5px 8px;
+    border: 1px solid black;
+    background: transparent;
+}
+
 .container p{
     font-size: 14px;
 }
 
 .title{
-    margin: 6px 2px;
+    margin: 0;
+}
+
+.helperTextBox {
+    padding: 5px 0;
+}
+
+.helperText  {
+    color: red;
+    font-size: 12px;
+}
+
+.essentialPoint {
+    color: red;
 }
