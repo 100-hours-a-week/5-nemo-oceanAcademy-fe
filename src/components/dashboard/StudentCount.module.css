@@ -1,0 +1,28 @@
+.container {
+    width: 344px;
+    background-color: #F3F3F3;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.viewButton {
+    background-color:  var(--primary-color); /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.content{
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.count{
+    margin: 8px 4px;
+}

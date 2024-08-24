@@ -1,0 +1,60 @@
+:root {
+    --primary-color: #727cb8; /* 프라이머리 컬러 */
+  }
+  
+  .modal {
+    width: 300px;
+    height: 170px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+  }
+  
+  .content {
+    font-size: 15px;
+    text-align: center;
+    color: #555;
+    margin: 10px 0;
+  }
+  
+  .buttonContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .leftButton {
+    width: 120px;
+    height: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .rightButton {
+    width: 120px;
+    height: 30px;
+    background-color: white;
+    color: var(--primary-color);
+    font-size: 15px;
+    font-weight: bold;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    cursor: pointer;
+  }

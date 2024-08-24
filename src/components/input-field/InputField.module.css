@@ -1,0 +1,33 @@
+.inputField {
+  margin-bottom: 20px;
+}
+  
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+  
+.required {
+  color: red;
+}
+  
+.input, .textArea {
+  width: 367px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+}
+  
+.textArea {
+  resize: none;
+}
+  
+.helperText {
+  font-size: 12px;
+  color: #D13939;
+  margin-top: 5px;
+}

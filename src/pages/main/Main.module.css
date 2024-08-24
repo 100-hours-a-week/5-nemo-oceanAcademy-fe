@@ -1,0 +1,46 @@
+.container {
+  width: 390px;
+  min-height: 100vh;
+/* max-height: 100vh; */
+/* 이렇게 해놔야 화면 크기 줄일 때 왔다갔다 하지 않는다고 한다. 일단 이번 스프린트는 패스! */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  justify-content: flex-start; /* TO DO: center -> flex-start로 수정, 강의 카드 불러왔을 때 괜찮은가 보기. */
+  background-color: white;
+  padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
+}
+
+.adSection {
+  width: 100%; /* 수정: adSection의 너비를 전체로 설정하여 중앙에 위치하지 않도록 함 */
+  display: flex; /* 수정: adSection을 flex 컨테이너로 설정 */
+  justify-content: center; /* 수정: 내부 요소를 중앙 정렬 */
+  padding-top: 20px; /* 추가: 헤더에서 항상 20px 아래에 위치하도록 패딩 추가 */
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px 20px 5px 20px; /* 수정: 좌측 정렬을 유지하면서 여백 설정 */
+  text-align: left; /* 추가: 타이틀 텍스트를 왼쪽에 정렬 */
+}
+
+.link {
+  font-size: 14px;
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 0;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+  text-align: left;
+}
+
+.lectureGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+}
