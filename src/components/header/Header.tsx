@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
 import profImage from '../../assets/images/profile_default.png';
@@ -12,7 +12,12 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
-  const isLoggedIn = false;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); 
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -45,7 +50,7 @@ const Header: React.FC = () => {
   };
 
   const handleProfileClick = () => {
-    if (!isLoggedIn) {
+    if (isLoggedIn) {
       navigate('/mypage');
     } else {
       handleLogin();
@@ -78,8 +83,8 @@ const Header: React.FC = () => {
       location.pathname === '/lecture/info' ||
       location.pathname === '/dashboard/teacher' ||
       location.pathname === '/dashboard/student' ||
-      location.pathname === '/student/list' ||
-      location.pathname === '/dashboard/edit'
+      location.pathname === '/dashboard/edit' ||
+      location.pathname === '/lecture/students'
     ) {
       return (
         <img

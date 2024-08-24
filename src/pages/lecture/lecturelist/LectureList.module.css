@@ -2,8 +2,16 @@
     margin-top: 20px;
 }
 
+.filterSection {
+    margin: 20px;
+    margin-left: 220px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .lectureGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px; 
+    min-height: 200px; /* 최소 높이 설정: 필요에 따라 조정 가능 */
 }

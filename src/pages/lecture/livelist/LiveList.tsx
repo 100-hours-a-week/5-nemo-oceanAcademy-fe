@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import LiveCard from '../../../components/lecture-card/LiveCard';
-import Category from '../../../components/category/Category';
+import CategorySelect from 'components/category-select/CategorySelect';
 import Navigation from '../../../components/navigation/Navigation';
 import { Container } from '../../../styles/GlobalStyles';
 import styles from './LiveList.module.css';
@@ -27,7 +27,7 @@ const LiveList: React.FC = () => {
     <Container>
       <div className={styles.header}>
         <h1 className={styles.title}>🔴 Live</h1>
-        <Category 
+        <CategorySelect 
           selected={selectedCategory} 
           onChange={setSelectedCategory} 
         />

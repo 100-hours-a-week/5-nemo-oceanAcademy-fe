@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: 'pointer' 
 }
 
 .small {
@@ -11,14 +12,14 @@
 }
 
 .large {
-  width: 362px;
-  height: 215px;
+  width: 350px;
+  height: 180px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 img {
   width: 100%;
   height: 100%;
-  object-fit: hidden;
+  object-fit: cover;
   border-radius: 5px;
 }
