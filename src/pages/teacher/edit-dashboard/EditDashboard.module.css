@@ -18,7 +18,7 @@
   }
   
   .select, .input, .textarea {
-    width: 367px;
+    width: 100%;
     min-height: 55px;
     margin-top: 10px;
     padding: 10px;
@@ -27,7 +27,26 @@
   }
   
   .textarea {
+    margin-top: 0;
     min-height: 100px;
+    width: 100%;
+    resize: none;
+    padding: 0;
+    border: none;
+    outline: none;
+    font-size: 13px;
+  }
+
+  .titletextarea {
+    margin-top: 0;
+    min-height: 20px;
+    width: 100%;
+    resize: none;
+    padding: 0;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    height: 20px;
   }
   
   .uploadButton {
@@ -55,7 +74,18 @@
   .fileInput {
     display: none;
   }
-  
+
+  .imagetitle {
+    width: 344px;
+    margin: 0 0 10px 0;
+  }
+
+  .warningtext {
+    width: 344px;
+    padding: 5px;
+    font-size: 12px;
+  }
+
   .buttonContainer {
     display: flex;
     justify-content: space-between;

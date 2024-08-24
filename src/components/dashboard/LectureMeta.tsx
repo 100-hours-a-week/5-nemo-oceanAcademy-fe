@@ -1,27 +1,38 @@
-// 강의 메타 정보 - 강사 이름, 제목, 카테고리
-
 import React from 'react';
 import styles from './LectureMeta.module.css';
 
 interface LectureMetaProps {
-    instructor: string;
-    title: string | JSX.Element; 
-    category: string | JSX.Element;
+    className?: string;
+    instructor?: string;
+    title?: string | JSX.Element;
+    category?: string | JSX.Element;
+    editSection?: boolean; // editSection prop 추가
 }
 
-const LectureMeta: React.FC<LectureMetaProps> = ({ instructor, title, category }) => {
+const LectureMeta: React.FC<LectureMetaProps> = ({ instructor, title, category, editSection }) => {
     return (
-        <div className={styles.metaContainer}>
-            <div className={styles.topRow}>
-                <p className={styles.instructor}>{`${instructor}`}</p>
-                <div className={styles.categoryBox}>
-                    <p className={styles.category}>{`${category}`}</p>
-                </div>
+        <div className={`${styles.metaContainer} ${editSection ? styles.editSection : ''}`}>
+            <div className={`${styles.topRow} ${editSection ? styles.editSection : ''}`}>
+                {instructor && (
+                    <p className={`${styles.instructor} ${editSection ? styles.editSection : ''}`}>
+                        {instructor}
+                    </p>
+                )}
+                {category && (
+                    <div className={`${styles.categoryBox} ${editSection ? styles.editSection : ''}`}>
+                        <p className={`${styles.category} ${editSection ? styles.editSection : ''}`}>
+                            {category}
+                        </p>
+                    </div>
+                )}
             </div>
-            <p className={styles.title}>{`${title}`}</p>
+            {title && (
+                <p className={`${styles.title} ${editSection ? styles.editSection : ''}`}>
+                    {title}
+                </p>
+            )}
         </div>
     );
 };
-
 
 export default LectureMeta;

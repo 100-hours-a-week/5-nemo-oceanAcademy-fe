@@ -12,17 +12,21 @@
     width: 100%;
 }
 
+.topRow.editSection {
+    justify-content: flex-start;
+}
+
 .instructor {
-    flex: 1; /* 강사 이름이 왼쪽에 위치 */
+    flex: 1;
     font-size: 15px;
     opacity: 0.6;
 }
 
 .categoryBox {
-    background-color: #E9E9E9; /* 배경색 */
-    border-radius: 50px; /* 코너 반원 */
-    width: 85px; /* 너비 */
-    height: 20px; /* 높이 */
+    background-color: #E9E9E9;
+    border-radius: 50px;
+    width: 85px;
+    height: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,7 +38,19 @@
 }
 
 .title {
-    margin-top: 2px; /* 제목이 위쪽 요소와 분리되도록 간격 조정 */
+    margin-top: 2px;
     font-size: 18px;
     font-weight: bold;
 }
+
+.title.editSection {
+    width: 90%;
+    margin: 0;
+}
+
+.metaContainer p,input {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
