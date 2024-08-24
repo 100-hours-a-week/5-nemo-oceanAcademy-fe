@@ -1,0 +1,13 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 350px;
+    margin-top: 10px;
+}
+
+.title {
+    font-size: 20px;
+    margin-left: 10px;
+}
