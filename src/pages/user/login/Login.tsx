@@ -10,7 +10,7 @@ const Login: React.FC = () => {
     useEffect(() => {
         const loadKakaoSDK = async () => {
             try {
-                const response = await fetch('http://3.34.11.72:5000/api/auth/kakao/app-key');
+                const response = await fetch('https://www.nemooceanacademy.com:5000/api/auth/kakao/app-key');
                 const data = await response.json();
 
                 // Kakao SDK가 없으면 script 태그로 로드
