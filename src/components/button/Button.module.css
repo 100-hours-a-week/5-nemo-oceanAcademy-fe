@@ -1,0 +1,28 @@
+.button {
+  width: 210px;
+  height: 40px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-color);
+  /* transition: background-color 0.3s; */
+}
+
+.button:hover {
+  background-color: var(--hover-color);
+}
+
+.button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+  
+.button:hover:disabled {
+  background-color: #ccc;
+}

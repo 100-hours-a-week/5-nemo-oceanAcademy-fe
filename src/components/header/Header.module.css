@@ -1,0 +1,40 @@
+.header {
+  width: 390px;
+  height: 60px;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.logo {
+  font-family: 'Kavoon', cursive;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.loginText {
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  margin-right: 10px;
+}
+
+.leftButton {
+  position: absolute;
+  left: 15px;
+}
+
+.rightButton {
+  position: absolute;
+  right: 15px;
+}

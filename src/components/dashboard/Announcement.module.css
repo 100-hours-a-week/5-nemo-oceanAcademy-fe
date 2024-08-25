@@ -1,0 +1,44 @@
+.container {
+    width: 344px;
+    height: 135px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.title {
+    padding: 0 10px;
+    margin-bottom: 5px;
+}
+
+.container span{
+    margin: 0px 4px;
+    font-size: 13px;
+}
+
+.container.editSection {
+    padding: 10px 0 0 0;
+}
+
+.content.editSection {
+
+    padding: 0;
+    margin: 0;
+}
+
+.container textarea {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 8px;
+    margin: 0;
+    height: 100%;
+    font-size: 13px;
+}
+
+.line {
+    display: flex;
+    align-items: flex-start; /* 텍스트가 •와 같은 높이에서 시작되도록 설정 */
+    margin: 6px 4px;
+}

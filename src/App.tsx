@@ -1,0 +1,80 @@
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './App.css';
+import WebRTCComponent from './components/web-rtc/WebRTCComponent';
+import ScrollToTop from './components/ScrollToTop';
+import Header from './components/header/Header';
+import Main from './pages/main/Main';
+import Enrollment from './pages/lecture/enrollment/Enrollment';
+import LectureInfo from './pages/lecture/lecture-info/LectureInfo';
+import LectureList from './pages/lecture/lecturelist/LectureList';
+import LiveList from './pages/lecture/livelist/LiveList';
+import LiveStudent from './pages/live/live-student/LiveStudent';
+import LiveTeacher from './pages/live/live-teacher/LiveTeacher';
+import Classroom from './pages/student/classroom/Classroom';
+import DashboardStudent from './pages/student/dashboard-student/DashboardStudent';
+import DashboardTeacher from './pages/teacher/dashboard-teacher/DashboardTeacher';
+import EditDashboard from './pages/teacher/edit-dashboard/EditDashboard';
+import LectureCreated from './pages/teacher/lecture-created/LectureCreated';
+import LectureOpen from './pages/teacher/lecture-open/LectureOpen';
+import StudentList from './pages/teacher/student-list/StudentList';
+import Login from './pages/user/login/Login';
+import MyPage from './pages/user/mypage/MyPage';
+import SignInfo from './pages/user/sign-info/SignInfo';
+import SignTerms from './pages/user/sign-terms/SignTerms';
+import SignUp from './pages/user/signup/SignUp';
+import WebRTCTestComponent from 'components/web-rtc-test/WebRTCTestComponent';
+import WebRTCTestStudent from 'components/web-rtc-test/WebRTCTestStudent';
+import WebRTCTestTeacher from 'components/web-rtc-test/WebRTCTestTeacher';
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Header />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Main />} />
+
+        {/* Lecture Routes */}
+        <Route path="/enrollment" element={<Enrollment />} />
+        <Route path="/lecture/info" element={<LectureInfo />} />
+        <Route path="/list" element={<LectureList />} />
+        <Route path="/live-list" element={<LiveList />} />
+        
+        {/* Live Routes */}
+        <Route path="/live/student" element={<LiveStudent />} />
+        <Route path="/live/teacher" element={<LiveTeacher />} />
+        
+        {/* Student Routes */}
+        <Route path="/classroom" element={<Classroom />} />
+        <Route path="/dashboard/student" element={<DashboardStudent />} />
+        
+        {/* Teacher Routes */}
+        <Route path="/dashboard/teacher" element={<DashboardTeacher />} />
+        <Route path="/dashboard/edit" element={<EditDashboard />} />
+        <Route path="/lecture/created" element={<LectureCreated />} />
+        <Route path="/lecture/open" element={<LectureOpen />} />
+        <Route path="/lecture/students" element={<StudentList />} />
+        
+        {/* User Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/sign-info" element={<SignInfo />} />
+        <Route path="/sign-terms" element={<SignTerms />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        {/* CI/CD 구축할 때 사용한 테스트 페이지*/}
+        <Route path="/webrtc" element={<WebRTCComponent />} />
+
+        {/* webRTC 테스트 페이지 */}
+        <Route path="/webrtc-test" element={<WebRTCTestComponent />} />
+        <Route path="/webrtc-student" element={<WebRTCTestStudent />} />
+        <Route path="/webrtc-teacher" element={<WebRTCTestTeacher />} />
+
+      </Routes>
+    </Router>
+  );
+}
+
+
+export default App;

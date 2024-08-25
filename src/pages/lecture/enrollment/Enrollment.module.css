@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
+    text-align: center;
+  }
+  
+  .message {
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+  
+  .buttonContainer {
+    margin-top: 60px;
+  }
+  
+  .button {
+    width: 210px;
+    height: 40px;
+  }
+  
+  .navigation {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }

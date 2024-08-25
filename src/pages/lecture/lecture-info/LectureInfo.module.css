@@ -1,0 +1,51 @@
+.instructor {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+  
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+  
+.banner {
+  width: 350px;
+  height: 170px;
+  background-color: #e0e0e0; /* 배너 이미지가 들어갈 자리 */
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+  
+.category {
+  width: 92px;
+  height: 20px;
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+  border-radius: 50px;
+  line-height: 20px;
+  margin-bottom: 20px;
+}
+  
+.infoSection {
+  margin-bottom: 20px;
+}
+
+.infoTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+  
+.infoContent {
+  width: 355px;
+  height: 100px;
+  background-color: #d9d9d9;
+  border-radius: 8px;
+}
+  
+.buttonContainer {
+  margin-top: 20px;
+  margin-bottom: 60px; /* 네비게이션 바와의 간격 */
+}

@@ -1,0 +1,56 @@
+.metaContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    width: 343px;
+}
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.topRow.editSection {
+    justify-content: flex-start;
+}
+
+.instructor {
+    flex: 1;
+    font-size: 15px;
+    opacity: 0.6;
+}
+
+.categoryBox {
+    background-color: #E9E9E9;
+    border-radius: 50px;
+    width: 85px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.category {
+    margin: 0;
+    font-size: 12px;
+}
+
+.title {
+    margin-top: 2px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.title.editSection {
+    width: 90%;
+    margin: 0;
+}
+
+.metaContainer p,input {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+

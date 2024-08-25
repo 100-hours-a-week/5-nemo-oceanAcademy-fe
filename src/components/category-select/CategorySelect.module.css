@@ -1,0 +1,14 @@
+.categoryContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 10px;
+}
+
+.categoryDropdown {
+    width: 150px;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
