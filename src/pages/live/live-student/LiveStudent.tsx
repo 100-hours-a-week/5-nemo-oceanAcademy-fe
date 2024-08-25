@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
+import axios from 'axios';
+import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 
@@ -33,9 +35,9 @@ const LiveStudent: React.FC = () => {
           onRightButtonClick={handleModalCancel}
         />
       )}
-      <button className={styles.leaveButton} onClick={handleLeaveClick}>나가기</button>
       <div className={styles.videoSection}>
         <div className={styles.video}>강의 화면</div>
+        <div className={styles.smallVideo}>작은 화면</div>
         <h2 className={styles.title}>스티븐의 이안이 좋아요</h2>
         <p className={styles.instructor}>강사: 스티븐</p>
       </div>
@@ -46,7 +48,7 @@ const LiveStudent: React.FC = () => {
         </div>
         <div className={styles.chatInput}>
           <input type="text" placeholder="메시지를 입력하세요" />
-          <button>전송</button>
+          <button>Send</button>
         </div>
       </div>
     </Container>
