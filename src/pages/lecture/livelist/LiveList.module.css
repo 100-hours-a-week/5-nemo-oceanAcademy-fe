@@ -23,13 +23,6 @@
     justify-content: center;
     width: 362px;
     gap: 10px;
-    p {
-        font-size: 10px;
-    }
-    h5 {
-        font-size: 18px;
-        margin: 20px;
-    }
 }
 .emptyImage {
     margin: 10px;

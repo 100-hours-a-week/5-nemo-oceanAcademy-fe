@@ -9,7 +9,6 @@ export const Container = styled.div`
   flex-direction: column;
   text-align: left;
   align-items: center;
-  justify-content: center;
   background-color: white;
   padding-bottom: 80px;
 `;
