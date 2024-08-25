@@ -75,32 +75,9 @@ const Classroom: React.FC = () => {
     fetchEnrolledLectures();
   }, []);
 
-  // 수강 중인 강의 더미 데이터
-  const enrolledLectures: Lecture[] = [
-    // {
-    //   classId: 1, 
-    //   name: "강의 제목",
-    //   bannerImage: "배너 이미지 경로",
-    //   instructor: "강사 이름", 
-    //   category: "카테고리 이름"
-    // },
-    /*
-    { classId: 1, name: '강의 제목 1', bannerImage: '', instructor: '강사 이름 1', category: '프로그래밍' },
-    { classId: 2, name: '강의 제목 2', bannerImage: '', instructor: '강사 이름 2', category: '음악' },
-    { classId: 3, name: '강의 제목 3', bannerImage: '', instructor: '강사 이름 3', category: '요리' },
-    { classId: 4, name: '강의 제목 4', bannerImage: '', instructor: '강사 이름 4', category: '미술' },
-     */
-  ];
-
-    /* TO DO: 더미 데이터 지우고 이걸로 대체 
   const filteredLectures = selectedCategory === '전체 카테고리'
     ? lectures
     : lectures.filter(lecture => lecture.category === selectedCategory);
-  */
-
-  const filteredLectures = selectedCategory === '전체 카테고리' 
-    ? enrolledLectures 
-    : enrolledLectures.filter(lecture => lecture.category === selectedCategory);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -136,6 +113,7 @@ const Classroom: React.FC = () => {
                     name={lecture.name}
                     instructor={lecture.instructor}
                     category={lecture.category}
+                    onClick={() => navigate(`/dashboard/teacher/${lecture.classId}`)}
                   />
                 ))}
               </div>
