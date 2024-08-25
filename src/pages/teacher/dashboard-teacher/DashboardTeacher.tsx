@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
 import Announcement from '../../../components/dashboard/Announcement';
@@ -42,7 +42,8 @@ const DashboardTeacher: React.FC = () => {
   const [lectureData, setLectureData] = useState<LectureData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const classId = new URLSearchParams(location.search).get('id'); 
+  // const classId = new URLSearchParams(location.search).get('id'); 
+  const { classId } = useParams<{ classId: string }>();
   const token = localStorage.getItem('token');
 
 
@@ -80,25 +81,9 @@ const DashboardTeacher: React.FC = () => {
     fetchSchedules();
   }, [classId]);
 
-  /*
-  // 더미 데이터
-  const lectureData = {
-    instructor: '헤이즐리',
-    title: '즐리가 만든 소금빵이 제일 맛있어',
-    category: '쿠킹',
-    bannerImage: bn, // 배너 이미지 URL
-    announcement: '8/2 수업 오후 10시 시작\n준비물 : 밀가루, 물, 치킨, 초콜릿, 감자, 해파리\n상담 가능 시간 : 8/1 오후 7시~',
-    schedules: [
-      { content: '헤이즐리의 말랑말랑 반죽 만들기', start_time: '13:00', end_time: '15:00' },
-      { content: '헤이즐리의 끄아아아앙아아앙아아아악 고라니 만들기', start_time: '13:00', end_time: '15:00' },
-],
-    studentCount: 20,
-    objective: '이 강의는 소금빵을 만드는 방법을 배우는 것을 목표로 합니다.',
-    description: '소금빵의 다양한 레시피와 실습을 통해 최고의 소금빵을 만들 수 있습니다.',
-    instructorInfo: '헤이즐리 강사는 쿠킹 전문가로 다년간의 경험을 보유하고 있습니다.',
-    precourse: '밀가루와 물을 사전에 준비해 주세요.',
+  const handleLiveLectureStart = () => {
+    navigate(`/live/teacher/${classId}`); // 라이브 강의 페이지로 classId 전달
   };
-  */
 
   const handleDeleteClick = () => {
     setIsModalOpen(true);
@@ -188,7 +173,7 @@ const DashboardTeacher: React.FC = () => {
         <button className={styles.editButton} onClick={() => navigate('/dashboard/edit')}>정보 수정하기</button>
         <button className={styles.deleteButton} onClick={handleDeleteClick}>강의 삭제하기</button>
       </div>
-      <button className={styles.wideButton} onClick={() => navigate('/live/teacher')}>라이브 강의 시작</button>
+      <button className={styles.wideButton} onClick={handleLiveLectureStart}>라이브 강의 시작</button>
       {isModalOpen && (
         <Modal
           title="강의를 삭제하시겠습니까?"
