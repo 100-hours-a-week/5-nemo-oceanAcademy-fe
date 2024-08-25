@@ -52,11 +52,25 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # .env 파일을 서버로 복사
+            # /app/config 디렉토리 생성
+            if [ ! -d "/app/config" ]; then
+              mkdir -p /app/config
+            fi
+
+            # .env 파일을 서버에 복사
             echo "${{ secrets.ENV_FILE }}" > /app/config/.env
+
+            # Docker 이미지 최신 버전 가져오기
             docker pull judykimsohui/nemo-fe:latest
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d --name myapp -p 5000:3000 \
+
+            # 이전에 실행 중인 nemo-fe 컨테이너 중지 및 제거
+            docker stop nemo-fe || true
+            docker rm nemo-fe || true
+
+            # 새로운 Docker 컨테이너 실행
+            docker run -d --name nemo-fe -p 5000:3000 \
               --env-file /app/config/.env \
               judykimsohui/nemo-fe:latest
+
+            # Docker 컨테이너 로그 출력
+            docker logs nemo-fe
