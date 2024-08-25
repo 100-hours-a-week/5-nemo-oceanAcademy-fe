@@ -1,7 +1,9 @@
-// 사용자 페이지 
-
-import React, { useState } from 'react';
+// #C-1: MyPage(/mypage) - 사용자 페이지 (프로필 수정, 내가 개설한 강의 조회, 강의 개설 페이지로 이동)
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import endpoints from '../../../api/endpoints';
+import { Container } from '../../../styles/GlobalStyles';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
@@ -13,7 +15,7 @@ interface Lecture {
     bannerImage: string;
     instructor: string;
     category: string;
-  }
+}
 
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
