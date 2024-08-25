@@ -73,20 +73,39 @@ const LectureOpen: React.FC = () => {
     }
   };
 
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const handleBannerImageUpload = (file: File) => {
+    setBannerImage(file);
+  };
+
+  const validateForm = () => {
+    const isValid = title && selectedCategory && objective && description;
+    setIsFormValid(isValid);
+  };
+  
+  useEffect(validateForm, [title, selectedCategory, objective, description]);
+
   return (
     <Container>
       <h1 className={styles.title}>강의 개설하기</h1>
 
-      <InputField 
-        label="카테고리 선택" 
-        placeholder="카테고리를 선택해주세요" 
-        isRequired 
+      <CategorySelect 
+        categories={categories} 
+        selected={selectedCategory} 
+        onSelectCategory={handleCategoryChange} 
+        width="100%" // 드롭다운 너비를 더 넓게 설정
       />
 
       <InputField 
         label="강의 제목" 
         placeholder="강의 제목을 작성해주세요" 
         isRequired 
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         helperText="강의 제목은 필수 항목입니다."
       />
 
@@ -94,6 +113,8 @@ const LectureOpen: React.FC = () => {
         label="강의 목표" 
         placeholder="강의 목표를 작성해주세요" 
         isRequired 
+        value={objective}
+        onChange={(e) => setObjective(e.target.value)}
         helperText="강의 목표는 필수 항목입니다."
       />
 
@@ -103,6 +124,8 @@ const LectureOpen: React.FC = () => {
         isRequired 
         isTextArea 
         height={100}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
         helperText="강의 소개는 필수 항목입니다."
       />
 
@@ -111,6 +134,8 @@ const LectureOpen: React.FC = () => {
         placeholder="강사 소개를 작성해주세요" 
         isTextArea 
         height={100}
+        value={instructorInfo}
+        onChange={(e) => setInstructorInfo(e.target.value)}
       />
 
       <InputField 
@@ -118,6 +143,8 @@ const LectureOpen: React.FC = () => {
         placeholder="사전 지식 및 준비 안내를 작성해주세요" 
         isTextArea 
         height={100}
+        value={precourse}
+        onChange={(e) => setPrecourse(e.target.value)}
       />
 
       <FileUpload />
