@@ -11,6 +11,8 @@ import {
     startSystemAudioStream,
     stopSystemAudioStream
 } from './utils/teacher/teacherClient';
+// 기능 구현 확인하고 리팩토링 예정, streamUtil.js 
+// import { startStream, stopStream } from './utils/streamUtils';
 
 const WebRTCTestTeacher: React.FC = () => {
     const [roomId, setRoomId] = useState('');
