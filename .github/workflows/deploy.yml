@@ -58,7 +58,7 @@ jobs:
             fi
             sudo chown -R $USER:$USER /app/config
 
-            # .env 파일을 서버로 복사
+            # .env 파일 생성
             echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
 
             # Docker 이미지 최신 버전 가져오기
@@ -73,5 +73,6 @@ jobs:
               --env-file /app/config/.env \
               judykimsohui/nemo-fe:latest
 
-            # Docker 컨테이너 로그 출력
-            docker logs nemo-fe
+            # 컨테이너 상태 확인 및 로그 출력
+            docker ps -a
+            docker logs nemo-fe || echo "컨테이너 로그가 없습니다."
