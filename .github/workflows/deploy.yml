@@ -52,12 +52,13 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # /app/config 디렉토리 생성
+            # /app/config 디렉토리 생성 및 권한 설정
             if [ ! -d "/app/config" ]; then
-              mkdir -p /app/config
+              sudo mkdir -p /app/config
             fi
+            sudo chown -R $USER:$USER /app/config
 
-            # .env 파일을 서버에 복사
+            # .env 파일을 서버로 복사
             echo "${{ secrets.ENV_FILE }}" > /app/config/.env
 
             # Docker 이미지 최신 버전 가져오기
