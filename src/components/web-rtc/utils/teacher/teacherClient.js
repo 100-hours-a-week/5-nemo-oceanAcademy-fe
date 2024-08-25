@@ -14,7 +14,6 @@ const Producers = {
     SCREEN_SHARE_AUDIO: 'screenShareAudio'
 }
 
-
 /**
  * 
  * @param {*} roomId 방 번호

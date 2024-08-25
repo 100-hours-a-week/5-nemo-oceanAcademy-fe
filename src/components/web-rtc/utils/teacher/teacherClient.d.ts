@@ -178,4 +178,3 @@ export declare const stopSystemAudioStream: (
     producer: mediasoupClient.types.Producer | null, 
     setStreamStatus: (status: string) => void
 ) => void;
-ㄴ
