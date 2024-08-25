@@ -43,7 +43,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
       - name: 서버에 SSH 접속 및 배포
         uses: appleboy/ssh-action@v0.1.6
@@ -59,7 +59,7 @@ jobs:
             sudo chown -R $USER:$USER /app/config
 
             # .env 파일을 서버로 복사
-            echo "${{ secrets.ENV_FILE }}" > /app/config/.env
+            echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
 
             # Docker 이미지 최신 버전 가져오기
             docker pull judykimsohui/nemo-fe:latest
