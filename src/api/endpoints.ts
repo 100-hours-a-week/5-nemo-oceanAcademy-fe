@@ -12,6 +12,7 @@ const endpoints = {
     patchUserInfo: `${SERVER_URL}/api/users`, // 사용자 정보 수정 (프로필 사진, 닉네임)
     checkNickname: `${SERVER_URL}/api/users/checkNickname?nickname={nickname}`, // 닉네임 중복 검사 
     getLectures: `${SERVER_URL}/api/classes`, // 강의 리스트 가져오기 
+    openLecture: `${SERVER_URL}/api/classes`, // 강의 생성 
     getLectureInfo: `${SERVER_URL}/api/classes/{classId}`, // 특정 강의 정보 가져오기
     editDashboard: `${SERVER_URL}/api/classes/{classId}`, // 대시보드 수정
     deleteLecture: `${SERVER_URL}/delete`, // 강의 삭제
