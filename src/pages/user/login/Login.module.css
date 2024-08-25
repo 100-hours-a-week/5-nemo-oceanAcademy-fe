@@ -3,24 +3,23 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 390px;
+    width: 100%;
+    height: 100vh;
     gap: 20px;
     padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 100px; /* 화면 상단과 간격 */
+    background-color: #fff;
+    margin-top: -60px;
   }
   
   .title {
-    font-size: 30px;
+    font-size: 24px;
     font-weight: bold;
     color: #333;
   }
   
   .kakaoButton, 
   .alternativeButton {
-    width: 300px;
+    width: 280px;
     height: 46px;
     border: none;
     border-radius: 5px;
@@ -28,11 +27,22 @@
     font-weight: bold;
     cursor: pointer;
   }
-  
+
   .kakaoButton {
-    background-color: #ffeb00; /* 카카오 노란색 */
-    color: #3c1e1e; /* 카카오 텍스트 색상 */
+    background-color: #ffeb00;
+    color: #3c1e1e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 15px;
+        justify-content: center;
+        align-items: center;
+    }
   
   .alternativeButton {
     background-color: #747474; /* #747474 색상 */
