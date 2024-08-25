@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import WebRTCComponent from './components/web-rtc/WebRTCComponent';
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
 import Main from './pages/main/Main';
@@ -23,9 +22,9 @@ import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import SignTerms from './pages/user/sign-terms/SignTerms';
 import SignUp from './pages/user/signup/SignUp';
-import WebRTCTestComponent from 'components/web-rtc-test/WebRTCTestComponent';
-import WebRTCTestStudent from 'components/web-rtc-test/WebRTCTestStudent';
-import WebRTCTestTeacher from 'components/web-rtc-test/WebRTCTestTeacher';
+import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
+import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
+import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
 
 const App: React.FC = () => {
   return (
@@ -62,9 +61,6 @@ const App: React.FC = () => {
         <Route path="/sign-info" element={<SignInfo />} />
         <Route path="/sign-terms" element={<SignTerms />} />
         <Route path="/signup" element={<SignUp />} />
-
-        {/* CI/CD 구축할 때 사용한 테스트 페이지*/}
-        <Route path="/webrtc" element={<WebRTCComponent />} />
 
         {/* webRTC 테스트 페이지 */}
         <Route path="/webrtc-test" element={<WebRTCTestComponent />} />

@@ -44,7 +44,7 @@ const LiveList: React.FC = () => {
       } catch (error) {
         console.error('Failed to fetch categories:', error);
         setCategories([]); // 오류 시 빈 배열 설정
-        // alert('카테고리 정보를 가져오는 데 실패했습니다.');
+        alert('카테고리 정보를 가져오는 데 실패했습니다.');
       }
     };
 
@@ -79,33 +79,9 @@ const LiveList: React.FC = () => {
     fetchLiveLectures();
   }, []);
 
-  // TO DO: 더미 데이터 삭제 후 liveLectures -> lectures로 이름 변경 
-  const liveLectures = [
-    { classId: 1, name: '제목은 24자까지입니다', bannerImage: bn1, instructor: '세바스찬', category: '가드닝' },
-    { classId: 2, name: '아 왜 안되지', bannerImage: bn2, instructor: 'mia', category: '음악' },
-    { classId: 3, name: '나는 왜...', bannerImage: bn3, instructor: 'mui', category: '요리' },
-    { classId: 4, name: '그래도 리액트 사랑하시죠?', bannerImage: bn4, instructor: '송강호', category: '미술' },
-    { classId: 5, name: '모바일 앱 개발 실습', bannerImage: bn5, instructor: '첸', category: '개발' },
-    { classId: 6, name: '기타 코드 마스터 클래스', bannerImage: bn6, instructor: '실비아', category: '음악' },
-    { classId: 7, name: '초상화 그리기 워크숍', bannerImage: bn7, instructor: '테오', category: '미술' },
-    { classId: 8, name: '프랑스 요리의 비밀', bannerImage: bn1, instructor: '앤디', category: '요리' },
-    { classId: 9, name: '요가로 시작하는 하루', bannerImage: bn2, instructor: '엘', category: '운동' },
-    { classId: 10, name: '초보자를 위한 DSLR 강의', bannerImage: bn3, instructor: '미아', category: '사진' },
-    { classId: 11, name: '프랑스어 발음 마스터', bannerImage: bn4, instructor: '준', category: '외국어' },
-    { classId: 12, name: 'UX/UI 디자인의 기본', bannerImage: bn5, instructor: '에리카', category: '디자인' },
-    { classId: 13, name: '천문학 입문', bannerImage: bn6, instructor: '제이미', category: '과학' },
-    { classId: 14, name: '리더십 기초 트레이닝', bannerImage: bn7, instructor: '홍', category: '비즈니스 스킬' },
-  ];
-
-  /* TO DO: 더미 데이터 지우고 이걸로 대체 
   const filteredLectures = selectedCategory === '전체 카테고리'
     ? lectures
     : lectures.filter(lecture => lecture.category === selectedCategory);
-  */
-
-  const filteredLectures = selectedCategory === '전체 카테고리' 
-    ? liveLectures 
-    : liveLectures.filter(lecture => lecture.category === selectedCategory);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);

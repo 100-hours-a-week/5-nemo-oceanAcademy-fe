@@ -35,11 +35,11 @@ const MyPage: React.FC = () => {
   };
 
   const handleAddLectureClick = () => {
-    navigate('/teacher/lecture-open');
+    navigate('/lecture/open');
   };
 
   const handleLectureClick = (classId: number) => {
-    navigate(`/student/dashboard/${classId}`);
+    navigate(`/dashboard/student/${classId}`);
   };
 
   return (
