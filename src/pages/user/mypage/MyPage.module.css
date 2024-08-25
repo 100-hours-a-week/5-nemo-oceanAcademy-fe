@@ -1,49 +1,55 @@
 .container {
-    padding: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
+  background-color: white;
+}
   
-  .profileContainer {
-    width: 366px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
+.profileContainer {
+  width: 366px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
   
-  .profilePicture {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-  }
+.profilePicture {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
   
-  .profilePictureEditing {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: lightgray;
-  }
+.profilePictureEditing {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: lightgray;
+}
   
-  .username {
-    font-size: 16px;
-    font-weight: bold;
-  }
+.username {
+  font-size: 16px;
+  font-weight: bold;
+}
   
-  .usernameInput {
-    width: 200px;
-    height: 30px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 5px;
-  }
+.usernameInput {
+  width: 200px;
+  height: 30px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px;
+}
   
-  .editButton {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
+.editButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
   
   .lecturesHeader {
     display: flex;

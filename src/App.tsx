@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import './index.css';
 import WebRTCComponent from './components/web-rtc/WebRTCComponent';
+import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
 import Main from './pages/main/Main';
 import Enrollment from './pages/lecture/enrollment/Enrollment';
@@ -31,6 +31,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Header />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Main />} />
 

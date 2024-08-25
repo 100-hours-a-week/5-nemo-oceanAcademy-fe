@@ -4,11 +4,12 @@ import Advertisement from '../../../components/advertisement/Advertisement';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import CategorySelect from 'components/category-select/CategorySelect';
 import Navigation from '../../../components/navigation/Navigation';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureList.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 import bn from '../../../assets/images/ad_big0.png';
+import emptyImage from '../../../assets/images/empty.png';
 
 interface Lecture {
   classId: number;
@@ -18,38 +19,63 @@ interface Lecture {
   category: string;
 }
 
+interface Category {
+  category_id: number;
+  name: string;
+}
+
 const LectureList: React.FC = () => {
+  const [lectures, setLectures] = useState<Lecture[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('전체 카테고리');
-  // const [lectures, setLectures] = useState<Lecture[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
-  /*
-  useEffect(() => {
+  useEffect(() => {    
+    // 카테고리 목록 가져오기 
+    const fetchCategories = async () => {
+      try {
+        const categoryResponse = await axios.get(endpoints.getCategories);
+        setCategories(categoryResponse.data.categories || []); // 기본값 빈 배열 
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        setCategories([]); // 오류 시 빈 배열 설정 
+        // alert('카테고리 정보를 가져오는 데 실패했습니다.');
+      }
+    };
+
     // 강의 목록 가져오기 API 요청
-    axios.get(endpoints.getLectures)
-      .then(response => {
+    const fetchLectures = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(endpoints.getLectures);
         const classes = response.data.classes.map((item: any) => ({
           classId: item.class_id,
           name: item.name,
-          bannerImage: item.banner_image, // 모든 강의의 배너 이미지를 bn으로 설정
+          bannerImage: item.banner_image,
           instructor: item.instructor,
-          category: item.category
+          category: item.category,
         }));
-        setLectures(classes);
-      })
-      .catch(error => {
-        if (error.response && error.response.status === 400) {
-          alert(error.response.data.message); // 400 오류 발생 시 메시지 출력
+        setLectures(classes || []); // 기본값 빈 배열
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response && error.response.status === 400) {
+            alert(error.response.data.message);
+          }
         } else {
           console.error('Failed to fetch lectures:', error);
         }
-      });
+        setLectures([]); // 오류 시 빈 배열 설정 
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+    fetchLectures();
   }, []);
 
-  const filteredLectures = selectedCategory === '' 
-  ? lectures 
-  : lectures.filter(lecture => lecture.category === selectedCategory);
-*/
 
+  /*
   // 더미 데이터 -> 삭제 예정, 변수 이름 변경 잊지 말기 
   const lectures = [
     { classId: 1, name: '제목은 24자까지입니다', bannerImage: bn, instructor: '세바스찬', category: '가드닝' },
@@ -67,6 +93,7 @@ const LectureList: React.FC = () => {
     { classId: 13, name: '천문학 입문', bannerImage: bn, instructor: '제이미', category: '과학' },
     { classId: 14, name: '리더십 기초 트레이닝', bannerImage: bn, instructor: '홍', category: '비즈니스 스킬' },
   ];
+  */
 
   const filteredLectures = selectedCategory === '전체 카테고리'
   ? lectures
@@ -83,22 +110,37 @@ const LectureList: React.FC = () => {
       </section>
 
       <section className={styles.filterSection}>
-        <CategorySelect onSelectCategory={handleCategoryChange} />
+        <CategorySelect
+          selected={selectedCategory}
+          onSelectCategory={handleCategoryChange}
+          categories={categories}
+        />
       </section>
 
-      <section className={styles.lectureGrid}>
-        {filteredLectures.map((lecture) => (
-          <LectureCard
-            key={lecture.classId} 
-            classId={lecture.classId}
-            bannerImage={lecture.bannerImage} 
-            name={lecture.name} 
-            instructor={lecture.instructor} 
-            category={lecture.category} 
-          />
-        ))}
+      <section className={styles.lectureSection}>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : filteredLectures.length === 0 ? (
+          <div className={styles.emptyContainer}>
+            <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
+            <h5>아직 강의가 없어요!</h5>
+            {/* 아직 이 카테고리의 강의가 없어요. */}
+          </div>
+        ) : (
+          <div className={styles.lectureGrid}>
+            {filteredLectures.map((lecture) => (
+              <LectureCard
+                key={lecture.classId}
+                classId={lecture.classId}
+                bannerImage={lecture.bannerImage}
+                name={lecture.name}
+                instructor={lecture.instructor}
+                category={lecture.category}
+              />
+            ))}
+          </div>
+        )}
       </section>
-
       <Navigation />
     </Container>
   );

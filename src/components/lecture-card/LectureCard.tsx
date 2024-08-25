@@ -18,7 +18,7 @@ const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, i
   };
 
   return (
-    <div className={styles.card} onClick={handleClick}>
+    <div className={styles.container} onClick={handleClick}>
       <div className={styles.banner} style={{ backgroundImage: `url(${bannerImage})` }}></div>
       <h2 className={styles.title}>{name}</h2>
       <p className={styles.details}>
