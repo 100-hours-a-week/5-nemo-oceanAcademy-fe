@@ -1,7 +1,7 @@
 import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
-import { getServerUrl } from '../../secret';
+import { getServerUrl } from '../../serverUrl';
 
 let socket;
 let device;
