@@ -3,19 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import styles from './LectureCard.module.css';
 
 interface LectureCardProps {
-    classId: number;
-    name: string;
-    bannerImage: string | null; // string | null 타입 허용
-    instructor: string;
-    category: string;
+  classId: number;
+  name: string;
+  bannerImage: string | null;
+  instructor: string;
+  category: string;
+  onClick?: () => void;
 }
 
-const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, category }) => {
-    const navigate = useNavigate();
+const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, category, onClick }) => {
+  const navigate = useNavigate();
 
-    const handleClick = () => {
-        navigate(`/lecture/info?id=${classId}`);
-    };
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/lecture/info?id=${classId}`);
+    }
+  };
 
     const displayImage = bannerImage ?? 'path/to/default/image.png'; // bannerImage가 null일 경우 기본 이미지 사용
 
