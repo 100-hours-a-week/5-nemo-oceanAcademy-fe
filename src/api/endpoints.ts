@@ -1,4 +1,4 @@
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'https://www.nemooceanacademy.com:5000';
 
 const endpoints = {
     login: `${SERVER_URL}/kakao/login`, // 수정 예정

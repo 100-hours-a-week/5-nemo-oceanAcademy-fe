@@ -25,6 +25,7 @@ import SignUp from './pages/user/signup/SignUp';
 import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
 import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
 import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
+import KakaoCallback from 'pages/user/login/KakaoCallback';
 
 const App: React.FC = () => {
   return (
@@ -61,6 +62,7 @@ const App: React.FC = () => {
         <Route path="/sign-info" element={<SignInfo />} />
         <Route path="/sign-terms" element={<SignTerms />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
 
         {/* webRTC 테스트 페이지 */}
         <Route path="/webrtc-test" element={<WebRTCTestComponent />} />

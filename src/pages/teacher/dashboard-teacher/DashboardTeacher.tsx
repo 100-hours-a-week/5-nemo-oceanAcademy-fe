@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
 import Announcement from '../../../components/dashboard/Announcement';
@@ -9,10 +9,9 @@ import InfoSection from '../../../components/dashboard/InfoSection';
 import Modal from '../../../components/modal/Modal';
 import styles from './DashboardTeacher.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import bn from '../../../assets/images/ad_big0.png';
 import ScheduleForm from 'components/dashboard/ScheduleForm';
 import axios from 'axios';
-import endpoints from '../../../api/endpoints'; 
+import endpoints from '../../../api/endpoints';
 
 interface LectureData {
   classId: number;
@@ -38,14 +37,11 @@ interface Schedule {
 
 const DashboardTeacher: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { classId } = useParams<{ classId: string }>(); // URL에서 classId 추출
   const [lectureData, setLectureData] = useState<LectureData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  // const classId = new URLSearchParams(location.search).get('id'); 
-  const { classId } = useParams<{ classId: string }>();
   const token = localStorage.getItem('token');
-
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -63,23 +59,10 @@ const DashboardTeacher: React.FC = () => {
       }
     };
 
-    const fetchSchedules = async () => {
-      try {
-        const response = await axios.get(endpoints.getSchedule.replace('{classId}', classId || ''), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setSchedules(response.data.schedules || []);
-      } catch (error) {
-        console.error('Failed to fetch schedules:', error);
-        alert('강의 일정을 불러오는 데 실패했습니다.');
-      }
-    };
-
-    fetchDashboardData();
-    fetchSchedules();
-  }, [classId]);
+    if (classId) {
+      fetchDashboardData();
+    }
+  }, [classId, token]);
 
   const handleLiveLectureStart = () => {
     navigate(`/live/teacher/${classId}`); // 라이브 강의 페이지로 classId 전달
@@ -95,7 +78,6 @@ const DashboardTeacher: React.FC = () => {
 
   const handleModalDelete = async () => {
     try {
-      // 강의 삭제 API 요청
       const response = await axios.delete(endpoints.deleteLecture.replace('{classId}', classId || ''), {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -128,7 +110,6 @@ const DashboardTeacher: React.FC = () => {
 
   const handleScheduleDelete = async (schedule_id: number) => {
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.delete(`${endpoints.deleteSchedule.replace('{classId}', classId || '')}/${schedule_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -147,46 +128,47 @@ const DashboardTeacher: React.FC = () => {
   };
 
   return (
-    <Container>
-      {lectureData && (
-        <>
-          <LectureMeta
-            instructor={lectureData.instructor}
-            title={lectureData.name}
-            category={lectureData.category}
-          />
-          <div className={styles.buttonContainer}>
-            <button className={styles.primaryButton} onClick={() => navigate('/lecture/info')}>강의 소개 보러가기</button>
-          </div>
-          <Banner image={lectureData.bannerImage} />
-          <Announcement content={lectureData.announcement} />
-          <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
-          <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
-          <StudentCount count={20} onViewStudents={() => navigate('/lecture/students')} />
-          <InfoSection title="강의 목표" content={lectureData.objective} />
-          <InfoSection title="강의 소개" content={lectureData.description} />
-          <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
-          <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
-        </>
-      )}
-      <div className={styles.bottomButtons}>
-        <button className={styles.editButton} onClick={() => navigate('/dashboard/edit')}>정보 수정하기</button>
-        <button className={styles.deleteButton} onClick={handleDeleteClick}>강의 삭제하기</button>
-      </div>
-      <button className={styles.wideButton} onClick={handleLiveLectureStart}>라이브 강의 시작</button>
-      {isModalOpen && (
-        <Modal
-          title="강의를 삭제하시겠습니까?"
-          content="삭제한 강의는 복구할 수 없습니다. 그래도 삭제하시겠습니까?"
-          leftButtonText="취소"
-          rightButtonText="강의 삭제"
-          onLeftButtonClick={handleModalCancel}
-          onRightButtonClick={handleModalDelete}
-        />
-      )}
-    </Container>
+      <Container>
+        {lectureData && (
+            <>
+              <LectureMeta
+                  instructor={lectureData.instructor}
+                  title={lectureData.name}
+                  category={lectureData.category}
+              />
+              <div className={styles.buttonContainer}>
+                <button className={styles.primaryButton} onClick={() => navigate(`/lecture/info/${classId}`)}>
+                  강의 소개 보러가기
+                </button>
+              </div>
+              <Banner image={lectureData.bannerImage} />
+              <Announcement content={lectureData.announcement} />
+              <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
+              <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
+              <StudentCount count={20} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
+              <InfoSection title="강의 목표" content={lectureData.objective} />
+              <InfoSection title="강의 소개" content={lectureData.description} />
+              <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
+              <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
+            </>
+        )}
+        <div className={styles.bottomButtons}>
+          <button className={styles.editButton} onClick={() => navigate(`/dashboard/edit/${classId}`)}>정보 수정하기</button>
+          <button className={styles.deleteButton} onClick={handleDeleteClick}>강의 삭제하기</button>
+        </div>
+        <button className={styles.wideButton} onClick={handleLiveLectureStart}>라이브 강의 시작</button>
+        {isModalOpen && (
+            <Modal
+                title="강의를 삭제하시겠습니까?"
+                content="삭제한 강의는 복구할 수 없습니다. 그래도 삭제하시겠습니까?"
+                leftButtonText="취소"
+                rightButtonText="강의 삭제"
+                onLeftButtonClick={handleModalCancel}
+                onRightButtonClick={handleModalDelete}
+            />
+        )}
+      </Container>
   );
 };
 
 export default DashboardTeacher;
- 

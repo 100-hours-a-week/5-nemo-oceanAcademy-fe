@@ -1,12 +1,12 @@
 .instructor {
-  font-size: 15px;
+  font-size: 14px;
   margin-bottom: 10px;
 }
   
 .title {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin: 10px 0 15px 0;
 }
   
 .banner {
@@ -15,17 +15,20 @@
   background-color: #e0e0e0; /* 배너 이미지가 들어갈 자리 */
   overflow: hidden;
   margin-bottom: 20px;
+  border-radius: 10px;
 }
   
 .category {
-  width: 92px;
-  height: 20px;
+  width: 140px;
+  height: 30px;
   background-color: var(--primary-color);
   color: white;
   text-align: center;
   border-radius: 50px;
   line-height: 20px;
-  margin-bottom: 20px;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
 }
   
 .infoSection {
@@ -35,14 +38,16 @@
 .infoTitle {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
   
 .infoContent {
   width: 355px;
   height: 100px;
-  background-color: #d9d9d9;
+  background-color: white;
+  border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 10px;
 }
   
 .buttonContainer {
