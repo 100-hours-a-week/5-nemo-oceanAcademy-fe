@@ -26,7 +26,7 @@ const KakaoCallback: React.FC = () => {
         console.log('Authorization code:', code);
 
         if (code) {
-            fetch(`https://www.nemooceanacademy.com/api/auth/kakao/callback?code=${code}`)
+            fetch(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback?code=${code}`)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
