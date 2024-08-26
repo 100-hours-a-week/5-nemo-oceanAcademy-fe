@@ -26,7 +26,7 @@ const KakaoCallback: React.FC = () => {
         console.log('Authorization code:', code);
 
         if (code) {
-            fetch(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback?code=${code}`)
+            fetch(`https://www.nemooceanacademy.com/api/auth/kakao/callback?code=${code}`)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -72,7 +72,7 @@ const KakaoCallback: React.FC = () => {
                                 } else {
                                     console.error('Error during signup check:', error);
                                 }
-                                navigate('/login'); // 에러 시 로그인 페이지로 이동
+                                // navigate('/login'); // 에러 시 로그인 페이지로 이동
                             });
                     } else {
                         throw new Error('No access token received');
@@ -84,11 +84,11 @@ const KakaoCallback: React.FC = () => {
                     } else {
                         console.error('Error during Kakao login callback:', error);
                     }
-                    navigate('/login'); // 에러 시 로그인 페이지로 이동
+                    // navigate('/login'); // 에러 시 로그인 페이지로 이동
                 });
         } else {
             console.error('No authorization code found in URL');
-            navigate('/login'); // Authorization code가 없으면 로그인 페이지로 이동
+            // navigate('/login'); // Authorization code가 없으면 로그인 페이지로 이동
         }
     }, [navigate]);
 
