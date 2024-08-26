@@ -50,7 +50,7 @@ const DashboardStudent: React.FC = () => {
             <InfoSection title="강의 소개" content={lectureData.description} />
             <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
             <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
-            <button className={styles.wideButton} onClick={() => navigate('/live/student')}>라이브 강의 입장</button>
+            <button className={styles.wideButton} onClick={() => navigate('/live/student/${classId}')}>라이브 강의 입장</button>
         </Container>
     );
 };

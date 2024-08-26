@@ -37,22 +37,23 @@ const App: React.FC = () => {
 
         {/* Lecture Routes */}
         <Route path="/enrollment" element={<Enrollment />} />
-        <Route path="/lecture/info" element={<LectureInfo />} />
+        <Route path="/lecture/info/:classId" element={<LectureInfo />} />
         <Route path="/list" element={<LectureList />} />
         <Route path="/live-list" element={<LiveList />} />
         
         {/* Live Routes */}
-        <Route path="/live/student" element={<LiveStudent />} />
-        <Route path="/live/teacher" element={<LiveTeacher />} />
+        <Route path="/live/student/:classId" element={<LiveStudent />} />
+        <Route path="/live/teacher/:classId" element={<LiveTeacher />} />
         
         {/* Student Routes */}
         <Route path="/classroom" element={<Classroom />} />
-        <Route path="/dashboard/student" element={<DashboardStudent />} />
+        <Route path="/dashboard/student/:classId" element={<DashboardStudent />} />
         
         {/* Teacher Routes */}
-        <Route path="/dashboard/teacher" element={<DashboardTeacher />} />
-        <Route path="/dashboard/edit" element={<EditDashboard />} />
+        <Route path="/dashboard/teacher/:classId" element={<DashboardTeacher />} />
+        <Route path="/dashboard/edit/:classId" element={<EditDashboard />} />
         <Route path="/lecture/created" element={<LectureCreated />} />
+        <Route path="/lecture/created/:classId" element={<LectureCreated />} />
         <Route path="/lecture/open" element={<LectureOpen />} />
         <Route path="/lecture/students" element={<StudentList />} />
         
