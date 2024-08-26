@@ -8,13 +8,18 @@ interface LectureCardProps {
   bannerImage: string;
   instructor: string;
   category: string;
+  onClick?: () => void;
 }
 
-const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, category }) => {
+const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, category, onClick }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/lecture/info?id=${classId}`);
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/lecture/info?id=${classId}`);
+    }
   };
 
   return (

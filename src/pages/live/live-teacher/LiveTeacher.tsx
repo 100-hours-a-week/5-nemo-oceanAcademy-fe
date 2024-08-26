@@ -6,7 +6,6 @@ import endpoints from '../../../api/endpoints';
 import styles from './LiveTeacher.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 import profImage from '../../../assets/images/profile_default.png';
-
 import {
   Producer,
   connectToServerAsTeacher,
@@ -22,13 +21,13 @@ import {
 
 const LiveTeacher: React.FC = () => {
   const navigate = useNavigate();
-  const { classId } = useParams();
+  const { classId } = useParams<{ classId: string }>();
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState('');
   const [instructor, setInstructor] = useState('');
 
   // webRTC 관련
-  const roomId = classId;
+  const roomId = classId ? parseInt(classId, 10) : null;
   const [connectionStatus, setConnectionStatus] = useState('');
   const [webcamStatus, setWebcamStatus] = useState('');
   const [screenStatus, setScreenStatus] = useState('');
@@ -55,13 +54,17 @@ const LiveTeacher: React.FC = () => {
   // 페이지 로딩 시 강의 정보 가져오기
   useEffect(() => {
     const fetchLectureInfo = async () => {
-      try {
-        const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
-        const lectureData = response.data;
-        setTitle(lectureData.title);
-        setInstructor(lectureData.instructor);
-      } catch (error) {
-        console.error('Failed to fetch lecture info:', error);
+      if (classId) {
+        try {
+          const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
+          const lectureData = response.data;
+          setTitle(lectureData.title);
+          setInstructor(lectureData.instructor);
+        } catch (error) {
+          console.error('Failed to fetch lecture info:', error);
+        }
+      } else {
+        console.error('Invalid classId');
       }
     };
 
@@ -77,6 +80,7 @@ const LiveTeacher: React.FC = () => {
   // 서버 연결 핸들러
   const handleConnect = async () => {
     await connectToServerAsTeacher(roomId, setConnectionStatus, setIsPublishingDisabled);
+    console.log("연결 상태: ", connectionStatus);
 };
 
   // 웹캠 스트림 시작/중지 핸들러
@@ -224,10 +228,22 @@ const LiveTeacher: React.FC = () => {
       )}
       <div className={styles.videoSection}>
         <div className={styles.video}>
-          <video ref={webcamVideoRef} autoPlay playsInline muted style={{ width: '100%', height: '100%' }}></video>
+          <video 
+            ref={webcamVideoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={{ width: '100%', height: '100%' }}
+          ></video>
         </div>
         <div className={styles.smallVideo}>
-        <video ref={screenShareVideoRef} autoPlay playsInline muted style={{ width: '100%', height: '100%' }}></video>
+          <video 
+            ref={screenShareVideoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={{ width: '100%', height: '100%' }}
+          ></video>
         </div>
       </div>
 
@@ -293,7 +309,7 @@ const LiveTeacher: React.FC = () => {
             </div>  
             <div className={styles.chatContainer}>
               <div className={styles.chatInfo}>
-                <h5>스티븐</h5>
+                <h5>지렁이</h5>
                 <p>9:43 am</p>
               </div>
               <div className={styles.chatBubble}>

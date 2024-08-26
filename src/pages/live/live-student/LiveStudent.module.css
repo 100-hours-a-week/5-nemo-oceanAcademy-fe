@@ -22,19 +22,43 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
-  
-.title {
+
+.info {
+  width: 350px;
+  text-align: left;
+  margin: 2px;
+  h2 {
+    font-size: 18px;
+  }
+  p {
+    font-size: 15px;
+    color: #555;
+  }
+}
+
+.controls {
+  width: 350px;
+  display: flex;
+  justify-content: space-between;
   margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
+  display: flex;
+  gap: 10px;
+  background-color: #B2B6D0;
+  border-radius: 5px;
+  padding: 10px 20px;
+
+  button {
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: white;
+  }
 }
-  
-.instructor {
-  font-size: 14px;
-  color: #555;
-}
-  
+
 .chatSection {
   margin-top: 20px;
 }
@@ -47,25 +71,62 @@
   overflow-y: scroll;
   padding: 10px;
 }
-  
-  .chatInput {
-    display: flex;
-    margin-top: 10px;
+
+.chat {
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.profContainer {
+  img {
+    width: 50px;
+    height: 50px;
+    margin-right: 5px;
   }
-  
-  .chatInput input {
-    flex: 1;
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+}
+
+.chatInfo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 3px;
+  h5 {
+    padding-left: 10px;
+    font-size: 15px;
+    margin-right: 10px;
   }
-  
-  .chatInput button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+  p {
+    font-size: 12px;
   }
+}
+
+.chatBubble {
+  padding: 8px 18px;
+  font-size: 15px;
+  background-color: white;
+  border-radius: 20px;
+}
+
+.chatInput {
+  display: flex;
+  margin-top: 10px;
+}
+  
+.chatInput input {
+  flex: 1;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+  
+.chatInput button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
