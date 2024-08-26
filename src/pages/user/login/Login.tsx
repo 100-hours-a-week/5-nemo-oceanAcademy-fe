@@ -13,23 +13,12 @@ const Login: React.FC = () => {
                 const response = await fetch('https://www.nemooceanacademy.com:5000/api/auth/kakao/app-key');
                 const data = await response.json();
 
-                // Kakao SDK가 없으면 script 태그로 로드
-                if (!window.Kakao) {
-                    const script = document.createElement('script');
-                    script.src = 'https://developers.kakao.com/sdk/js/kakao.min.js';
-                    script.onload = () => {
-                        if (!window.Kakao.isInitialized()) {
-                            window.Kakao.init(data.appKey); // Kakao SDK 초기화
-                            setIsKakaoLoaded(true); // SDK 로드 상태 업데이트
-                            console.log('Kakao SDK Initialized');
-                        }
-                    };
-                    document.head.appendChild(script);
-                } else if (!window.Kakao.isInitialized()) {
-                    window.Kakao.init(data.appKey); // 이미 Kakao 객체가 있다면 초기화만 수행
-                    setIsKakaoLoaded(true); // SDK 로드 상태 업데이트
+                if (!window.Kakao?.isInitialized()) {
+                    window.Kakao.init(data.appKey); // Kakao SDK 초기화
                     console.log('Kakao SDK Initialized');
                 }
+
+                setIsKakaoLoaded(true); // SDK 로드 완료 상태로 업데이트
             } catch (error) {
                 console.error('Error fetching Kakao App Key:', error);
             }
@@ -39,12 +28,10 @@ const Login: React.FC = () => {
     }, []);
 
     const handleKakaoLogin = () => {
-        if (isKakaoLoaded && window.Kakao && window.Kakao.Auth) {
+        if (isKakaoLoaded) {
             window.Kakao.Auth.authorize({
                 redirectUri: 'https://www.nemooceanacademy.com/oauth/kakao/callback',
             });
-        } else {
-            console.error('Kakao SDK가 초기화되지 않았습니다.');
         }
     };
 
