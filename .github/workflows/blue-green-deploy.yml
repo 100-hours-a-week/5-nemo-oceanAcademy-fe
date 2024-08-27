@@ -54,7 +54,7 @@ jobs:
           script: |
             docker stop nemo-fe-green || true
             docker rm nemo-fe-green || true
-  
+
       - name: 현재 실행 중이지 않는 서비스에 새로운 Docker 컨테이너 배포
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -62,30 +62,41 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # 현재 사용 중인 포트를 확인하여 새로운 포트 결정
-            CURRENT_PORT=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4 | xargs -I {} aws elbv2 describe-target-health --target-group-arn ${{ secrets.BLUE_TARGET_GROUP_ARN }} --targets Id={} | grep 'Port' | awk '{print $2}')
+            # IMDSv2 토큰 요청
+            TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+            # 현재 IP 주소 가져오기
+            CURRENT_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+
+            # 현재 포트 정보 가져오기
+            CURRENT_PORT=$(aws elbv2 describe-target-health --target-group-arn ${{ secrets.BLUE_TARGET_GROUP_ARN }} --targets Id=$CURRENT_IP | grep 'Port' | awk '{print $2}' | tr -d '\r')
+
+            # 로그에 현재 포트 정보 출력
+            echo "Current port in use: $CURRENT_PORT"
+
             if [ "$CURRENT_PORT" -eq "3000" ]; then
-            # 3000일 경우, blue이므로 target group을 green으로 설정
               NEW_PORT=3001
               TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
             else
-            # 3001일 경우, green이므로 target group을 blue로 설정
               NEW_PORT=3000
               TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
             fi
-  
+
+            # 로그에 새로운 포트 정보 출력
+            echo "New port to be used: $NEW_PORT"
+
             # /app/config 디렉토리 생성 및 권한 설정
             if [ ! -d "/app/config" ]; then
               sudo mkdir -p /app/config
             fi
             sudo chown -R $USER:$USER /app/config
-  
+
             # .env 파일 생성
             echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
-  
+
             # Docker 이미지 최신 버전 가져오기
             docker pull judykimsohui/nemo-fe:latest
-  
+
             # 새로운 포트로 새로운 Docker 컨테이너 실행
             docker run -d --name nemo-fe-green -p $NEW_PORT:$NEW_PORT \
             --env-file /app/config/.env \
