@@ -120,7 +120,7 @@ jobs:
           set +e
           echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }}"
           echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
-          for i in {1..5}; do
+          for i in {1..20}; do
             # 첫 번째 헬스 체크 시도
             response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }})
             echo "Health Check attempt $i: Response was '$response'"
