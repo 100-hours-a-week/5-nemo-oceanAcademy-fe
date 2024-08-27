@@ -107,7 +107,11 @@ jobs:
       - name: 새 배포 환경의 Health Check
         run: |
           for i in {1..5}; do
-            response=$(curl -s http://{{ secrets.SERVER_HOST }}:$NEW_PORT/)
+            # 첫 번째 헬스 체크 시도
+            response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:$NEW_PORT/)
+            echo "Health Check attempt $i: Response was '$response'"
+            
+            # 응답을 확인하여 "status":"ok"가 포함되어 있는지 검사
             if [[ "$response" == *"status\":\"ok\""* ]]; then
               echo "Health Check passed!"
               exit 0
@@ -116,6 +120,7 @@ jobs:
               sleep 5
             fi
           done
+          
           echo "Health Check failed after 5 attempts."
           exit 1
   
