@@ -44,6 +44,16 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      
+      - name: 기존 컨테이너 중지 및 삭제
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker stop nemo-fe-green || true
+            docker rm nemo-fe-green || true
   
       - name: 현재 실행 중이지 않는 서비스에 새로운 Docker 컨테이너 배포
         uses: appleboy/ssh-action@v0.1.6
