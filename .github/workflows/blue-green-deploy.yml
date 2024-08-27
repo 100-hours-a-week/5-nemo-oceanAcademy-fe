@@ -117,6 +117,7 @@ jobs:
   
       - name: 새 배포 환경의 Health Check
         run: |
+          set +e
           echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }}"
           echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
           for i in {1..5}; do
