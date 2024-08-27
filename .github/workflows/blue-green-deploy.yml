@@ -89,6 +89,7 @@ jobs:
             # 환경 변수로 CURRENT_PORT 및 NEW_PORT 설정
             echo "CURRENT_PORT=$CURRENT_PORT" > /tmp/deployment_ports.env
             echo "NEW_PORT=$NEW_PORT" >> /tmp/deployment_ports.env
+            echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN" >> /tmp/deployment_ports.env
 
             # /app/config 디렉토리 생성 및 권한 설정
             if [ ! -d "/app/config" ]; then
@@ -114,6 +115,7 @@ jobs:
           source deployment_ports.env
           echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
           echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
+          echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN" >> $GITHUB_ENV
 
       - name: Wait for server to start
         run: sleep 30
@@ -143,7 +145,7 @@ jobs:
   
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트
         run: |
-          aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn=$TARGET_GROUP_ARN
+          aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn= ${{ env.TARGET_GROUP_ARN }}
   
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         run: |
