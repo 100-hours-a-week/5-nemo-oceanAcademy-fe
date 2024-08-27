@@ -129,7 +129,7 @@ jobs:
             echo "Health Check attempt $i: Response was '$response'"
             
             # 응답을 확인하여 "status\":\"ok"가 포함되어 있는지 검사
-            if [[ "$response" == *"status\":\"ok\""* ]]; then
+            if [[ "$response" == *"<title>바다서원</title>"* ]]; then
               echo "Health Check passed!"
               exit 0
             else
