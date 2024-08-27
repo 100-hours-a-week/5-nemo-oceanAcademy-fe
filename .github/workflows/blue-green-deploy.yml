@@ -86,6 +86,10 @@ jobs:
             echo "Current port in use: $CURRENT_PORT"
             echo "New port to be used: $NEW_PORT"
 
+            # 환경 변수로 CURRENT_PORT 및 NEW_PORT 설정
+            echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
+            echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
+
             # /app/config 디렉토리 생성 및 권한 설정
             if [ ! -d "/app/config" ]; then
               sudo mkdir -p /app/config
@@ -107,6 +111,7 @@ jobs:
       - name: 새 배포 환경의 Health Check
         run: |
           echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:$NEW_PORT"
+          echo "Current port: $CURRENT_PORT, New port: $NEW_PORT"
           for i in {1..5}; do
             # 첫 번째 헬스 체크 시도
             response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:$NEW_PORT/)
