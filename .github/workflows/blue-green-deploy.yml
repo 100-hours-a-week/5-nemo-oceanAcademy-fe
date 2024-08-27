@@ -145,7 +145,7 @@ jobs:
   
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트
         run: |
-          aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn= ${{ env.TARGET_GROUP_ARN }}
+          aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
   
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         run: |
