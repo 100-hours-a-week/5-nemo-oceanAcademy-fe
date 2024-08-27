@@ -106,6 +106,7 @@ jobs:
   
       - name: 새 배포 환경의 Health Check
         run: |
+          echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:$NEW_PORT"
           for i in {1..5}; do
             # 첫 번째 헬스 체크 시도
             response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:$NEW_PORT/)
