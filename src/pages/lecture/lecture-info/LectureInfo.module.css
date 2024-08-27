@@ -1,3 +1,17 @@
+.container {
+  width: 390px;
+  min-height: 100vh;
+/* max-height: 100vh; */
+/* 이렇게 해놔야 화면 크기 줄일 때 왔다갔다 하지 않는다고 한다. 땡큐 준원 하지만 일단 이번 스프린트는 패스! */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  justify-content: flex-start; /* TO DO: center -> flex-start로 수정, 강의 카드 불러왔을 때 괜찮은가 보기. */
+  background-color: white;
+  padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
+}
+
 .instructor {
   font-size: 14px;
   margin-bottom: 10px;

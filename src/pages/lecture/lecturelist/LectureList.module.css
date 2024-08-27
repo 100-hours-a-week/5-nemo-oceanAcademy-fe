@@ -19,8 +19,9 @@
     justify-content: center;
     width: 362px;
     gap: 10px;
-   font-size: 18px;
+    font-size: 18px;
 }
+
 .emptyImage {
     margin: 10px;
     width: 140px;

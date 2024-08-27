@@ -5,8 +5,9 @@
 
 body {
   margin: 0;
-  background-color: #c1d1ee;
-/* 생각보다 별론데 이미지 
+  background-color: #FCFAC5;
+  /*  */
+/* 이미지 삽입 시 다음 스타일 참고: 
   background-image: url('/src/assets/images/background.png');
   background-size: cover;
   background-position: center;

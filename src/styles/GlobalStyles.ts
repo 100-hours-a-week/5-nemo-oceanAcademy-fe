@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 // 공통적인 컨테이너 스타일
 export const Container = styled.div`
+  padding-top: 
   width: 390px;
   min-height: 100vh;
   display: flex;

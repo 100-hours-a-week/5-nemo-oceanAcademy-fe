@@ -1,5 +1,6 @@
+// #H-1: LectureInfo (/lecture/info) - 강의 소개 페이지
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
@@ -8,22 +9,23 @@ import styles from './LectureInfo.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 
 interface LectureData {
-    name: string;
-    instructor: string;
-    banner_image_path: string | null;
-    category_id: number;
-    object: string;
-    description: string;
-    instructor_info: string;
-    prerequisite: string;
+    class_id: number; 
+    name: string; // 강의 제목
+    banner_image: string | null; // 배너 이미지 경로
+    instructor: string; // 강사 이름
+    category: string; // 카테고리 이름
+    object: string; // 강의 목표
+    description: string; // 강의 소개 
+    instructor_info: string; // 강사 소개
+    precourse: string; // 강의에 필요한 사전 지식 및 준비 안내
 }
 
 const LectureInfo: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [lectureData, setLectureData] = useState<LectureData | null>(null); // 강의 데이터를 담을 상태
-    const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null); // 수강 여부 상태
-    const classId = new URLSearchParams(location.search).get('id');
+    const [lectureData, setLectureData] = useState<LectureData | null>(null);
+    const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+    const { classId } = useParams<{ classId: string }>();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -94,11 +96,11 @@ const LectureInfo: React.FC = () => {
     };
 
     if (!lectureData) {
-        return <div>Loading...</div>; // 데이터를 불러오기 전 로딩 표시
+        return <Container>Loading...</Container>; // 데이터를 불러오기 전 로딩 표시
     }
 
     return (
-        <Container>
+        <div className={styles.container}>
             <p className={styles.instructor}>{lectureData.instructor}</p>
             <h1 className={styles.title}>{lectureData.name}</h1>
             <div className={styles.banner} style={{ backgroundImage: `url(${lectureData.banner_image_path || '/default-image.png'})` }}></div>
@@ -129,7 +131,7 @@ const LectureInfo: React.FC = () => {
             </div>
 
             <Navigation />
-        </Container>
+        </div>
     );
 };
 

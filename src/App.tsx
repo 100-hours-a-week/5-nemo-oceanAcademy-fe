@@ -20,7 +20,6 @@ import StudentList from './pages/teacher/student-list/StudentList';
 import Login from './pages/user/login/Login';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
-import SignTerms from './pages/user/sign-terms/SignTerms';
 import SignUp from './pages/user/signup/SignUp';
 import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
 import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
@@ -28,6 +27,8 @@ import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 
 const App: React.FC = () => {
+
+  
   return (
     <Router>
       <Header />
@@ -55,13 +56,12 @@ const App: React.FC = () => {
         <Route path="/lecture/created" element={<LectureCreated />} />
         <Route path="/lecture/created/:classId" element={<LectureCreated />} />
         <Route path="/lecture/open" element={<LectureOpen />} />
-        <Route path="/lecture/students" element={<StudentList />} />
+        <Route path="/lecture/students:classId" element={<StudentList />} />
         
         {/* User Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-info" element={<SignInfo />} />
-        <Route path="/sign-terms" element={<SignTerms />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
 

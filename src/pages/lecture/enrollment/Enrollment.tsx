@@ -1,14 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './Enrollment.module.css';
+import axios from 'axios';
+import endpoints from '../../../api/endpoints';
 
 const Enrollment: React.FC = () => {
     const navigate = useNavigate();
+    // const classId = new URLSearchParams(location.search).get('id');
+    const { classId } = useParams<{ classId: string }>();
+    const token = localStorage.getItem('token');
 
     const handleButtonClick = () => {
-        navigate('/student/dashboard');
+        navigate(`/student/dashboard/${classId}`);
     }
 
     return (
