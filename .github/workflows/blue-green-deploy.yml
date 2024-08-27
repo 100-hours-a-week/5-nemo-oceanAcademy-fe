@@ -87,8 +87,8 @@ jobs:
             echo "New port to be used: $NEW_PORT"
 
             # 환경 변수로 CURRENT_PORT 및 NEW_PORT 설정
-            echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
-            echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
+            echo "CURRENT_PORT=$CURRENT_PORT" > /tmp/deployment_ports.env
+            echo "NEW_PORT=$NEW_PORT" >> /tmp/deployment_ports.env
 
             # /app/config 디렉토리 생성 및 권한 설정
             if [ ! -d "/app/config" ]; then
@@ -107,6 +107,13 @@ jobs:
             --env-file /app/config/.env \
             -e PORT=$NEW_PORT \
             judykimsohui/nemo-fe:latest
+
+      - name: PORT 정보를 GITHUB로 Fetch
+        run: |
+          scp -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/deployment_ports.env .
+          source deployment_ports.env
+          echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
+          echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
   
       - name: 새 배포 환경의 Health Check
         run: |
