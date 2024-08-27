@@ -65,24 +65,25 @@ jobs:
             # IMDSv2 토큰 요청
             TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 
-            # 현재 IP 주소 가져오기
-            CURRENT_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+            # 현재 리스너에 연결된 타겟 그룹 ARN 가져오기
+            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
 
-            # 현재 포트 정보 가져오기
-            CURRENT_PORT=$(aws elbv2 describe-target-health --target-group-arn ${{ secrets.BLUE_TARGET_GROUP_ARN }} --targets Id=$CURRENT_IP | grep 'Port' | awk '{print $2}' | tr -d '\r')
+            # 로그에 현재 타겟 그룹 ARN 출력
+            echo "Current Target Group ARN: $CURRENT_TARGET_GROUP_ARN"
 
-            # 로그에 현재 포트 정보 출력
-            echo "Current port in use: $CURRENT_PORT"
-
-            if [ "$CURRENT_PORT" -eq "3000" ]; then
+            # 타겟 그룹 ARN에 따라 현재 포트 결정
+            if [ "$CURRENT_TARGET_GROUP_ARN" == "${{ secrets.BLUE_TARGET_GROUP_ARN }}" ]; then
+              CURRENT_PORT=3000
               NEW_PORT=3001
               TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
             else
+              CURRENT_PORT=3001
               NEW_PORT=3000
               TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
             fi
 
-            # 로그에 새로운 포트 정보 출력
+            # 로그에 현재 포트 및 새 포트 정보 출력
+            echo "Current port in use: $CURRENT_PORT"
             echo "New port to be used: $NEW_PORT"
 
             # /app/config 디렉토리 생성 및 권한 설정
