@@ -110,14 +110,14 @@ jobs:
   
       - name: 새 배포 환경의 Health Check
         run: |
-          echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:$NEW_PORT"
-          echo "Current port: $CURRENT_PORT, New port: $NEW_PORT"
+          echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }}"
+          echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
           for i in {1..5}; do
             # 첫 번째 헬스 체크 시도
-            response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:$NEW_PORT/)
+            response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }})
             echo "Health Check attempt $i: Response was '$response'"
             
-            # 응답을 확인하여 "status":"ok"가 포함되어 있는지 검사
+            # 응답을 확인하여 "status\":\"ok"가 포함되어 있는지 검사
             if [[ "$response" == *"status\":\"ok\""* ]]; then
               echo "Health Check passed!"
               exit 0
@@ -137,7 +137,7 @@ jobs:
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         run: |
           INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-          if [ "$CURRENT_PORT" -eq "3000" ]; then
+          if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
             OLD_TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
           else
             OLD_TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
