@@ -114,6 +114,9 @@ jobs:
           source deployment_ports.env
           echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
           echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
+
+      - name: Wait for server to start
+        run: sleep 30
   
       - name: 새 배포 환경의 Health Check
         run: |
@@ -122,7 +125,7 @@ jobs:
           echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
           for i in {1..20}; do
             # 첫 번째 헬스 체크 시도
-            response=$(curl -s --max-time 10 http://{{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }})
+            response=$(curl -v --max-time 10 http://${{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }})
             echo "Health Check attempt $i: Response was '$response'"
             
             # 응답을 확인하여 "status\":\"ok"가 포함되어 있는지 검사
@@ -135,7 +138,7 @@ jobs:
             fi
           done
           
-          echo "Health Check failed after 5 attempts."
+          echo "Health Check failed after 20 attempts."
           exit 1
   
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트
