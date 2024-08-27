@@ -1,4 +1,4 @@
-name: 도커 CI/CD 파이프라인
+name: 블루-그린 무중단 배포
 
 on:
   push:
