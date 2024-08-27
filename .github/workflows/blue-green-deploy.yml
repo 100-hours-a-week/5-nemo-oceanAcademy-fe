@@ -139,6 +139,20 @@ jobs:
           
           echo "Health Check failed after 20 attempts."
           exit 1
+
+      - name: 새 타겟 그룹에 인스턴스 등록
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+            INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+            echo "INSTANCE_ID is: $INSTANCE_ID"
+
+            # 새로운 타겟 그룹에 인스턴스를 등록
+            aws elbv2 register-targets --target-group-arn ${{ env.TARGET_GROUP_ARN }} --targets Id=$INSTANCE_ID
   
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트
         uses: appleboy/ssh-action@v0.1.6
