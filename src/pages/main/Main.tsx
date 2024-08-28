@@ -25,29 +25,50 @@ const Main: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   
   // 데이터를 가져오는 공통 함수
-  const fetchLectures = async (target: string, setState: React.Dispatch<React.SetStateAction<Lecture[]>>) => {
-    try {
-      const response = await axios.get(`${endpoints.classes}?target=${target}`);
-      const classes = response.data && response.data.data ? response.data.classes.map((item: any) => ({
-        classId: item.class_id,
-        name: item.name,
-        bannerImage: item.banner_image,
-        instructor: item.instructor,
-        category: item.category
-      })) : [];
-      setState(classes);
-    } catch (err) {
-      setError('Failed to fetch classes.');
-      console.error(`Failed to fetch ${target} classes:`, err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchLectures('live', setLiveClasses);
-    fetchLectures('topten', setTopTenClasses);
+    // 라이브 강의 불러오기
+    axios.get(`${endpoints.classes}?target=live`)
+      .then(response => {
+        // 200 OK일 경우
+        const classes = response.data.classes.map((item: any) => ({
+          classId: item.class_id,
+          name: item.name,
+          bannerImage: item.banner_image,
+          instructor: item.instructor,
+          category: item.category
+        }));
+        setLiveClasses(classes);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.message); // 400 오류 발생 시 메시지 출력
+        } else {
+          console.error('Failed to fetch live classes:', error);
+        }
+      });
+
+    // TOP 10 강의 불러오기
+    axios.get(`${endpoints.classes}?target=topten`)
+      .then(response => {
+        // 200 OK일 경우
+        const classes = response.data.classes.map((item: any) => ({
+          classId: item.class_id,
+          name: item.name,
+          bannerImage: item.banner_image,
+          instructor: item.instructor,
+          category: item.category
+        }));
+        setTopTenClasses(classes);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.message); // 400 오류 발생 시 메시지 출력
+        } else {
+          console.error('Failed to fetch top ten classes:', error);
+        }
+      });
   }, []);
+
 
   // 로딩 관리 - 나중에 디자인 잡기 
   if (isLoading) {
