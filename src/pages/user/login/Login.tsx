@@ -34,6 +34,8 @@ const Login: React.FC = () => {
                     setIsKakaoLoaded(true);
                     console.log('Kakao SDK Initialized');
                 }
+
+                setIsKakaoLoaded(true); // SDK 로드 완료 상태로 업데이트
             } catch (error) {
                 console.error('Error fetching Kakao App Key:', error);
             }
@@ -43,12 +45,10 @@ const Login: React.FC = () => {
     }, []);
 
     const handleKakaoLogin = () => {
-        if (isKakaoLoaded && window.Kakao && window.Kakao.Auth) {
+        if (isKakaoLoaded) {
             window.Kakao.Auth.authorize({
                 redirectUri: 'https://www.nemooceanacademy.com/oauth/kakao/callback',
             });
-        } else {
-            console.error('Kakao SDK가 초기화되지 않았습니다.');
         }
     };
 
