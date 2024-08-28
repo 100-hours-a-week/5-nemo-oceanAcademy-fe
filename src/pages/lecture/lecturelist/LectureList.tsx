@@ -9,7 +9,6 @@ import endpoints from '../../../api/endpoints';
 import styles from './LectureList.module.css';
 import { Container, Empty } from '../../../styles/GlobalStyles';
 import emptyImage from '../../../assets/images/empty.png';
-import bn from '../../../assets/images/ad_big0.png';
 
 // 기본 이미지 배열
 const defaultImages = [
@@ -90,6 +89,7 @@ const LectureList: React.FC = () => {
 
       const lecturesData = response.data.data;
       console.log("Response data:", response.data);
+      console.log(response.data.message_kor);
 
       if (lecturesData && lecturesData.length > 0) {
         console.log("Fetched lectures:", lecturesData);

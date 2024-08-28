@@ -1,5 +1,5 @@
 // #A-1: Main (/) - 메인 화면/랜딩페이지 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Advertisement from '../../components/advertisement/Advertisement';
 import LectureCard from '../../components/lecture-card/LectureCard';
@@ -9,10 +9,24 @@ import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
 import { Empty } from '../../styles/GlobalStyles';
 
+// 기본 이미지 배열
+const defaultImages = [
+  '/classroom/image1.png',
+  '/classroom/image2.png',
+  '/classroom/image3.png',
+  '/classroom/image4.png',
+  '/classroom/image5.png',
+  '/classroom/image6.png',
+  '/classroom/image7.png',
+  '/classroom/image8.png',
+  '/classroom/image9.png',
+  '/classroom/image10.png',
+];
+
 interface Lecture {
   classId: number;
   name: string;
-  bannerImage: string;
+  bannerImage: string | null;
   instructor: string;
   category: string;
 }
@@ -24,37 +38,35 @@ const Main: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0); // 페이지 번호
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   
-  // 데이터를 가져오는 공통 함수
   useEffect(() => {
-    // 라이브 강의 불러오기
     axios.get(`${endpoints.classes}?target=live?page=${page}`)
       .then(response => {
-        // 200 OK일 경우
         console.log(response.data.data);
         console.log(response.data.message_kor);
         console.log(response.data.message_eng);
         const classes = response.data.data.map((item: any) => ({
           classId: item.class_id,
           name: item.name,
-          bannerImage: item.banner_image,
+          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
           category: item.category
         }));
+        
         setLiveClasses(classes);
       })
       .catch(error => {
         if (error.response && error.response.status === 400) {
-          alert(error.response.data.message); // 400 오류 발생 시 메시지 출력
+          alert(error.response.data.message);
         } else {
           console.error('Failed to fetch live classes:', error);
         }
       });
 
-    // TOP 10 강의 불러오기
     axios.get(`${endpoints.classes}?target=topten?page=${page}`)
       .then(response => {
-        // 200 OK일 경우
         const classes = response.data.data.map((item: any) => ({
           classId: item.class_id,
           name: item.name,
@@ -66,7 +78,7 @@ const Main: React.FC = () => {
       })
       .catch(error => {
         if (error.response && error.response.status === 400) {
-          alert(error.response.data.message); // 400 오류 발생 시 메시지 출력
+          alert(error.response.data.message);
         } else {
           console.error('Failed to fetch top ten classes:', error);
         }

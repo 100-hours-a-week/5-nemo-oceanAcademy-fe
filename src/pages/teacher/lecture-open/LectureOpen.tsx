@@ -57,7 +57,7 @@ const LectureOpen: React.FC = () => {
     if (bannerImage) formData.append('banner_image', bannerImage);
 
     try {
-      const response = await axios.post(endpoints.openLecture, formData, {
+      const response = await axios.post(endpoints.classes, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
