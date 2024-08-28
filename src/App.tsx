@@ -27,21 +27,7 @@ import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
 import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
 import { Container } from './styles/GlobalStyles'
 
-const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true); 
-
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    setIsLoggedIn(!!token);
-    setLoading(false);
-  }, []);
-
-  // 초기 로딩 중일 때
-  if (loading) {
-    return <Container>Loading...</Container>;
-  }
-  
+const App: React.FC = () => {  
   return (
     <Router>
       <Header />
@@ -77,13 +63,11 @@ const App: React.FC = () => {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-info" element={<SignInfo />} />
         {/*<Route path="/signup" element={<SignUp />} />*/}
-        <Route path="/callback" element={<KakaoCallback />} />
 
         {/* webRTC 테스트 페이지 */}
         <Route path="/webrtc-test" element={<WebRTCTestComponent />} />
         <Route path="/webrtc-student" element={<WebRTCTestStudent />} />
         <Route path="/webrtc-teacher" element={<WebRTCTestTeacher />} />
-
       </Routes>
     </Router>
   );
