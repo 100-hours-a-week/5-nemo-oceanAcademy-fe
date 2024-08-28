@@ -73,12 +73,6 @@ const Main: React.FC = () => {
       });
   }, []);
 
-
-  // 로딩 관리 - 나중에 디자인 잡기 
-  if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
-
   return (
       <div className={styles.container}>
         <section className={styles.adSection}>
