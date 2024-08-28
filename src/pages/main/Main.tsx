@@ -34,7 +34,7 @@ const Main: React.FC = () => {
         bannerImage: item.banner_image,
         instructor: item.instructor,
         category: item.category
-      }));
+      })) || [];
       setState(classes);
     } catch (err) {
       setError('Failed to fetch classes.');

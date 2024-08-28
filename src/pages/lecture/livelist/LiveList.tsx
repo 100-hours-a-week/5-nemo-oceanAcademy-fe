@@ -1,3 +1,4 @@
+// #E-1: LiveList (/live-list) - 라이브 강의 조회 페이지 (현재 라이브 중인 강의, 카테고리)
 import React, { useState, useEffect, useCallback } from 'react';
 import LiveCard from '../../../components/lecture-card/LiveCard';
 import CategorySelect from 'components/category-select/CategorySelect';
@@ -85,15 +86,16 @@ const LiveList: React.FC = () => {
         },
       });
 
+      const lecturesData = response.data.data;
       console.log("Response data:", response.data);
 
-      if (response.data && response.data.length > 0) {
-        console.log("Fetched lectures:", response.data);
+      if (lecturesData && lecturesData.length > 0) {
+        console.log("Fetched lectures:", lecturesData);
 
-        const classes = response.data.map((item: any) => ({
+        const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
           category: item.category,
         }));
@@ -101,7 +103,7 @@ const LiveList: React.FC = () => {
         setLectures((prevLectures) => [...prevLectures, ...classes]);
         setHasMore(classes.length > 0);
       } else {
-        console.log("No classes found");
+        console.log("더 이상 로드할 클래스 없음!");
         setHasMore(false);
       }
     } catch (error) {

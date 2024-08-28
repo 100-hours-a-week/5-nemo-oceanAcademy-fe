@@ -20,30 +20,37 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken'); 
-    setIsLoggedIn(!!token);
   
-    if (token) {
-      axios
-        .get(endpoints.userInfo, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setUserName(response.data.nickname);
-          setUserProfileImage(response.data.profile_image);
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            console.error('Unauthorized:', error.response);
-            // Handle unauthorized error, e.g., redirect to login
-          } else {
-            console.error('Failed to fetch user info:', error);
-          }
-        });
+    if (!token) { 
+      setIsLoggedIn(false);
+      return; 
     }
-  }, [navigate]);
 
+    setIsLoggedIn(true);
+
+    axios
+      .get(endpoints.userInfo, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setUserName(response.data.nickname);
+        setUserProfileImage(response.data.profile_image || profImage);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          console.error('Unauthorized:', error.response);
+          // 유효하지 않은 토큰인 경우, 토큰을 지우고 로그인 상태를 false로 설정
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          setIsLoggedIn(false);
+          // navigate('/login');
+        } else {
+          console.error('Failed to fetch user info:', error);
+        }
+      });
+  }, [navigate]);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -60,6 +67,7 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    setIsLoggedIn(false);
     navigate('/login');
   };
 
@@ -156,10 +164,8 @@ const Header: React.FC = () => {
       location.pathname.includes('/classroom') ||
       location.pathname.includes('/lecture/open') ||
       location.pathname.includes('/lecture/info') ||
-      location.pathname.includes('/dashboard/teacher') ||
-      location.pathname.includes('/dashboard/student') ||
-      location.pathname.includes('/lecture/students') ||
-      location.pathname.includes('/dashboard/edit')
+      location.pathname.includes('/dashboard') ||
+      location.pathname.includes('/lecture/students')
     ) {
       return (
         <img
