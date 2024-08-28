@@ -3,7 +3,7 @@ name: BlueGreen CICD Pipeline
 on:
   push:
     branches:
-      - feature/deploy
+      - main
 
 jobs:
   build_and_push:
