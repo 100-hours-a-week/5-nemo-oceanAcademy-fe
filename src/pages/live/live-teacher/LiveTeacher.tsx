@@ -77,6 +77,19 @@ const LiveTeacher: React.FC = () => {
     }
   }, [classId]);
 
+  useEffect(() => {
+    if (roomId) {
+      // LiveTeacher 컴포넌트가 로드될 때 서버에 연결
+      connectToServerAsTeacher(roomId.toString(), setConnectionStatus, setIsPublishingDisabled)
+        .then(() => {
+          console.log("Successfully connected to server as a teacher");
+        })
+        .catch((error) => {
+          console.error("Failed to connect to server:", error);
+        });
+    }
+  }, [roomId]);
+
   // 서버 연결 핸들러
   const handleConnect = async () => {
     await connectToServerAsTeacher(roomId, setConnectionStatus, setIsPublishingDisabled);

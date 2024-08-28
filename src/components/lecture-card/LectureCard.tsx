@@ -18,7 +18,7 @@ const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, i
     if (onClick) {
       onClick();
     } else {
-      navigate(`/lecture/info?id=${classId}`);
+      navigate(`/lecture/info/${classId}`);
     }
   };
 

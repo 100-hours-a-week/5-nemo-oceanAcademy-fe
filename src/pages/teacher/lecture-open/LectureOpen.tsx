@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import InputField from '../../../components/input-field/InputField';
 import FileUpload from '../../../components/file-upload/FileUpload';
 import Button from '../../../components/button/Button';
@@ -17,6 +17,7 @@ interface Category {
 
 const LectureOpen: React.FC = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
   const [isFormValid, setIsFormValid] = useState(false); // 필수값이 모두 입력되었는지 확인
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -26,6 +27,8 @@ const LectureOpen: React.FC = () => {
   const [instructorInfo, setInstructorInfo] = useState<string>('');
   const [precourse, setPrecourse] = useState<string>('');
   const [bannerImage, setBannerImage] = useState<File | null>(null);
+
+  const { classId } = useParams<{ classId: string }>();
 
   useEffect(() => {
     // 카테고리 목록 가져오기
@@ -44,7 +47,6 @@ const LectureOpen: React.FC = () => {
   const handleSubmit = async () => {
     if (!isFormValid) return;
 
-    const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('name', title);
     formData.append('category', selectedCategory);

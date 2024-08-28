@@ -7,11 +7,20 @@ import ScheduleList from '../../../components/dashboard/ScheduleList';
 import StudentCount from '../../../components/dashboard/StudentCount';
 import InfoSection from '../../../components/dashboard/InfoSection';
 import Modal from '../../../components/modal/Modal';
+import WideButton from '../../../components/wide-button/WideButton';
 import styles from './DashboardTeacher.module.css';
-import { Container } from '../../../styles/GlobalStyles';
+import { Container, Empty } from '../../../styles/GlobalStyles';
 import ScheduleForm from 'components/dashboard/ScheduleForm';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
+
+interface Schedule {
+  schedule_id: number;
+  content: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+}
 
 interface LectureData {
   classId: number;
@@ -27,21 +36,13 @@ interface LectureData {
   schedules: Schedule[];
 }
 
-interface Schedule {
-  schedule_id: number;
-  content: string;
-  start_time: string;
-  end_time: string;
-  date?: string;
-}
-
 const DashboardTeacher: React.FC = () => {
   const navigate = useNavigate();
-  const { classId } = useParams<{ classId: string }>(); // URL에서 classId 추출
+  const { classId } = useParams<{ classId: string }>(); 
   const [lectureData, setLectureData] = useState<LectureData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -65,7 +66,7 @@ const DashboardTeacher: React.FC = () => {
   }, [classId, token]);
 
   const handleLiveLectureStart = () => {
-    navigate(`/live/teacher/${classId}`); // 라이브 강의 페이지로 classId 전달
+    navigate(`/live/teacher/${classId}`);
   };
 
   const handleDeleteClick = () => {
@@ -78,7 +79,7 @@ const DashboardTeacher: React.FC = () => {
 
   const handleModalDelete = async () => {
     try {
-      const response = await axios.delete(endpoints.deleteLecture.replace('{classId}', classId || ''), {
+      const response = await axios.delete(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -97,7 +98,7 @@ const DashboardTeacher: React.FC = () => {
 
   const handleScheduleAdded = async () => {
     try {
-      const response = await axios.get(endpoints.getSchedule.replace('{classId}', classId || ''), {
+      const response = await axios.get(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -110,14 +111,15 @@ const DashboardTeacher: React.FC = () => {
 
   const handleScheduleDelete = async (schedule_id: number) => {
     try {
-      const response = await axios.delete(`${endpoints.deleteSchedule.replace('{classId}', classId || '')}/${schedule_id}`, {
+      const response = await axios.delete(`${endpoints.lectureSchedule.replace('{classId}', classId || '')}/${schedule_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
-        handleScheduleAdded(); // 일정 삭제 후 일정 업데이트
+        const updatedSchedules = schedules.filter(schedule => schedule.schedule_id !== schedule_id);
+        setSchedules(updatedSchedules);
       } else {
         alert('일정 삭제에 실패했습니다. 다시 시도해 주세요.');
       }
@@ -136,19 +138,29 @@ const DashboardTeacher: React.FC = () => {
                   title={lectureData.name}
                   category={lectureData.category}
               />
+              <Empty height="10px" />
               <div className={styles.buttonContainer}>
                 <button className={styles.primaryButton} onClick={() => navigate(`/lecture/info/${classId}`)}>
                   강의 소개 보러가기
                 </button>
               </div>
+              <Empty height="10px" />
               <Banner image={lectureData.bannerImage} />
+              <Empty height="10px" />
               <Announcement content={lectureData.announcement} />
+              <Empty height="10px" />
               <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
+              <Empty height="10px" />
               <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
+              <Empty height="10px" />
               <StudentCount count={20} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
+              <Empty height="10px" />
               <InfoSection title="강의 목표" content={lectureData.objective} />
+              <Empty height="10px" />
               <InfoSection title="강의 소개" content={lectureData.description} />
+              <Empty height="10px" />
               <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
+              <Empty height="10px" />
               <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
             </>
         )}

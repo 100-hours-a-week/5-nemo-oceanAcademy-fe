@@ -8,6 +8,7 @@ import styles from './ScheduleList.module.css';
 interface Schedule {
     schedule_id: number;
     content: string;
+    date: string;
     start_time: string;
     end_time: string;
 }
@@ -15,7 +16,7 @@ interface Schedule {
 interface ScheduleListProps {
     schedules: Schedule[];
     isTeacher?: boolean;
-    onDeleteSchedule?: (schedule_id: number) => void; // 삭제 기능을 위한 prop 추가
+    onDeleteSchedule?: (schedule_id: number) => void;
 }
 
 const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher, onDeleteSchedule }) => {
@@ -30,7 +31,10 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher, onDel
                                 <span className={styles.scheduleItemNumber}>{`${index + 1}.`}</span>
                                 <span className={styles.scheduleContent}>{`${schedule.content}`}</span>
                             </div>
-                            <span>{`${schedule.start_time} - ${schedule.end_time}`}</span>
+                            <div className={styles.scheduleTime}>
+                                <span>{schedule.date}</span>
+                                <span>{`${schedule.start_time} - ${schedule.end_time}`}</span>
+                            </div>
                             {isTeacher && onDeleteSchedule && (
                                 <button
                                     className={styles.deleteButton}

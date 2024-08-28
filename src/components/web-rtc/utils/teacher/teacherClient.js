@@ -34,6 +34,7 @@ export const connectToServerAsTeacher = async (
             };
     
             socket = socketClient(getServerUrl(), opts);
+            console.log(getServerUrl());
             socket.request = socketPromise(socket);
     
             socket.on('connect', async () => {

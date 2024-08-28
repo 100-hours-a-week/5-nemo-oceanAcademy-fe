@@ -1,5 +1,4 @@
 // #D-1: LectureList (/list) - 전체 강의 리스트 페이지 (현재 개설된 강의 조회, 카테고리)
-
 import React, { useEffect, useState, useCallback } from 'react';
 import Advertisement from '../../../components/advertisement/Advertisement';
 import LectureCard from '../../../components/lecture-card/LectureCard';
@@ -8,8 +7,9 @@ import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureList.module.css';
-import { Container } from '../../../styles/GlobalStyles';
+import { Container, Empty } from '../../../styles/GlobalStyles';
 import emptyImage from '../../../assets/images/empty.png';
+import bn from '../../../assets/images/ad_big0.png';
 
 // 기본 이미지 배열
 const defaultImages = [
@@ -40,41 +40,40 @@ interface Category {
 
 const LectureList: React.FC = () => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
-  const [page, setPage] = useState(0); // 페이지 번호 상태 추가
-  const [hasMore, setHasMore] = useState(true); // 더 불러올 강의가 있는지 여부
+  const [page, setPage] = useState(0); // 페이지 번호
+  const [hasMore, setHasMore] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('전체 카테고리');
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false); // 스크롤 시 데이터 가져오는 상태
+  const token = localStorage.getItem('accessToken');
 
-  // 카테고리 목록 가져오기
   useEffect(() => {
-    const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+    // 카테고리 목록 가져오기
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(endpoints.getCategories, {
           headers: {
-            Authorization: `Bearer ${token}`, // 토큰을 헤더에 추가
+            Authorization: `Bearer ${token}`,
           },
         });
-        setCategories(categoryResponse.data || []); // 기본값 빈 배열
+        setCategories(categoryResponse.data || []);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
-        setCategories([]); // 오류 시 빈 배열 설정
+        setCategories([]);
       }
     };
 
-    fetchCategories(); // 컴포넌트 마운트 시 카테고리 목록 가져오기
+    fetchCategories();
   }, []);
 
   // 강의 목록 가져오기 API 요청 (페이지와 카테고리 필터 적용)
   const fetchLectures = useCallback(async (categoryId: number | null = null, page: number = 0) => {
     setIsFetching(true); // 스크롤 요청 중
-    setIsLoading(true); // 로딩 상태 활성화
+    setIsLoading(true);
 
     try {
-      const token = localStorage.getItem('accessToken'); // 토큰 가져오기
-      let url = `${endpoints.getLectures}?page=${page}`;
+      let url = `${endpoints.classes}?page=${page}`;
 
       // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
@@ -85,7 +84,7 @@ const LectureList: React.FC = () => {
 
       const response = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${token}`, // 토큰을 헤더에 추가
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -98,7 +97,7 @@ const LectureList: React.FC = () => {
         const classes = response.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)], // banner_image가 없을 경우 기본 이미지 랜덤 적용
+          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
           category: item.category,
         }));
@@ -117,8 +116,8 @@ const LectureList: React.FC = () => {
         console.error('An unknown error occurred:', error);
       }
     } finally {
-      setIsLoading(false); // 로딩 상태 비활성화
-      setIsFetching(false); // 스크롤 요청 완료
+      setIsLoading(false);
+      setIsFetching(false);
     }
   }, []);
 
@@ -161,7 +160,7 @@ const LectureList: React.FC = () => {
           <CategorySelect
               selected={selectedCategory}
               onSelectCategory={handleCategoryChange}
-              categories={categories} // categories 데이터 전달
+              categories={categories}
           />
         </section>
 

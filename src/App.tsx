@@ -18,14 +18,13 @@ import LectureCreated from './pages/teacher/lecture-created/LectureCreated';
 import LectureOpen from './pages/teacher/lecture-open/LectureOpen';
 import StudentList from './pages/teacher/student-list/StudentList';
 import Login from './pages/user/login/Login';
+import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
-import SignTerms from './pages/user/sign-terms/SignTerms';
 import SignUp from './pages/user/signup/SignUp';
 import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
 import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
 import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
-import KakaoCallback from 'pages/user/login/KakaoCallback';
 
 const App: React.FC = () => {
   return (
@@ -37,32 +36,32 @@ const App: React.FC = () => {
 
         {/* Lecture Routes */}
         <Route path="/enrollment" element={<Enrollment />} />
-        <Route path="/lecture/info" element={<LectureInfo />} />
+        <Route path="/lecture/info/:classId" element={<LectureInfo />} />
         <Route path="/list" element={<LectureList />} />
         <Route path="/live-list" element={<LiveList />} />
         
         {/* Live Routes */}
-        <Route path="/live/student" element={<LiveStudent />} />
-        <Route path="/live/teacher" element={<LiveTeacher />} />
+        <Route path="/live/student/:classId" element={<LiveStudent />} />
+        <Route path="/live/teacher/:classId" element={<LiveTeacher />} />
         
         {/* Student Routes */}
         <Route path="/classroom" element={<Classroom />} />
-        <Route path="/dashboard/student" element={<DashboardStudent />} />
+        <Route path="/dashboard/student/:classId" element={<DashboardStudent />} />
         
         {/* Teacher Routes */}
-        <Route path="/dashboard/teacher" element={<DashboardTeacher />} />
-        <Route path="/dashboard/edit" element={<EditDashboard />} />
+        <Route path="/dashboard/teacher/:classId" element={<DashboardTeacher />} />
+        <Route path="/dashboard/edit/:classId" element={<EditDashboard />} />
         <Route path="/lecture/created" element={<LectureCreated />} />
+        <Route path="/lecture/created/:classId" element={<LectureCreated />} />
         <Route path="/lecture/open" element={<LectureOpen />} />
-        <Route path="/lecture/students" element={<StudentList />} />
+        <Route path="/lecture/students:classId" element={<StudentList />} />
         
         {/* User Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-info" element={<SignInfo />} />
-        <Route path="/sign-terms" element={<SignTerms />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
+        {/*<Route path="/signup" element={<SignUp />} />*/}
+        <Route path="/callback" element={<KakaoCallback />} />
 
         {/* webRTC 테스트 페이지 */}
         <Route path="/webrtc-test" element={<WebRTCTestComponent />} />

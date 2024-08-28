@@ -62,7 +62,6 @@ const WebRTCTestComponent: React.FC = () => {
     }
   };
 
-
   return (
     <div>
       <input
