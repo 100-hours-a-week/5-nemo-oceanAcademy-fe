@@ -5,14 +5,14 @@
 
 body {
   margin: 0;
-  background-color: #445ca5;
+  /* background-color: #445ca5; 진한 색 */
   /* background-color: #FCFAC5; 미아 픽 */ 
   /* background-color: #c1d1ee; 주디 픽 */
-/* 이미지 삽입 시 다음 스타일 참고: 
-  background-image: url('/src/assets/images/background.png');
+  /* 이미지 삽입 시 다음 스타일 참고: */
+  background-image: url('/src/assets/images/background1.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat; */
+  background-repeat: no-repeat;
   display: flex;
   justify-content: center;
 }

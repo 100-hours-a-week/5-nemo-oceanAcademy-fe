@@ -61,7 +61,7 @@ const App: React.FC = () => {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-info" element={<SignInfo />} />
         {/*<Route path="/signup" element={<SignUp />} />*/}
-        <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
+        <Route path="/callback" element={<KakaoCallback />} />
 
         {/* webRTC 테스트 페이지 */}
         <Route path="/webrtc-test" element={<WebRTCTestComponent />} />

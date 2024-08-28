@@ -15,7 +15,7 @@ const SignInfo: React.FC = () => {
   // 파일 선택 처리
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
+    if (file && (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
       setSelectedFile(file); // 파일 객체 저장
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string); // 미리보기

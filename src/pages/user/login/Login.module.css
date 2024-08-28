@@ -16,6 +16,11 @@
   font-weight: bold;
   color: #333;
 }
+
+.explanation {
+  font-size: 16px;
+  color: var(--primary-color);
+}
   
 .kakaoButton, 
 .alternativeButton {
@@ -28,6 +33,7 @@
 }
 
 .kakaoButton {
+  padding-right: 10px;
   background-color: #ffeb00;
   color: #3c1e1e;
   display: flex;

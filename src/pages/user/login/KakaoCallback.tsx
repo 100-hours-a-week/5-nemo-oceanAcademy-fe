@@ -57,7 +57,8 @@ const KakaoCallback: React.FC = () => {
                             })
                             .catch((error) => {
                                 console.error('Error during signup check:', error);
-                                navigate('/login'); // 에러 시 로그인 페이지로 이동
+                                alert('회원 확인 중 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
+                                navigate('/login');
                             });
                     } else {
                         throw new Error('No access token received');
@@ -65,16 +66,17 @@ const KakaoCallback: React.FC = () => {
                 })
                 .catch((error) => {
                     console.error('Error during Kakao login callback:', error);
-                    navigate('/login'); // 에러 시 로그인 페이지로 이동
+                    alert('로그인 중 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
+                    navigate('/login');
                 });
         } else {
             console.error('No authorization code found in URL');
-            navigate('/login'); // Authorization code가 없으면 로그인 페이지로 이동
+            alert('인증 과정에서 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
+            navigate('/login');
         }
     }, [navigate]);
 
-
-    return null; // 화면에 아무것도 표시하지 않음
+    return null;
 };
 
 export default KakaoCallback;
