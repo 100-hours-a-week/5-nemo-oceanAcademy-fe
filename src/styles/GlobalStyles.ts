@@ -1,9 +1,8 @@
-// CommonStyles.ts - 공통적인 스타일 정의 
+// GlobalStyles.ts - 공통적인 스타일 정의 
 import styled from 'styled-components';
 
 // 공통적인 컨테이너 스타일
 export const Container = styled.div`
-  padding-top: 
   width: 390px;
   min-height: 100vh;
   display: flex;
@@ -35,4 +34,14 @@ export const Title = styled.h1`
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
+`;
+
+// 여백
+interface EmptyProps {
+  height?: '20px' | '10px'; 
+}
+
+export const Empty = styled.div<EmptyProps>`
+  width: 100%;
+  height: ${({ height }) => height || '20px'};
 `;

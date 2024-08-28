@@ -1,10 +1,10 @@
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'https://www.nemooceanacademy.com:5000';
 
 const endpoints = {
-    // callback: `${SERVER_URL}/api/auth/kakao/callback?code=${code}`, //callback
     user: `${SERVER_URL}/api/auth/signup`, // 회원가입 여부 확인 (GET) / 회원가입 신청 (POST) / 회원 탈퇴 (DELETE)
     getKakaoAppKey: `${SERVER_URL}/api/auth/kakao/app-key`, // 카카오 앱 키 발급
     getJwt: `${SERVER_URL}/api/auth/kakao/callback`, // 카카오 인증 코드 처리 후 JWT 발급
+    callback: `${SERVER_URL}/api/auth/kakao/callback`, //callback
     userInfo: `${SERVER_URL}/api/users`, // 프로필(사진, 닉네임) 가져오기 (GET) / 프로필 수정 (PATCH)
     checkNickname: `${SERVER_URL}/api/users/checkNickname?nickname={nickname}`, // 닉네임 중복 검사 
     classes: `${SERVER_URL}/api/classes`, // 강의 리스트 가져오기 (GET) / 강의 생성 (POST)

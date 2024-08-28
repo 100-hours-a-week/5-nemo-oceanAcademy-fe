@@ -1,6 +1,8 @@
+// #B-1: Login 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
+import { Container, Empty } from '../../../styles/GlobalStyles';
 
 const Login: React.FC = () => {
     const [isKakaoLoaded, setIsKakaoLoaded] = useState(false); // SDK 로드 상태 추적
@@ -52,6 +54,10 @@ const Login: React.FC = () => {
         navigate('/signup');
     };
 
+    const handleAltClick = () => {
+        alert('현재 해당 기능을 지원하지 않습니다. 카카오 로그인을 이용해주세요.');
+    };
+
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>로그인</h1>
@@ -59,17 +65,17 @@ const Login: React.FC = () => {
 
             <button className={styles.kakaoButton} onClick={handleKakaoLogin} disabled={!isKakaoLoaded}>
                 <img src="/kakao_icon.svg" alt="Kakao Icon" className={styles.icon} />
-                카카오로 로그인하기
+                카카오로 로그인
                 <div style={{ width: '10px' }} />
             </button>
 
-            <button className={styles.alternativeButton}>
+            <button className={styles.alternativeButton} onClick={handleAltClick}>
                 다른 방법으로 로그인
             </button>
 
             <div style={{ width: '100%', height: '10px' }} />
-            <p className={styles.signUpPrompt}>아직 원생이 아니신가요?</p>
-            <span className={styles.signUpLink} onClick={handleSignUpClick}>
+            <p className={styles.prompt}>아직 원생이 아니신가요?</p>
+            <span className={styles.link} onClick={handleSignUpClick}>
                 간편 가입하기
             </span>
         </div>
