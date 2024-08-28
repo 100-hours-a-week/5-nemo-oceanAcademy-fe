@@ -23,14 +23,18 @@ const Main: React.FC = () => {
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0); // 페이지 번호
   
   // 데이터를 가져오는 공통 함수
   useEffect(() => {
     // 라이브 강의 불러오기
-    axios.get(`${endpoints.classes}?target=live`)
+    axios.get(`${endpoints.classes}?target=live?page=${page}`)
       .then(response => {
         // 200 OK일 경우
-        const classes = response.data.classes.map((item: any) => ({
+        console.log(response.data.data);
+        console.log(response.data.message_kor);
+        console.log(response.data.message_eng);
+        const classes = response.data.data.map((item: any) => ({
           classId: item.class_id,
           name: item.name,
           bannerImage: item.banner_image,
@@ -48,10 +52,10 @@ const Main: React.FC = () => {
       });
 
     // TOP 10 강의 불러오기
-    axios.get(`${endpoints.classes}?target=topten`)
+    axios.get(`${endpoints.classes}?target=topten?page=${page}`)
       .then(response => {
         // 200 OK일 경우
-        const classes = response.data.classes.map((item: any) => ({
+        const classes = response.data.data.map((item: any) => ({
           classId: item.class_id,
           name: item.name,
           bannerImage: item.banner_image,
