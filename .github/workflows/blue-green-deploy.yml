@@ -31,7 +31,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: judykimsohui/nemo-fe:latest,judykimsohui/nemo-fe:${{ github.sha }}
+          tags: judykimsohui/nemo-fe:latest
 
   deploy:
     needs: build_and_push
@@ -101,14 +101,14 @@ jobs:
             echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
 
             # Docker 이미지 최신 버전 가져오기
-            docker pull judykimsohui/nemo-fe:${{ github.sha }}
+            docker pull judykimsohui/nemo-fe:latest
 
             # 새로운 포트로 새로운 Docker 컨테이너 실행
             docker run -d --name nemo-fe-green -p $NEW_PORT:$NEW_PORT \
             --env-file /app/config/.env \
             -e PORT=$NEW_PORT \
-            judykimsohui/nemo-fe:${{ github.sha }}
-				
+            judykimsohui/nemo-fe:latest
+
       - name: PORT 정보를 GITHUB로 Fetch
         run: |
           scp -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/deployment_ports.env .
@@ -116,9 +116,6 @@ jobs:
           echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
           echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
           echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN" >> $GITHUB_ENV
-
-      - name: Wait for server to start
-        run: sleep 30
   
       - name: 새 배포 환경의 Health Check
         run: |
@@ -142,32 +139,48 @@ jobs:
           
           echo "Health Check failed after 20 attempts."
           exit 1
-  
-      - name: ELB 리스너를 새 타겟 그룹으로 업데이트
-        run: |
-          aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn= ${{ env.TARGET_GROUP_ARN }}
-  
-      - name: 이전 타겟 그룹에서 인스턴스 deregister
-        run: |
-          INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-          if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
-            OLD_TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
-            echo "green >> blue"
-          else
-            OLD_TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
-            echo "blue >> green"
-          fi
-          aws elbv2 deregister-targets --target-group-arn $OLD_TARGET_GROUP_ARN --targets Id=$INSTANCE_ID
-  
-      - name: Docker 사용하지 않는 이미지 정리
+
+      - name: 새 타겟 그룹에 인스턴스 등록
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker image prune -a -f
-      
+            TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+            INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+            echo "INSTANCE_ID is: $INSTANCE_ID"
+
+            # 새로운 타겟 그룹에 인스턴스를 등록
+            aws elbv2 register-targets --target-group-arn ${{ env.TARGET_GROUP_ARN }} --targets Id=$INSTANCE_ID
+  
+      - name: ELB 리스너를 새 타겟 그룹으로 업데이트
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }} --debug
+  
+      - name: 이전 타겟 그룹에서 인스턴스 deregister
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+            INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
+            echo "INSTANCE_ID is: $INSTANCE_ID"
+
+            if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
+              OLD_TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+            else
+              OLD_TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+            fi
+            aws elbv2 deregister-targets --target-group-arn $OLD_TARGET_GROUP_ARN --targets Id=$INSTANCE_ID
+  
       - name: 이전 버전의 환경을 멈추고 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
