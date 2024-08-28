@@ -28,13 +28,13 @@ const Main: React.FC = () => {
   const fetchLectures = async (target: string, setState: React.Dispatch<React.SetStateAction<Lecture[]>>) => {
     try {
       const response = await axios.get(`${endpoints.classes}?target=${target}`);
-      const classes = response.data.classes.map((item: any) => ({
+      const classes = response.data && response.data.data ? response.data.classes.map((item: any) => ({
         classId: item.class_id,
         name: item.name,
         bannerImage: item.banner_image,
         instructor: item.instructor,
         category: item.category
-      })) || [];
+      })) : [];
       setState(classes);
     } catch (err) {
       setError('Failed to fetch classes.');

@@ -14,24 +14,11 @@ const Login: React.FC = () => {
     useEffect(() => {
         const loadKakaoSDK = async () => {
             try {
-                const response = await axios.get(endpoints.getKakaoAppKey);
-                const data = response.data;
+                const response = await fetch('https://www.nemooceanacademy.com:5000/api/auth/kakao/app-key');
+                const data = await response.json();
 
-                // Kakao SDK가 없으면 script 태그로 로드
-                if (!window.Kakao) {
-                    const script = document.createElement('script');
-                    script.src = 'https://developers.kakao.com/sdk/js/kakao.min.js';
-                    script.onload = () => {
-                        if (!window.Kakao.isInitialized()) {
-                            window.Kakao.init(data.appKey);
-                            setIsKakaoLoaded(true);
-                            console.log('Kakao SDK Initialized');
-                        }
-                    };
-                    document.head.appendChild(script);
-                } else if (!window.Kakao.isInitialized()) {
-                    window.Kakao.init(data.appKey); // 이미 Kakao 객체가 있다면 초기화만 수행
-                    setIsKakaoLoaded(true);
+                if (!window.Kakao?.isInitialized()) {
+                    window.Kakao.init(data.appKey); // Kakao SDK 초기화
                     console.log('Kakao SDK Initialized');
                 }
 

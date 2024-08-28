@@ -28,21 +28,34 @@ const KakaoCallback: React.FC = () => {
         console.log('Authorization code:', code);
 
         if (code) {
-            axios.get(`${endpoints.getJwt}?code=${code}`)
+            fetch(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback?code=${code}`)
                 .then(response => {
-                    const data = response.data;
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                })
+                .then(async (data) => {
                     if (data.accessToken) {
                         try {
+                            await waitForKakao();
                             window.Kakao.Auth.setAccessToken(data.accessToken);
                             console.log('Kakao accessToken 설정 완료');
                         } catch (error) {
-                            console.error('Kakao SDK 초기화 실패:', error);
+                            if (error instanceof Error) {
+                                console.error('Kakao SDK 초기화 실패:', error.message);
+                            } else {
+                                console.error('Kakao SDK 초기화 실패:', error);
+                            }
                         }
 
                         localStorage.setItem('accessToken', data.accessToken);
                         localStorage.setItem('refreshToken', data.refreshToken);
 
-                        axios.get(endpoints.user, {
+                        // 회원가입 여부 확인
+                        fetch('https://www.nemooceanacademy.com:5000/api/auth/signup', {
+                            method: 'GET',
                             headers: {
                                 Authorization: `Bearer ${data.accessToken}`,
                             },
@@ -56,27 +69,31 @@ const KakaoCallback: React.FC = () => {
                                 }
                             })
                             .catch((error) => {
-                                console.error('Error during signup check:', error);
-                                alert('회원 확인 중 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
-                                navigate('/login');
+                                if (error instanceof Error) {
+                                    console.error('Error during signup check:', error.message);
+                                } else {
+                                    console.error('Error during signup check:', error);
+                                }
+                                navigate('/login'); // 에러 시 로그인 페이지로 이동
                             });
                     } else {
                         throw new Error('No access token received');
                     }
                 })
                 .catch((error) => {
-                    console.error('Error during Kakao login callback:', error);
-                    alert('로그인 중 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
-                    navigate('/login');
+                    if (error instanceof Error) {
+                        console.error('Error during Kakao login callback:', error.message);
+                    } else {
+                        console.error('Error during Kakao login callback:', error);
+                    }
+                    navigate('/login'); // 에러 시 로그인 페이지로 이동
                 });
         } else {
             console.error('No authorization code found in URL');
-            alert('인증 과정에서 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
-            navigate('/login');
+            navigate('/login'); // Authorization code가 없으면 로그인 페이지로 이동
         }
     }, [navigate]);
 
-    return null;
+    return null; // 화면에 아무것도 표시하지 않음
 };
-
 export default KakaoCallback;

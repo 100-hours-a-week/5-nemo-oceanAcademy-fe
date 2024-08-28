@@ -90,11 +90,10 @@ const LectureList: React.FC = () => {
 
       console.log("Response data:", response.data); // 전체 응답 데이터 확인
 
-      // 기존에 response.data.classes를 사용하던 부분을 response.data로 변경
       if (response.data && response.data.length > 0) {
-        console.log("Fetched lectures:", response.data);
+        console.log("Fetched lectures:", response.data.data);
 
-        const classes = response.data.map((item: any) => ({
+        const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
           bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
@@ -105,7 +104,7 @@ const LectureList: React.FC = () => {
         setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
         setHasMore(classes.length > 0); // 추가된 강의가 없으면 더 이상 불러올 강의가 없다고 설정
       } else {
-        console.log("No classes found");
+        console.log("더 불러올 데이터 없음! 목록 끝 ");
         setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
       }
     } catch (error) {
