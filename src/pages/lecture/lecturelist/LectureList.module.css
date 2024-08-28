@@ -19,7 +19,12 @@
     justify-content: center;
     width: 362px;
     gap: 10px;
-    font-size: 18px;
+    p {
+        font-size: 10px;
+    }
+    h5 {
+        font-size: 18px;
+    }
 }
 
 .emptyImage {
