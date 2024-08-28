@@ -107,7 +107,7 @@ jobs:
             docker run -d --name nemo-fe-green -p $NEW_PORT:$NEW_PORT \
             --env-file /app/config/.env \
             -e PORT=$NEW_PORT \
-            judykimsohui/nemo-fe::${{ github.sha }}
+            judykimsohui/nemo-fe:${{ github.sha }}
 
       - name: PORT 정보를 GITHUB로 Fetch
         run: |
