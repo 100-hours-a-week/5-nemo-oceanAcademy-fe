@@ -88,15 +88,16 @@ const LectureList: React.FC = () => {
         },
       });
 
-      console.log("Response data:", response.data); // 전체 응답 데이터 확인
+      const lecturesData = response.data.data;
+      console.log("Response data:", response.data);
 
-      if (response.data && response.data.length > 0) {
-        console.log("Fetched lectures:", response.data.data);
+      if (lecturesData && lecturesData.length > 0) {
+        console.log("Fetched lectures:", lecturesData);
 
-        const classes = response.data.data.map((item: any) => ({
+        const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
           category: item.category,
         }));
@@ -108,7 +109,6 @@ const LectureList: React.FC = () => {
         setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
       }
     } catch (error) {
-      // 오류 타입 확인 및 메시지 출력
       if (error instanceof Error) {
         console.error('Failed to fetch lectures:', error.message); // 오류 메시지 확인
       } else {
