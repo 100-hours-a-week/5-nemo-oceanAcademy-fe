@@ -37,7 +37,6 @@ const Header: React.FC = () => {
           if (error.response && error.response.status === 401) {
             console.error('Unauthorized:', error.response);
             // Handle unauthorized error, e.g., redirect to login
-            navigate('/login');
           } else {
             console.error('Failed to fetch user info:', error);
           }
