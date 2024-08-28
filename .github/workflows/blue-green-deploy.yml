@@ -176,10 +176,10 @@ jobs:
 
             if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
               OLD_TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
-              echo "green >> blue"
+              echo "blue >> green"
             else
               OLD_TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
-              echo "blue >> green"
+              echo "green >> blue"
             fi
             aws elbv2 deregister-targets --target-group-arn $OLD_TARGET_GROUP_ARN --targets Id=$INSTANCE_ID
 
