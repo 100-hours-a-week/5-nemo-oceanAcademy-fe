@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import ScrollToTop from './components/ScrollToTop';
@@ -25,8 +25,23 @@ import SignUp from './pages/user/signup/SignUp';
 import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
 import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
 import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
+import { Container } from './styles/GlobalStyles'
 
 const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true); 
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!token);
+    setLoading(false);
+  }, []);
+
+  // 초기 로딩 중일 때
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
   return (
     <Router>
       <Header />
