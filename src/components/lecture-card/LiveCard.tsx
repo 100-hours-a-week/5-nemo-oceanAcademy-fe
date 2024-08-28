@@ -14,7 +14,7 @@ const LiveCard: React.FC<LiveCardProps> = ({ classId, bannerImage, name, instruc
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/lecture/info?id=${classId}`);
+    navigate(`/lecture/info/${classId}`);
   };
 
   return (

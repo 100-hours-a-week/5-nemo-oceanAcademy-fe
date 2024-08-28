@@ -1,9 +1,10 @@
 .metaContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: 8px;
+    margin: 0;
     margin-top: 20px;
     width: 343px;
+    gap: 8px;
 }
 
 .topRow {
@@ -30,6 +31,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .category {

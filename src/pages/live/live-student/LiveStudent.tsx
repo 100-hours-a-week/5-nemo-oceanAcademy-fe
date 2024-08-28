@@ -1,12 +1,117 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
+import axios from 'axios';
+import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
+import profImage from '../../../assets/images/profile_default.png';
+import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
 
 const LiveStudent: React.FC = () => {
   const navigate = useNavigate();
+  const { classId } = useParams<{ classId: string }>();
   const [showModal, setShowModal] = useState(false);
+  const [title, setTitle] = useState('');
+  const [instructor, setInstructor] = useState('');
+  const [connectionStatus, setConnectionStatus] = useState('');
+  const [subStatus, setSubStatus] = useState('');
+  const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
+
+  const webcamVideoRef = useRef<HTMLVideoElement>(null);
+  const screenShareVideoRef = useRef<HTMLVideoElement>(null);
+
+    // 페이지 로딩 시 강의 정보 가져오기
+    useEffect(() => {
+      const fetchLectureInfo = async () => {
+        if (classId) {
+          try {
+            const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
+            const lectureData = response.data;
+            setTitle(lectureData.title);
+            setInstructor(lectureData.instructor);
+          } catch (error) {
+            console.error('Failed to fetch lecture info:', error);
+          }
+        } else {
+          console.error('Invalid classId');
+        }
+      };
+  
+      fetchLectureInfo();
+    }, [classId]);
+  
+    // 서버 연결 및 강의 참여 핸들러
+    const handleConnect = async () => {
+      await connectToServerAsStudent(
+        classId ?? '',
+        setConnectionStatus,
+        setIsSubscriptionDisabled,
+        webcamVideoRef,
+        screenShareVideoRef
+      );
+    };
+  
+    const joinLiveLecture = async () => {
+      await handleConnect();
+    };
+  
+  // 비디오 스트림 이벤트 처리
+  useEffect(() => {
+    const handleWebcamLoadedMetadata = () => {
+      console.log('Webcam video metadata loaded');
+    };
+
+    const handleWebcamCanPlay = () => {
+      console.log('Webcam video can play');
+    };
+
+    const handleWebcamPlaying = () => {
+      console.log('Webcam video is playing');
+    };
+
+    const handleScreenShareLoadedMetadata = () => {
+      console.log('Screen share video metadata loaded');
+    };
+
+    const handleScreenShareCanPlay = () => {
+      console.log('Screen share video can play');
+    };
+
+    const handleScreenSharePlaying = () => {
+      console.log('Screen share video is playing');
+    };
+
+    if (webcamVideoRef.current) {
+      const webcamVideo = webcamVideoRef.current;
+      webcamVideo.addEventListener('loadedmetadata', handleWebcamLoadedMetadata);
+      webcamVideo.addEventListener('canplay', handleWebcamCanPlay);
+      webcamVideo.addEventListener('playing', handleWebcamPlaying);
+    }
+
+    if (screenShareVideoRef.current) {
+      const screenShareVideo = screenShareVideoRef.current;
+      screenShareVideo.addEventListener('loadedmetadata', handleScreenShareLoadedMetadata);
+      screenShareVideo.addEventListener('canplay', handleScreenShareCanPlay);
+      screenShareVideo.addEventListener('playing', handleScreenSharePlaying);
+    }
+
+    return () => {
+      if (webcamVideoRef.current) {
+        const webcamVideo = webcamVideoRef.current;
+        webcamVideo.removeEventListener('loadedmetadata', handleWebcamLoadedMetadata);
+        webcamVideo.removeEventListener('canplay', handleWebcamCanPlay);
+        webcamVideo.removeEventListener('playing', handleWebcamPlaying);
+      }
+
+      if (screenShareVideoRef.current) {
+        const screenShareVideo = screenShareVideoRef.current;
+        screenShareVideo.removeEventListener('loadedmetadata', handleScreenShareLoadedMetadata);
+        screenShareVideo.removeEventListener('canplay', handleScreenShareCanPlay);
+        screenShareVideo.removeEventListener('playing', handleScreenSharePlaying);
+      }
+    };
+  }, []);
 
   const handleLeaveClick = () => {
     setShowModal(true);
@@ -33,20 +138,74 @@ const LiveStudent: React.FC = () => {
           onRightButtonClick={handleModalCancel}
         />
       )}
-      <button className={styles.leaveButton} onClick={handleLeaveClick}>나가기</button>
       <div className={styles.videoSection}>
-        <div className={styles.video}>강의 화면</div>
-        <h2 className={styles.title}>스티븐의 이안이 좋아요</h2>
-        <p className={styles.instructor}>강사: 스티븐</p>
+        <div className={styles.video}>
+          <video 
+            ref={webcamVideoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={{ width: '100%', height: '100%' }}
+          ></video>
+        </div>
+        <div className={styles.smallVideo}>
+          <video 
+            ref={screenShareVideoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={{ width: '100%', height: '100%' }}
+          ></video>
+        </div>
       </div>
+
+      <div className={styles.info}>
+        <h2 className={styles.title}>{title}</h2>
+        <p className={styles.instructor}>{instructor}</p>
+      </div>
+
       <div className={styles.chatSection}>
         <div className={styles.chatWindow}>
-          <p>채팅 메시지1</p>
-          <p>채팅 메시지2</p>
+          <div className={styles.chat}>
+            <div className={styles.profContainer}>
+              <img
+                src={profImage}
+                alt="프로필"
+                className={styles.icon}
+              />
+            </div>  
+            <div className={styles.chatContainer}>
+              <div className={styles.chatInfo}>
+                <h5>스티븐</h5>
+                <p>9:43 am</p>
+              </div>
+              <div className={styles.chatBubble}>
+                <p>유석이형 아프지마</p>
+              </div>
+            </div>
+          </div>
+          <div className={styles.chat}>
+            <div className={styles.profContainer}>
+              <img
+                src={profImage}
+                alt="프로필"
+                className={styles.icon}
+              />
+            </div>  
+            <div className={styles.chatContainer}>
+              <div className={styles.chatInfo}>
+                <h5>지렁이</h5>
+                <p>9:43 am</p>
+              </div>
+              <div className={styles.chatBubble}>
+                <p>유석이형 건강해</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div className={styles.chatInput}>
           <input type="text" placeholder="메시지를 입력하세요" />
-          <button>전송</button>
+          <button>Send</button>
         </div>
       </div>
     </Container>

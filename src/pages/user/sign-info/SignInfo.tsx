@@ -1,100 +1,104 @@
-// SignInfo Page - 회원가입 중 프로필 사진 및 닉네임 등 추가 정보 입력
-
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './SignInfo.module.css';
 import WideButton from '../../../components/wide-button/WideButton';
 
 const SignInfo: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // 파일 객체 저장
   const [nickname, setNickname] = useState<string>('');
-  const [helperText, setHelperText] = useState('');
+  const [helperText, setHelperText] = useState<string>('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const token = (location.state as { token: string })?.token; // KakaoCallback에서 전달된 토큰
 
+  // 파일 선택 처리
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
+    if (file && (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
+      setSelectedFile(file); // 파일 객체 저장
       const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result as string);
+      reader.onloadend = () => setPreview(reader.result as string); // 미리보기
       reader.readAsDataURL(file);
     } else {
       alert('Invalid file. Please select a .jpg or .png file under 5MB.');
     }
   };
 
+  // 회원가입 완료 처리
   const handleSignupComplete = () => {
-    // 회원 정보 전송하는 API 요청
-    // 예시: api.sendUserData({ nickname, preview }).then(response => {...});
-
     if (!nickname) {
       setHelperText('닉네임을 입력해주세요.');
       return;
     }
 
-    // API 요청 작성할 것. 
-    fetch('/api/signup', {
+    const formData = new FormData();
+    formData.append('nickname', nickname);
+    if (selectedFile) {
+      formData.append('profileImage', selectedFile); // 파일 객체를 FormData에 추가
+    }
+
+    fetch('https://www.nemooceanacademy.com:5000/api/auth/signup', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // KakaoCallback에서 받은 토큰
       },
-      body: JSON.stringify({ nickname }),
+      body: formData,
     })
-    .then(response => {
-      if (response.ok) {
-        alert('회원가입이 완료되었습니다.');
-        navigate('/');
-      } else {
-        alert('회원가입에 실패하였습니다. 다시 시도해주세요.');
-      }
-    })
-  }
+        .then(response => {
+          if (response.ok) {
+            alert('회원가입이 완료되었습니다.');
+            navigate('/'); // 회원가입 후 메인 페이지로 리다이렉트
+          } else {
+            alert('회원가입에 실패하였습니다. 다시 시도해주세요.');
+          }
+        })
+        .catch(error => {
+          console.error('Error during sign-up:', error);
+          alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+        });
+  };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>추가 정보 입력</h2>
+      <div className={styles.container}>
+        <h2 className={styles.title}>추가 정보 입력</h2>
 
-      <div className={styles.imageContainer}>
-        <label className={styles.label}>프로필 사진(선택)</label>
-        <input
-          type="file"
-          id="fileInput"
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
-        <button
-          className={styles.uploadButton}
-          onClick={() => document.getElementById('fileInput')?.click()}
-        >
-          {preview ? (
-            <img src={preview} alt="Preview" className={styles.previewImage} />
-          ) : (
-            '+'
-          )}
-        </button>
-        <ul className={styles.bulletList}>
-          <li className={styles.listItem}>사진은 1개만 업로드할 수 있습니다.</li>
-          <li className={styles.listItem}>파일 사이즈는 100*100을 권장합니다.</li>
-          <li className={styles.listItem}>파일 크기는 5MB 이하만 가능합니다.</li>
-          <li className={styles.listItem}>파일은 .jpg, .png만 업로드할 수 있습니다.</li>
-          <li className={styles.listItem}>사진을 업로드하지 않을 경우 기본 프로필로 설정됩니다.</li>
-        </ul>
-      </div>
+        <div className={styles.imageContainer}>
+          <label className={styles.label}>프로필 사진(선택)</label>
+          <input
+              type="file"
+              id="fileInput"
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+          />
+          <button
+              className={styles.uploadButton}
+              onClick={() => document.getElementById('fileInput')?.click()}
+          >
+            {preview ? (
+                <img src={preview} alt="Preview" className={styles.previewImage} />
+            ) : (
+                '+'
+            )}
+          </button>
+        </div>
 
-      <div className={styles.nicknameContainer}>
-        <label className={styles.label}>
+        <div className={styles.nicknameContainer}>
+          <label className={styles.label}>
             닉네임<span className={styles.requiredMark}>*</span>
           </label>
-          <p className={styles.helperText}>필수 입력 사항입니다.</p>
           <input
-            type="text"
-            className={styles.inputField}
-            placeholder="닉네임을 설정해주세요."
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+              type="text"
+              className={styles.inputField}
+              placeholder="닉네임을 설정해주세요."
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
           />
+          {helperText && <p className={styles.helperText}>{helperText}</p>}
+        </div>
+
+        <WideButton text="회원 가입 완료" onClick={handleSignupComplete} />
       </div>
-      <WideButton text="회원 가입 완료" onClick={handleSignupComplete} />
-    </div>
   );
 };
 

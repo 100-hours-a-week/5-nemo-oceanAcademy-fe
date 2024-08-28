@@ -6,18 +6,45 @@ import backIcon from '../../assets/images/back.png';
 import settingIcon from '../../assets/images/setting.png';
 import outIcon from '../../assets/images/out.png';
 import closeIcon from '../../assets/images/close.png';
-import Modal from '../modal/Modal'; 
+import Modal from '../modal/Modal';
+import axios from 'axios';
+import endpoints from '../../api/endpoints';  
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userProfileImage, setUserProfileImage] = useState(profImage);
+  const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('accessToken'); 
     setIsLoggedIn(!!token);
-  }, []);
+  
+    if (token) {
+      axios
+        .get(endpoints.userInfo, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setUserName(response.data.nickname);
+          setUserProfileImage(response.data.profile_image);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            console.error('Unauthorized:', error.response);
+            // Handle unauthorized error, e.g., redirect to login
+            navigate('/login');
+          } else {
+            console.error('Failed to fetch user info:', error);
+          }
+        });
+    }
+  }, [navigate]);
+
 
   const handleLogoClick = () => {
     navigate('/');
@@ -32,7 +59,8 @@ const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // 로그아웃 로직
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     navigate('/login');
   };
 
@@ -59,6 +87,8 @@ const Header: React.FC = () => {
 
   const handleSettingClick = () => {
     // 세팅 버튼 클릭 시 드롭다운 메뉴 표시 로직 필요
+    alert('아직 구현 안됐거든요 로그아웃 안해드립니다 탈퇴? 못합니다');
+    console.log('들어올 땐 마음대로지만 나갈 땐 아니란다. ');
   };
 
   const handleLectureOut = () => {
@@ -68,23 +98,23 @@ const Header: React.FC = () => {
 
   // 페이지에 따라 헤더의 버튼 요소 다르게 띄우는 코드 
   const renderLeftButton = () => {
-    if (location.pathname === '/live/student' || location.pathname === '/live/teacher') {
+    if (location.pathname.includes('/live/student') || location.pathname.includes('/live/teacher')) {
       return (
         <img
-          src={location.pathname === '/live/student' ? outIcon : closeIcon}
+          src={location.pathname.includes('/live/student') ? outIcon : closeIcon}
           alt="나가기"
           className={styles.icon}
           onClick={handleLeaveClick}
         />
       );
     } else if (
-      location.pathname === '/mypage' ||
-      location.pathname === '/lecture/open' ||
-      location.pathname === '/lecture/info' ||
-      location.pathname === '/dashboard/teacher' ||
-      location.pathname === '/dashboard/student' ||
-      location.pathname === '/dashboard/edit' ||
-      location.pathname === '/lecture/students'
+      location.pathname.includes('/mypage') ||
+      location.pathname.includes('/lecture/open') ||
+      location.pathname.includes('/lecture/info') ||
+      location.pathname.includes('/dashboard/teacher') ||
+      location.pathname.includes('/dashboard/student') ||
+      location.pathname.includes('/dashboard/edit') ||
+      location.pathname.includes('/lecture/students')
     ) {
       return (
         <img
@@ -99,7 +129,13 @@ const Header: React.FC = () => {
   };
 
   const renderRightButton = () => {
-    if (location.pathname === '/mypage') {
+    if (
+        location.pathname === '/login' ||
+        location.pathname === '/sign-info'
+    ) {
+      return null;
+    }
+    if (location.pathname.includes('/mypage')) {
       return (
         <img
           src={settingIcon}
@@ -108,7 +144,7 @@ const Header: React.FC = () => {
           onClick={handleSettingClick}
         />
       );
-    } else if (!isLoggedIn && (location.pathname === '/' || location.pathname === '/list' || location.pathname === '/live-list')) {
+    } else if (!isLoggedIn) {
       return (
         <div className={styles.loginText} onClick={handleLogin}>
           Login
@@ -118,17 +154,17 @@ const Header: React.FC = () => {
       location.pathname === '/' ||
       location.pathname === '/list' ||
       location.pathname === '/live-list' ||
-      location.pathname === '/classroom' ||
-      location.pathname === '/lecture/open' ||
-      location.pathname === '/lecture/info' ||
-      location.pathname === '/dashboard/teacher' ||
-      location.pathname === '/dashboard/student' ||
-      location.pathname === '/lecture/students' ||
-      location.pathname === '/dashboard/edit'
+      location.pathname.includes('/classroom') ||
+      location.pathname.includes('/lecture/open') ||
+      location.pathname.includes('/lecture/info') ||
+      location.pathname.includes('/dashboard/teacher') ||
+      location.pathname.includes('/dashboard/student') ||
+      location.pathname.includes('/lecture/students') ||
+      location.pathname.includes('/dashboard/edit')
     ) {
       return (
         <img
-          src={profImage}
+          src={userProfileImage}
           alt="프로필"
           className={styles.icon}
           onClick={handleProfileClick}

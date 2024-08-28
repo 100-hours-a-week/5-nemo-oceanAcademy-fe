@@ -1,52 +1,88 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 390px;
-    gap: 20px;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 100px; /* 화면 상단과 간격 */
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 390px;
+  height: 100vh;
+  gap: 20px;
+  padding: 20px;
+  background-color: white;
+  margin-top: -60px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
   
-  .title {
-    font-size: 30px;
-    font-weight: bold;
-    color: #333;
-  }
+.kakaoButton, 
+.alternativeButton {
+  width: 280px;
+  height: 46px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
   
-  .kakaoButton, 
-  .alternativeButton {
-    width: 300px;
-    height: 46px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-  }
+.kakaoButton {
+  padding-right: 10px;
+  background-color: #ffeb00;
+  color: #3c1e1e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+}
   
-  .kakaoButton {
-    background-color: #ffeb00; /* 카카오 노란색 */
-    color: #3c1e1e; /* 카카오 텍스트 색상 */
-  }
+.alternativeButton {
+  background-color: #747474;
+  color: white;
+}
   
-  .alternativeButton {
-    background-color: #747474; /* #747474 색상 */
-    color: white;
-  }
+.prompt {
+  font-size: 14px;
+  color: #333;
+}
   
-  .loginPrompt {
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .loginLink {
-    font-size: 14px;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-  }
+.link {
+  font-size: 14px;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Style for the speech bubble */
+.speechBubble {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff0cc;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #ff4500;
+  text-align: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Triangle below the speech bubble */
+.speechBubble:after {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* Adjust the triangle to point to the button */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: #fff0cc transparent transparent transparent;
+}

@@ -35,11 +35,11 @@ const MyPage: React.FC = () => {
   };
 
   const handleAddLectureClick = () => {
-    navigate('/teacher/lecture-open');
+    navigate('/lecture/open');
   };
 
   const handleLectureClick = (classId: number) => {
-    navigate(`/student/dashboard/${classId}`);
+    navigate(`/dashboard/student/${classId}`);
   };
 
   return (
@@ -87,7 +87,8 @@ const MyPage: React.FC = () => {
                 bannerImage={lecture.bannerImage} 
                 name={lecture.name} 
                 instructor={lecture.instructor} 
-                category={lecture.category} 
+                category={lecture.category}
+                onClick={() => navigate(`/dashboard/student/${lecture.classId}`)}
               />
             </div>
           ))}
