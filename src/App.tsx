@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
   // 초기 로딩 중일 때
   if (loading) {
-    return <div>Loading...</div>;
+    return <Container>Loading...</Container>;
   }
   
   return (
@@ -48,6 +48,8 @@ const App: React.FC = () => {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
 
         {/* Lecture Routes */}
         <Route path="/enrollment" element={<Enrollment />} />
@@ -72,7 +74,6 @@ const App: React.FC = () => {
         <Route path="/lecture/students:classId" element={<StudentList />} />
         
         {/* User Routes */}
-        <Route path="/login" element={<Login />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-info" element={<SignInfo />} />
         {/*<Route path="/signup" element={<SignUp />} />*/}

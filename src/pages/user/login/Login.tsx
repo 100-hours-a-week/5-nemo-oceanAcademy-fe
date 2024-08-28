@@ -34,7 +34,7 @@ const Login: React.FC = () => {
     const handleKakaoLogin = () => {
         if (isKakaoLoaded) {
             window.Kakao.Auth.authorize({
-                redirectUri: 'https://www.nemooceanacademy.com/api/auth/kakao/callback',
+                redirectUri: 'https://www.nemooceanacademy.com/oauth/kakao/callback',
             });
         }
     };
