@@ -17,7 +17,7 @@ interface Category {
 
 const LectureOpen: React.FC = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken');
   const [isFormValid, setIsFormValid] = useState(false); // 필수값이 모두 입력되었는지 확인
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');

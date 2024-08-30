@@ -140,22 +140,30 @@ const LiveStudent: React.FC = () => {
       )}
       <div className={styles.videoSection}>
         <div className={styles.video}>
-          <video 
-            ref={webcamVideoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            style={{ width: '100%', height: '100%' }}
-          ></video>
+          {isWebcamOn ? (
+            <video 
+              ref={webcamVideoRef} 
+              autoPlay
+              playsInline
+              muted 
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            <img src={noCam} alt="No webcam" className={styles.noCamOverlay} />
+          )}
         </div>
         <div className={styles.smallVideo}>
-          <video 
-            ref={screenShareVideoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            style={{ width: '100%', height: '100%' }}
-          ></video>
+          {isScreenShareOn ? (
+            <video 
+              ref={screenShareVideoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            <img src={share} alt="No screen share" className={styles.noCamOverlay} />
+          )}
         </div>
       </div>
 
@@ -173,7 +181,7 @@ const LiveStudent: React.FC = () => {
                 alt="프로필"
                 className={styles.icon}
               />
-            </div>  
+            </div>   
             <div className={styles.chatContainer}>
               <div className={styles.chatInfo}>
                 <h5>스티븐</h5>

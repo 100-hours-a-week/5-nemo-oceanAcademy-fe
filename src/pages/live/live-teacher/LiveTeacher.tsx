@@ -30,7 +30,7 @@ const LiveTeacher: React.FC = () => {
 
   // webRTC 관련
   // roomId 대신 classId 사용, string이라 문제될 경우 int로 바꿔주기 
-  // const roomId = classId ? parseInt(classId, 10) : null;
+  const roomId = classId ? parseInt(classId, 10) : null;
   const [connectionStatus, setConnectionStatus] = useState('');
   const [webcamStatus, setWebcamStatus] = useState('');
   const [screenStatus, setScreenStatus] = useState('');
@@ -63,11 +63,12 @@ const LiveTeacher: React.FC = () => {
           const lectureData = response.data.data;
           setTitle(lectureData.name);
           setInstructor(lectureData.instructor);
+          console.log(response.data.message_eng, response.data.timestamp);
         } catch (error) {
-          console.error('Failed to fetch lecture info:', error);
+          console.error('LiveTeacher: 강의 정보를 가져오는 데 실패했습니다 > ', error);
         }
       } else {
-        console.error('Invalid classId');
+        console.error('classId가 유효하지 않습니다.');
       }
     };
 
@@ -83,6 +84,7 @@ const LiveTeacher: React.FC = () => {
   useEffect(() => {
     if (classId) {
       // LiveTeacher 컴포넌트가 로드될 때 서버에 연결
+      // TO DO: classId.toString() -> classId로 해도 문제 없는지 체크 
       connectToServerAsTeacher(classId.toString(), setConnectionStatus, setIsPublishingDisabled)
         .then(() => {
           console.log("Successfully connected to server as a teacher");
@@ -97,7 +99,7 @@ const LiveTeacher: React.FC = () => {
   const handleConnect = async () => {
     await connectToServerAsTeacher(classId, setConnectionStatus, setIsPublishingDisabled);
     console.log("연결 상태: ", connectionStatus);
-};
+  };
 
   // 웹캠 스트림 시작/중지 핸들러
   const handleStartWebcam = async () => {
@@ -105,7 +107,7 @@ const LiveTeacher: React.FC = () => {
         const producer = await startWebcamStream(classId, useSimulcast, setWebcamStatus, webcamVideoRef.current);
         setWebcamProducer(producer);
     }
-};
+  };
 
   // 웹캠 토글 핸들러
   const handleToggleWebcam = async () => {
@@ -131,7 +133,7 @@ const LiveTeacher: React.FC = () => {
         setIsScreenShareOn(false);
       }
     } else {
-      const producer = await startScreenShareStream(roomId, useSimulcast, () => {}, screenShareVideoRef.current);
+      const producer = await startScreenShareStream(classId, useSimulcast, () => {}, screenShareVideoRef.current);
       setScreenShareProducer(producer);
       setIsScreenShareOn(true);
     }
@@ -146,7 +148,7 @@ const LiveTeacher: React.FC = () => {
         setIsMicrophoneOn(false);
       }
     } else {
-      const producer = await startMicrophoneStream(roomId, () => {});
+      const producer = await startMicrophoneStream(classId, () => {});
       setMicrophoneProducer(producer);
       setIsMicrophoneOn(true);
     }
@@ -161,7 +163,7 @@ const LiveTeacher: React.FC = () => {
         setIsSystemAudioOn(false);
       }
     } else {
-      const producer = await startSystemAudioStream(roomId, () => {});
+      const producer = await startSystemAudioStream(classId, () => {});
       setSystemAudioProducer(producer);
       setIsSystemAudioOn(true);
     }
@@ -244,22 +246,32 @@ const LiveTeacher: React.FC = () => {
       )}
       <div className={styles.videoSection}>
         <div className={styles.video}>
-          <video 
-            ref={webcamVideoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            style={{ width: '100%', height: '100%' }}
-          ></video>
+          {isScreenShareOn ? (
+              <video 
+                ref={screenShareVideoRef} 
+                autoPlay 
+                playsInline 
+                muted 
+                style={{ width: '100%', height: '100%' }}
+              />
+            ) : (
+              <img src={share} alt="No screen share" className={styles.noCamOverlay} />
+            )}
+
+          {isWebcamOn ? (
+            <video 
+              ref={webcamVideoRef} 
+              autoPlay
+              playsInline
+              muted 
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            <img src={noCam} alt="No webcam" className={styles.noCamOverlay} />
+          )}
         </div>
         <div className={styles.smallVideo}>
-          <video 
-            ref={screenShareVideoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            style={{ width: '100%', height: '100%' }}
-          ></video>
+          
         </div>
       </div>
 
@@ -337,11 +349,6 @@ const LiveTeacher: React.FC = () => {
         <div className={styles.chatInput}>
           <input type="text" placeholder="메시지를 입력하세요" />
           <button>Send</button>
-        </div>
-      </div>
-      <div className={styles.shareContainer}>
-        <div className={styles.shareScreen}>
-          <img />
         </div>
       </div>
     </Container>
