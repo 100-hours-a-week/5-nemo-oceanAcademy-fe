@@ -48,7 +48,7 @@ const Main: React.FC = () => {
         console.log(response.data.message_kor);
         console.log(response.data.message_eng);
         const classes = response.data.data.map((item: any) => ({
-          classId: item.class_id,
+          classId: item.id,
           name: item.name,
           bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
@@ -68,9 +68,9 @@ const Main: React.FC = () => {
     axios.get(`${endpoints.classes}?target=topten?page=${page}`)
       .then(response => {
         const classes = response.data.data.map((item: any) => ({
-          classId: item.class_id,
+          classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image,
+          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
           category: item.category
         }));

@@ -10,7 +10,7 @@ const Enrollment: React.FC = () => {
     const navigate = useNavigate();
     // const classId = new URLSearchParams(location.search).get('id');
     const { classId } = useParams<{ classId: string }>();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
 
     const handleButtonClick = () => {
         navigate(`/student/dashboard/${classId}`);

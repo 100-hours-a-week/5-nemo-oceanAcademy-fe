@@ -6,6 +6,8 @@ import endpoints from '../../../api/endpoints';
 import styles from './LiveTeacher.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 import profImage from '../../../assets/images/profile_default.png';
+import noCam from '../../../assets/images/no_cam.png';
+import share from '../../../assets/images/share.png';
 import {
   Producer,
   connectToServerAsTeacher,
@@ -27,7 +29,8 @@ const LiveTeacher: React.FC = () => {
   const [instructor, setInstructor] = useState('');
 
   // webRTC 관련
-  const roomId = classId ? parseInt(classId, 10) : null;
+  // roomId 대신 classId 사용, string이라 문제될 경우 int로 바꿔주기 
+  // const roomId = classId ? parseInt(classId, 10) : null;
   const [connectionStatus, setConnectionStatus] = useState('');
   const [webcamStatus, setWebcamStatus] = useState('');
   const [screenStatus, setScreenStatus] = useState('');
@@ -57,8 +60,8 @@ const LiveTeacher: React.FC = () => {
       if (classId) {
         try {
           const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
-          const lectureData = response.data;
-          setTitle(lectureData.title);
+          const lectureData = response.data.data;
+          setTitle(lectureData.name);
           setInstructor(lectureData.instructor);
         } catch (error) {
           console.error('Failed to fetch lecture info:', error);
@@ -78,9 +81,9 @@ const LiveTeacher: React.FC = () => {
   }, [classId]);
 
   useEffect(() => {
-    if (roomId) {
+    if (classId) {
       // LiveTeacher 컴포넌트가 로드될 때 서버에 연결
-      connectToServerAsTeacher(roomId.toString(), setConnectionStatus, setIsPublishingDisabled)
+      connectToServerAsTeacher(classId.toString(), setConnectionStatus, setIsPublishingDisabled)
         .then(() => {
           console.log("Successfully connected to server as a teacher");
         })
@@ -88,18 +91,18 @@ const LiveTeacher: React.FC = () => {
           console.error("Failed to connect to server:", error);
         });
     }
-  }, [roomId]);
+  }, [classId]);
 
   // 서버 연결 핸들러
   const handleConnect = async () => {
-    await connectToServerAsTeacher(roomId, setConnectionStatus, setIsPublishingDisabled);
+    await connectToServerAsTeacher(classId, setConnectionStatus, setIsPublishingDisabled);
     console.log("연결 상태: ", connectionStatus);
 };
 
   // 웹캠 스트림 시작/중지 핸들러
   const handleStartWebcam = async () => {
     if (!webcamProducer) {
-        const producer = await startWebcamStream(roomId, useSimulcast, setWebcamStatus, webcamVideoRef.current);
+        const producer = await startWebcamStream(classId, useSimulcast, setWebcamStatus, webcamVideoRef.current);
         setWebcamProducer(producer);
     }
 };
@@ -113,7 +116,7 @@ const LiveTeacher: React.FC = () => {
         setIsWebcamOn(false);
       }
     } else {
-      const producer = await startWebcamStream(roomId, useSimulcast, () => {}, webcamVideoRef.current);
+      const producer = await startWebcamStream(classId, useSimulcast, () => {}, webcamVideoRef.current);
       setWebcamProducer(producer);
       setIsWebcamOn(true);
     }
@@ -174,7 +177,7 @@ const LiveTeacher: React.FC = () => {
   // 화면 공유 스트림 시작/중지 핸들러
   const handleStartScreenShare = async () => {
     if (!screenShareProducer) {
-        const producer = await startScreenShareStream(roomId, useSimulcast, setScreenStatus, screenShareVideoRef.current);
+        const producer = await startScreenShareStream(classId, useSimulcast, setScreenStatus, screenShareVideoRef.current);
         setScreenShareProducer(producer);
     }
   };
@@ -188,7 +191,7 @@ const LiveTeacher: React.FC = () => {
   
   const handleStartMicrophone = async () => {
     if (!microphoneProducer) {
-        const producer = await startMicrophoneStream(roomId, setMicrophoneStatus);
+        const producer = await startMicrophoneStream(classId, setMicrophoneStatus);
         setMicrophoneProducer(producer);
     }
   };
@@ -202,7 +205,7 @@ const LiveTeacher: React.FC = () => {
 
   const handleStartSystemAudio = async () => {
     if (!systemAudioProducer) {
-        const producer = await startSystemAudioStream(roomId, setSystemAudioStatus);
+        const producer = await startSystemAudioStream(classId, setSystemAudioStatus);
         setSystemAudioProducer(producer);
     }
   };
@@ -334,6 +337,11 @@ const LiveTeacher: React.FC = () => {
         <div className={styles.chatInput}>
           <input type="text" placeholder="메시지를 입력하세요" />
           <button>Send</button>
+        </div>
+      </div>
+      <div className={styles.shareContainer}>
+        <div className={styles.shareScreen}>
+          <img />
         </div>
       </div>
     </Container>

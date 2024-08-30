@@ -9,15 +9,21 @@ import styles from './LectureInfo.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 
 interface LectureData {
-    class_id: number; 
+    id: number; // class ID
+    user_id: number;
+    category_id: number;
+    instructor: string;
+    category: string;
     name: string; // 강의 제목
-    banner_image: string | null; // 배너 이미지 경로
-    instructor: string; // 강사 이름
-    category: string; // 카테고리 이름
     object: string; // 강의 목표
-    description: string; // 강의 소개 
+    description: string; // 강의 소개
     instructor_info: string; // 강사 소개
-    precourse: string; // 강의에 필요한 사전 지식 및 준비 안내
+    prerequisite: string; // precourse, 강의에 필요한 사전 지식 및 준비 안내
+    announcement: string; // 강의 공지 
+    banner_image_path: string | null; // 배너 이미지 경로
+    is_active: boolean;
+    role: string;
+    schedules: [];
 }
 
 const LectureInfo: React.FC = () => {
@@ -26,12 +32,12 @@ const LectureInfo: React.FC = () => {
     const [lectureData, setLectureData] = useState<LectureData | null>(null);
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
     const { classId } = useParams<{ classId: string }>();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
         const fetchLectureInfo = async () => {
             try {
-                const response = await axios.get(`${endpoints.getLectures}/${classId}`, {
+                const response = await axios.get(`${endpoints.classes}/${classId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -104,7 +110,7 @@ const LectureInfo: React.FC = () => {
             <p className={styles.instructor}>{lectureData.instructor}</p>
             <h1 className={styles.title}>{lectureData.name}</h1>
             <div className={styles.banner} style={{ backgroundImage: `url(${lectureData.banner_image_path || '/default-image.png'})` }}></div>
-            <div className={styles.category}>카테고리 ID: {lectureData.category_id}</div>
+            <div className={styles.category}>카테고리: {lectureData.category}</div>
 
             <div className={styles.infoSection}>
                 <h3 className={styles.infoTitle}>강의 목표</h3>
