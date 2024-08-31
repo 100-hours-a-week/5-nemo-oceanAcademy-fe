@@ -57,3 +57,10 @@
     font-size: 16px;
     color: white;
 }
+
+.divider {
+    width: 280px;
+    height: 0.5px;
+    color: #707274;
+    margin-bottom: 10px;
+}

@@ -3,28 +3,42 @@
   position: relative;
 }
 
-.video {
+.screenShare {
   width: 350px;
   height: 200px;
-  background-color: #B2B6D0;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: #707274;
+/*  background-color: #B2B6D0; */
+  border-radius: 4px;
+}
+.screenShare video {
+  border: 0.5px solid #707274;
+  width: 100%;
+  height: 100%;
+  /* 화면 터치하면 object-fit으로 바뀌는 거 */
+  /* object-fit: cover; */
+  border-radius: 4px;
 }
 
 .smallVideo {
+  border: 0.5px solid red;
   width: 100px;
   height: 70px;
-  background-color: black;
-  color: white;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: #4A4B4D;
+  border-radius: 4px;
   position: absolute;
   bottom: 5px;
   right: 5px;
+}
+.smallVideo video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.noCamOverlay {
+  width: 40px; /* 원하는 크기로 설정 */
+  height: auto;
 }
 
 .info {
@@ -37,25 +51,6 @@
   p {
     font-size: 15px;
     color: #555;
-  }
-}
-
-.controls {
-  width: 350px;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-  background-color: #B2B6D0;
-  border-radius: 5px;
-  padding: 10px 20px;
-
-  button {
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
-    background-color: white;
   }
 }
 

@@ -20,6 +20,8 @@ const LiveStudent: React.FC = () => {
   const [subStatus, setSubStatus] = useState('');
   const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
 
+  const [isScreenClicked, setIsScreenClicked] = useState(false);
+
   const webcamVideoRef = useRef<HTMLVideoElement>(null);
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -132,6 +134,10 @@ const LiveStudent: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleScreenClick = () => {
+    setIsScreenClicked((prev) => !prev);
+  };
+
   return (
     <Container>
       {showModal && (
@@ -145,13 +151,13 @@ const LiveStudent: React.FC = () => {
         />
       )}
       <div className={styles.videoSection}>
-        <div className={styles.video}>
+        <div className={styles.screenShare}>
           <video 
             ref={screenShareVideoRef} 
             autoPlay 
             playsInline 
             muted 
-            style={{ width: '100%', height: '100%' }}
+            style={{ objectFit: isScreenClicked ? 'cover' : 'contain' }}
           />
         </div>
         <div className={styles.smallVideo}>
@@ -160,7 +166,6 @@ const LiveStudent: React.FC = () => {
             autoPlay
             playsInline
             muted 
-            style={{ width: '100%', height: '100%' }}
           />
         </div>
       </div>

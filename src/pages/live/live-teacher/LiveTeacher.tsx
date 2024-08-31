@@ -51,6 +51,8 @@ const LiveTeacher: React.FC = () => {
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(false);
   const [isSystemAudioOn, setIsSystemAudioOn] = useState(false);
 
+  const [isScreenClicked, setIsScreenClicked] = useState(false);
+
   const webcamVideoRef = useRef<HTMLVideoElement>(null);
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -227,6 +229,10 @@ const LiveTeacher: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleScreenClick = () => {
+    setIsScreenClicked((prev) => !prev);
+  };
+
   return (
     <Container>
       {showModal && (
@@ -240,14 +246,14 @@ const LiveTeacher: React.FC = () => {
         />
       )}
       <div className={styles.videoSection}>
-        <div className={styles.video}>
-              <video 
-                ref={screenShareVideoRef} 
-                autoPlay 
-                playsInline 
-                muted 
-                style={{ width: '100%', height: '100%' }}
-              />
+        <div className={styles.screenShare}>
+          <video 
+            ref={screenShareVideoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={{ objectFit: isScreenClicked ? 'cover' : 'contain' }}
+          />
         </div>
         <div className={styles.smallVideo}>
             <video 
@@ -255,7 +261,6 @@ const LiveTeacher: React.FC = () => {
               autoPlay
               playsInline
               muted 
-              style={{ width: '100%', height: '100%' }}
             />
         </div>
       </div>

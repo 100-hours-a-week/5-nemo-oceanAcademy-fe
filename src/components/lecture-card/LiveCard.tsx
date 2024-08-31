@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LiveCard.module.css';
+import { Empty } from '../../styles/GlobalStyles';
 
 interface LiveCardProps {
   classId: number;
@@ -18,13 +19,17 @@ const LiveCard: React.FC<LiveCardProps> = ({ classId, bannerImage, name, instruc
   };
 
   return (
-    <div className={styles.container} onClick={handleClick}>
-      <div className={styles.banner} style={{ backgroundImage: `url(${bannerImage})` }}></div>
-      <h2 className={styles.title}>{name}</h2>
-      <p className={styles.details}>
-        {instructor} | {category}
-      </p>
-    </div>
+    <>
+      <div className={styles.container} onClick={handleClick}>
+        <div className={styles.banner} style={{ backgroundImage: `url(${bannerImage})` }}></div>
+        <h2 className={styles.title}>{name}</h2>
+        <p className={styles.details}>
+          {instructor} | {category}
+        </p>
+      </div>
+      <Empty height='10px' />
+      <div className={styles.divider} />
+    </>
   );
 };
 

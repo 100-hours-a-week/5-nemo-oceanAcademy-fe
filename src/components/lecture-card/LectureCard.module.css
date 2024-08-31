@@ -1,8 +1,8 @@
 .container {
-  width: 170px;
+  margin: 5px;
+  padding: 5px;
   overflow: hidden;
   text-align: center;
-  margin: 5px;
   cursor: pointer;
   /* box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); */
 }

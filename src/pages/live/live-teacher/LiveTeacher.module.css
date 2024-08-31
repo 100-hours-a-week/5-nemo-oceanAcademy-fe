@@ -1,47 +1,44 @@
 .videoSection {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  margin-top: 20px;
   position: relative;
 }
-  
-.video {
+
+.screenShare {
   width: 350px;
   height: 200px;
   background-color: #707274;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
+/*  background-color: #B2B6D0; */
+  border-radius: 4px;
+}
+.screenShare video {
+  border: 0.5px solid #707274;
+  width: 100%;
+  height: 100%;
+  /* 화면 터치하면 object-fit으로 바뀌는 거 */
+  /* object-fit: cover; */
+  border-radius: 4px;
 }
 
-.video video, .smallVideo video {
+.smallVideo {
+  border: 0.5px solid red;
+  width: 100px;
+  height: 70px;
+  background-color: #4A4B4D;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+.smallVideo video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .noCamOverlay {
   width: 40px; /* 원하는 크기로 설정 */
   height: auto;
-}
-  
-.smallVideo {
-  border: 1px solid red;
-  width: 100px;
-  height: 70px;
-  background-color: #4A4B4D;
-  color: white;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
 }
 
 .info {
@@ -81,16 +78,6 @@
 .controls button:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transform: translateY(2px);
-}
-
-.shareScreen {
-  width: 350px;
-  height: 200px;
-  background-color: #707274;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
 }
 
 .chatSection {
