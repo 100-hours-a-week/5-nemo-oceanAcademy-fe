@@ -25,13 +25,8 @@
 }
 
 .noCamOverlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 40px; /* 원하는 크기로 설정 */
   height: auto;
-  opacity: 0.7;
 }
   
 .smallVideo {
@@ -168,8 +163,4 @@
   color: white;
   border: none;
   cursor: pointer;
-}
-
-.shareScreen {
-
 }

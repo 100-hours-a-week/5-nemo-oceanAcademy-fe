@@ -9,21 +9,28 @@
 }
   
 .profileContainer {
-  width: 366px;
-  height: 80px;
+  border: 1px solid red;
+  width: 320px;
+  height: 60px;
+  background-color: #eee;
+  padding: 0 20px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  margin-top: -160px;
 }
   
 .profilePicture {
-  width: 60px;
-  height: 60px;
+  border: 1px solid red;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
   
 .profilePictureEditing {
+  border: 1px solid red;
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -31,11 +38,13 @@
 }
   
 .username {
+  border: 1px solid red;
   font-size: 16px;
   font-weight: bold;
 }
   
 .usernameInput {
+  border: 1px solid red;
   width: 200px;
   height: 30px;
   font-size: 16px;
@@ -45,41 +54,45 @@
 }
   
 .editButton {
+  border: 1px solid red;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
 }
-  
-  .lecturesHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .addLectureButton {
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .noLecturesContainer {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .placeholderImage {
-    width: 200px;
-    height: 200px;
-    background-color: #e0e0e0;
-    margin: 20px auto;
-    border-radius: 8px;
-  }
-  
-  .lectureGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
+
+.lecturesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 320px;
+  height: 60px;
+  background-color: #eee;
+  padding: 0 20px;
+  border-radius: 10px;
+}
+
+.addLectureButton {
+  border: 1px solid red;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.emptyContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.emptyImage {
+  width: 180px;
+  height: 180px;
+  margin: 20px auto;
+}
+
+.lectureGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}

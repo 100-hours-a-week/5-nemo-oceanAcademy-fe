@@ -6,6 +6,8 @@ import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 import profImage from '../../../assets/images/profile_default.png';
+import noCam from '../../../assets/images/no_cam.png';
+import share from '../../../assets/images/share.png';
 import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
 
 const LiveStudent: React.FC = () => {
@@ -21,40 +23,44 @@ const LiveStudent: React.FC = () => {
   const webcamVideoRef = useRef<HTMLVideoElement>(null);
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
 
-    // 페이지 로딩 시 강의 정보 가져오기
-    useEffect(() => {
-      const fetchLectureInfo = async () => {
-        if (classId) {
-          try {
-            const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
-            const lectureData = response.data;
-            setTitle(lectureData.title);
-            setInstructor(lectureData.instructor);
-          } catch (error) {
-            console.error('Failed to fetch lecture info:', error);
-          }
-        } else {
-          console.error('Invalid classId');
+  // 페이지 로딩 시 강의 정보 가져오기
+  useEffect(() => {
+    const fetchLectureInfo = async () => {
+      if (classId) {
+        try {
+          const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
+          const lectureData = response.data.data;
+          setTitle(lectureData.name);
+          setInstructor(lectureData.instructor);
+          console.log(response.data.message_eng, response.data.timestamp);
+        } catch (error) {
+          console.error('LiveStudent: 강의 정보를 불러오는 데 실패했습니다 > ', error);
         }
-      };
-  
-      fetchLectureInfo();
-    }, [classId]);
-  
-    // 서버 연결 및 강의 참여 핸들러
-    const handleConnect = async () => {
-      await connectToServerAsStudent(
-        classId ?? '',
-        setConnectionStatus,
-        setIsSubscriptionDisabled,
-        webcamVideoRef,
-        screenShareVideoRef
-      );
+      } else {
+        console.error('Invalid classId');
+      }
     };
+
+    fetchLectureInfo();
+  }, [classId]);
   
-    const joinLiveLecture = async () => {
-      await handleConnect();
-    };
+  // 서버 연결 및 강의 참여 핸들러
+  const handleConnect = async () => {
+    await connectToServerAsStudent(
+      classId ?? '',
+      setConnectionStatus,
+      setIsSubscriptionDisabled,
+      webcamVideoRef,
+      screenShareVideoRef
+    );
+  };
+
+  // 페이지에 들어오자마자 서버에 연결
+  useEffect(() => {
+    if (classId) {
+        handleConnect();
+    }
+  }, [classId]);
   
   // 비디오 스트림 이벤트 처리
   useEffect(() => {
@@ -140,30 +146,22 @@ const LiveStudent: React.FC = () => {
       )}
       <div className={styles.videoSection}>
         <div className={styles.video}>
-          {isWebcamOn ? (
-            <video 
-              ref={webcamVideoRef} 
-              autoPlay
-              playsInline
-              muted 
-              style={{ width: '100%', height: '100%' }}
-            />
-          ) : (
-            <img src={noCam} alt="No webcam" className={styles.noCamOverlay} />
-          )}
+          <video 
+            ref={screenShareVideoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={{ width: '100%', height: '100%' }}
+          />
         </div>
         <div className={styles.smallVideo}>
-          {isScreenShareOn ? (
-            <video 
-              ref={screenShareVideoRef} 
-              autoPlay 
-              playsInline 
-              muted 
-              style={{ width: '100%', height: '100%' }}
-            />
-          ) : (
-            <img src={share} alt="No screen share" className={styles.noCamOverlay} />
-          )}
+          <video 
+            ref={webcamVideoRef} 
+            autoPlay
+            playsInline
+            muted 
+            style={{ width: '100%', height: '100%' }}
+          />
         </div>
       </div>
 

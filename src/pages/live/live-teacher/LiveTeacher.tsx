@@ -88,18 +88,13 @@ const LiveTeacher: React.FC = () => {
       connectToServerAsTeacher(classId.toString(), setConnectionStatus, setIsPublishingDisabled)
         .then(() => {
           console.log("Successfully connected to server as a teacher");
+          console.log("연결 상태: ", connectionStatus);
         })
         .catch((error) => {
           console.error("Failed to connect to server:", error);
         });
     }
   }, [classId]);
-
-  // 서버 연결 핸들러
-  const handleConnect = async () => {
-    await connectToServerAsTeacher(classId, setConnectionStatus, setIsPublishingDisabled);
-    console.log("연결 상태: ", connectionStatus);
-  };
 
   // 웹캠 스트림 시작/중지 핸들러
   const handleStartWebcam = async () => {
@@ -246,7 +241,6 @@ const LiveTeacher: React.FC = () => {
       )}
       <div className={styles.videoSection}>
         <div className={styles.video}>
-          {isScreenShareOn ? (
               <video 
                 ref={screenShareVideoRef} 
                 autoPlay 
@@ -254,11 +248,8 @@ const LiveTeacher: React.FC = () => {
                 muted 
                 style={{ width: '100%', height: '100%' }}
               />
-            ) : (
-              <img src={share} alt="No screen share" className={styles.noCamOverlay} />
-            )}
-
-          {isWebcamOn ? (
+        </div>
+        <div className={styles.smallVideo}>
             <video 
               ref={webcamVideoRef} 
               autoPlay
@@ -266,12 +257,6 @@ const LiveTeacher: React.FC = () => {
               muted 
               style={{ width: '100%', height: '100%' }}
             />
-          ) : (
-            <img src={noCam} alt="No webcam" className={styles.noCamOverlay} />
-          )}
-        </div>
-        <div className={styles.smallVideo}>
-          
         </div>
       </div>
 
