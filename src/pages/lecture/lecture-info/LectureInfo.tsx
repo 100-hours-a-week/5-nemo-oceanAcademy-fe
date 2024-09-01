@@ -83,7 +83,7 @@ const LectureInfo: React.FC = () => {
             if (response.status === 200) {
                 // alert(response.data.message);
                 console.log(response.data.message_kor);
-                navigate('/enrollment');
+                navigate(`/enrollment/${classId}`);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {

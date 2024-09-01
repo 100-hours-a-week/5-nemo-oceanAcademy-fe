@@ -5,6 +5,7 @@ import Navigation from '../../../components/navigation/Navigation';
 import styles from './Enrollment.module.css';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
+import { Container } from '../../../styles/GlobalStyles';
 
 const Enrollment: React.FC = () => {
     const navigate = useNavigate();

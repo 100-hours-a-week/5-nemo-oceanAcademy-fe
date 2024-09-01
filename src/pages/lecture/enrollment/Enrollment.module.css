@@ -6,12 +6,14 @@
     height: 100vh;
     padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
     text-align: center;
+    background-color: white;
   }
   
   .message {
     font-size: 25px;
     font-weight: bold;
     line-height: 1.5;
+    margin-top: -120px;
   }
   
   .buttonContainer {
