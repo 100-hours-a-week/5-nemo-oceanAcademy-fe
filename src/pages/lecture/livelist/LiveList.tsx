@@ -46,8 +46,8 @@ const LiveList: React.FC = () => {
   const [isFetching, setIsFetching] = useState(false);
   const token = localStorage.getItem('accessToken');
 
-  // 카테고리 목록 가져오기
   useEffect(() => {
+    // 카테고리 목록 가져오기
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(endpoints.getCategories, {
@@ -55,7 +55,8 @@ const LiveList: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCategories(categoryResponse.data.categories || []);
+        setCategories(categoryResponse.data || []);
+        console.log('/live-list 카테고리 조회 성공!');
       } catch (error) {
         console.error('Failed to fetch categories:', error);
         setCategories([]);
@@ -163,21 +164,23 @@ const LiveList: React.FC = () => {
               <p>Loading...</p>
           ) : lectures.length === 0 ? (
               <div className={styles.emptyContainer}>
-                <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-                <h5>아직 강의가 없어요!</h5>
+                <img src={emptyImage} alt="No live lectures available" className={styles.emptyImage} />
+                <h5>아직 라이브 강의가 없어요!</h5>
               </div>
           ) : (
               <div style={{"width":"100%"}}>
                 <div className={styles.lectureGrid}>
                   {lectures.map((lecture, index) => (
+                    <React.Fragment key={`${lecture.classId}-${index}`}>
                       <LiveCard
-                          key={`${lecture.classId}-${index}`}
-                          classId={lecture.classId}
-                          bannerImage={lecture.bannerImage ?? defaultImages[Math.floor(Math.random() * defaultImages.length)]} // null일 경우 기본 이미지 적용
-                          name={lecture.name}
-                          instructor={lecture.instructor}
-                          category={lecture.category}
+                        classId={lecture.classId}
+                        bannerImage={lecture.bannerImage ?? defaultImages[Math.floor(Math.random() * defaultImages.length)]}
+                        name={lecture.name}
+                        instructor={lecture.instructor}
+                        category={lecture.category}
                       />
+                      {index < lectures.length - 1 && <hr className={styles.divider} />}
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

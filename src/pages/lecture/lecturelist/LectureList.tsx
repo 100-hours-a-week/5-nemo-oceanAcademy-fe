@@ -7,7 +7,7 @@ import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureList.module.css';
-import { Container, Empty } from '../../../styles/GlobalStyles';
+import { Container } from '../../../styles/GlobalStyles';
 import emptyImage from '../../../assets/images/empty.png';
 
 // 기본 이미지 배열
