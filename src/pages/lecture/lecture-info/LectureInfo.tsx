@@ -22,16 +22,13 @@ interface LectureData {
     announcement: string; // 강의 공지 
     banner_image_path: string | null; // 배너 이미지 경로
     is_active: boolean;
-    role: string;
-    schedules: [];
 }
 
 const LectureInfo: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
+    const { classId } = useParams<{ classId: string }>();
     const [lectureData, setLectureData] = useState<LectureData | null>(null);
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
-    const { classId } = useParams<{ classId: string }>();
     const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
@@ -42,7 +39,9 @@ const LectureInfo: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setLectureData(response.data);
+                setLectureData(response.data.data);
+                console.log(response.data.message_kor);
+                console.log(response.data.message_eng);
             } catch (error) {
                 console.error('Failed to fetch lecture data:', error);
             }
@@ -56,7 +55,7 @@ const LectureInfo: React.FC = () => {
                     },
                 });
 
-                if (response.data.role === '강사' || response.data.role === '수강생') {
+                if (response.data.data === '강사' || response.data.data === '수강생') {
                     setIsEnrolled(true);
                 } else {
                     setIsEnrolled(false);
@@ -81,8 +80,9 @@ const LectureInfo: React.FC = () => {
                 },
             });
 
-            if (response.status === 201) {
-                alert(response.data.message);
+            if (response.status === 200) {
+                // alert(response.data.message);
+                console.log(response.data.message_kor);
                 navigate('/enrollment');
             }
         } catch (error) {
