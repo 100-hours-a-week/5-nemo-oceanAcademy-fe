@@ -262,11 +262,13 @@ const LiveTeacher: React.FC = () => {
       const client = new Client({
         webSocketFactory: () => socket,
 
+        /*
         beforeConnect: () => {
           client.connectHeaders = {
               Authorization: `Bearer ${token}`
           };
         },
+        */
 
         onConnect: () => {
           setStompClient(client);
