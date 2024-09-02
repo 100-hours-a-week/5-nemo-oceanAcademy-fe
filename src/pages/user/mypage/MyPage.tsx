@@ -46,12 +46,13 @@ const MyPage: React.FC = () => {
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    axios.get(`${endpoints.classes}?page=${page}&target=enrolled`, {
+    axios.get(`${endpoints.classes}?page=${page}&target=created`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
     .then(response => {
+      console.log('왜 전체 강의 조회가 되지? url check: ', `${endpoints.classes}?page=${page}&target=enrolled`);
       console.log('내가 개설한 강의 정보: ', response.data.data);
       console.log(response.data.message_kor);
       console.log(response.data.message_eng);
