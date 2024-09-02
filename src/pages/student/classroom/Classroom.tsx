@@ -99,12 +99,10 @@ const Classroom: React.FC = () => {
           category: item.category,
         }));
 
-        setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
-        console.log('내가 수강중인 강의가 잘 뜨는지 확인해보자: ', lectures);
-        setHasMore(classes.length > 0); // 추가된 강의가 없으면 더 이상 불러올 강의가 없다고 설정
+        setLectures(prevLectures => page === 0 ? classes : [...prevLectures, ...classes]);
+        setHasMore(classes.length > 0);
       } else {
-        console.log("No classes found");
-        setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
+        setHasMore(false);
       }
     } catch (error) {
       // 오류 타입 확인 및 메시지 출력
@@ -117,12 +115,16 @@ const Classroom: React.FC = () => {
       setIsLoading(false);
       setIsFetching(false);
     }
-  }, []);
+  }, [token]);
+
+  useEffect(() => {
+    console.log('내가 수강중인 강의가 잘 뜨는지 확인해보자: ', lectures);
+  }, [lectures]);
 
   // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
   useEffect(() => {
     setLectures([]); // 강의 목록 초기화
-    fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 다시 불러오기
+    fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0);
   }, [selectedCategory, fetchEnrolledLectures]);
 
   // 스크롤이 끝에 도달했는지 확인하는 함수

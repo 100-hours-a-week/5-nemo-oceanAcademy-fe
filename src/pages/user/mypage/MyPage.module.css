@@ -51,7 +51,6 @@
   
 .editButton {
   margin-left: 160px;
-  border: 1px solid red;
   background: none;
   border: none;
   font-size: 16px;
@@ -70,7 +69,6 @@
 }
 
 .addLectureButton {
-  border: 1px solid red;
   font-size: 24px;
   background: none;
   border: none;
