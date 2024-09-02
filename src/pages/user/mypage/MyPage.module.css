@@ -1,10 +1,11 @@
 .container {
+  width: 390px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
+  padding-bottom: 80px;
   background-color: white;
 }
   
