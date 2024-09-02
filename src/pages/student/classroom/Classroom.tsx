@@ -81,8 +81,6 @@ const Classroom: React.FC = () => {
         url += `&category=${categoryId}`;
       }
 
-      console.log("Classroom Request URL:", url); // URL 확인을 위해 로그 추가
-
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,14 +90,11 @@ const Classroom: React.FC = () => {
       console.log("Response data:", response.data); // 전체 응답 데이터 확인
       const lecturesData = response.data.data;
 
-      // 기존에 response.data.classes를 사용하던 부분을 response.data로 변경
-      if (response.data && response.data.length > 0) {
-        console.log("Fetched Enrolled lectures:", response.data);
-
+      if (lecturesData && lecturesData.length > 0) {
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
           category: item.category,
         }));
