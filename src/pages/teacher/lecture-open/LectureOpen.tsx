@@ -82,7 +82,7 @@ const LectureOpen: React.FC = () => {
       // [x] response 상태코드 확인
       if (response.status === 200) {
         console.log(response.data.message_kor);
-        // [x] 생성된 강의의 id 넘겨주기
+        // NOTE: 생성된 강의의 id를 다음 페이지에 상태값으로 넘겨주기
         navigate('/lecture/created', { state: { lectureId: response.data.id } });
       } 
 
