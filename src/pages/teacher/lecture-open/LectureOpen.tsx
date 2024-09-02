@@ -27,6 +27,7 @@ const LectureOpen: React.FC = () => {
   const [instructorInfo, setInstructorInfo] = useState<string>('');
   const [prerequisite, setPrerequisite] = useState<string>('');
   const [bannerImage, setBannerImage] = useState<File | null>(null);
+  const [categoryHelperText, setCategoryHelperText] = useState<string>('카테고리는 필수 항목입니다.');
 
   const { classId } = useParams<{ classId: string }>();
 
@@ -117,14 +118,20 @@ const LectureOpen: React.FC = () => {
     <Container>
       <h1 className={styles.title}>강의 개설하기</h1>
 
-      <CategorySelect 
-        categories={categories} 
-        selected={selectedCategory} 
-        onSelectCategory={handleCategoryChange} 
-        // NOTE : '전체 카테고리' 항목 대신 '카테고리 선택' 표시
-        defaultVal=''
-        defaultName='카테고리 선택'
-      />
+      <div className={styles.inputField}>
+        <label className={styles.label}>
+          카테고리 <span className={styles.required}>*</span>
+        </label>
+        <CategorySelect 
+          categories={categories} 
+          selected={selectedCategory} 
+          onSelectCategory={handleCategoryChange} 
+          // NOTE : '전체 카테고리' 항목 대신 '카테고리 선택' 표시
+          defaultVal=''
+          defaultName='카테고리 선택'
+        />
+        {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
+      </div>
 
       <InputField 
         label="강의 제목" 
