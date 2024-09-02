@@ -52,7 +52,7 @@ const DashboardStudent: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setLectureData(response.data);
+        setLectureData(response.data.data);
       } catch (error) {
         console.error('Failed to fetch lecture data:', error);
       } finally {
