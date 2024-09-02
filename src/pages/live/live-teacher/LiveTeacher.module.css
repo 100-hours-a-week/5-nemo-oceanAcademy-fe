@@ -131,8 +131,12 @@
 }
 
 .chatInput {
+  width: 350px;
+  height: 35px;
   display: flex;
-  margin-top: 10px;
+  position: fixed;
+  bottom: 10px;
+  z-index: 1000;
 }
   
 .chatInput input {

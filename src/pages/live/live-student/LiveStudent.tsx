@@ -11,6 +11,8 @@ import share from '../../../assets/images/share.png';
 import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
 
 const LiveStudent: React.FC = () => {
+  const token = localStorage.getItem('accessToken');
+  
   const navigate = useNavigate();
   const { classId } = useParams<{ classId: string }>();
   const [showModal, setShowModal] = useState(false);
