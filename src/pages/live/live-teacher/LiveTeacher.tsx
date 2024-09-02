@@ -303,8 +303,14 @@ const LiveTeacher: React.FC = () => {
     if (stompClient && connected) {
       stompClient.subscribe(`/topic/greetings/${roomId}`, (greeting) => {
         const messageContent = JSON.parse(greeting.body).content;
+        const nickname = userInfo?.nickname || 'Anonymous';
+        const profileImage = userInfo?.profileImage || profImage;
+
+        console.log(`Received message: ${messageContent}`);
         showGreeting(roomId, messageContent, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       });
+
+      // setSubscription(subscription); // 구독 상태를 관리할 수 있도록 상태에 저장
     }
   };
 
@@ -324,6 +330,7 @@ const LiveTeacher: React.FC = () => {
 
       setContent('');
     } else {
+      alert('STOMP client is not connected. Cannot send message.');
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
