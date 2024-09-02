@@ -9,6 +9,7 @@ import styles from './LectureOpen.module.css';
 import { Container } from '../../../styles/GlobalStyles'
 import axios from 'axios';
 import endpoints from '../../../api/endpoints'; 
+import { isValidTextInput, getTitleHelperText } from '../../../utils/validation';
 
 interface Category {
   id: number;
@@ -27,7 +28,11 @@ const LectureOpen: React.FC = () => {
   const [instructorInfo, setInstructorInfo] = useState<string>('');
   const [prerequisite, setPrerequisite] = useState<string>('');
   const [bannerImage, setBannerImage] = useState<File | null>(null);
+  
   const [categoryHelperText, setCategoryHelperText] = useState<string>('카테고리는 필수 항목입니다.');
+  const [titleHelperText, setTitleHelperText] = useState<string>('강의 제목은 필수 항목입니다.');
+  const [objectiveHelperText, setObjectiveHelperText] = useState<string>('강의 목표는 필수 항목입니다.');
+  const [descriptionHelperText, setDescriptionHelperText] = useState<string>('강의 소개는 필수 항목입니다.');
 
   const { classId } = useParams<{ classId: string }>();
 
@@ -108,11 +113,44 @@ const LectureOpen: React.FC = () => {
 
   // [x] 버튼 valid 테스트 
   const validateForm = () => {
-    const isValid: boolean = !!title && !!selectedCategory && !!objective && !!description;
+    let isValid = true;
+
+    if (!selectedCategory) {
+      isValid = false;
+      setCategoryHelperText('카테고리는 필수 항목입니다.');
+    } else {
+      setCategoryHelperText('');
+    }
+
+    if (!isValidTextInput(title)) {
+      isValid = false;
+      setTitleHelperText('강의 제목은 필수 항목입니다.');
+    } else {
+      const titleValidation = getTitleHelperText(title);
+      setTitleHelperText(titleValidation);
+      if (titleValidation) {
+        isValid = false;
+      }
+    }
+
+    if (!isValidTextInput(objective)) {
+      isValid = false;
+      setObjectiveHelperText('강의 목표는 필수 항목입니다.');
+    } else {
+      setObjectiveHelperText('');
+    }
+
+    if (!isValidTextInput(description)) {
+      isValid = false;
+      setDescriptionHelperText('강의 소개는 필수 항목입니다.');
+    } else {
+      setDescriptionHelperText('');
+    }
+
     setIsFormValid(isValid);
-  };  
+  }; 
   
-  useEffect(validateForm, [title, selectedCategory, objective, description]);
+  useEffect(validateForm, [selectedCategory, title, selectedCategory, objective, description]);
 
   return (
     <Container>
@@ -139,7 +177,7 @@ const LectureOpen: React.FC = () => {
         isRequired 
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        helperText="강의 제목은 필수 항목입니다."
+        helperText={titleHelperText}
       />
 
       <InputField 
@@ -148,7 +186,7 @@ const LectureOpen: React.FC = () => {
         isRequired 
         value={objective}
         onChange={(e) => setObjective(e.target.value)}
-        helperText="강의 목표는 필수 항목입니다."
+        helperText={objectiveHelperText}
       />
 
       <InputField 
@@ -159,7 +197,7 @@ const LectureOpen: React.FC = () => {
         height={100}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        helperText="강의 소개는 필수 항목입니다."
+        helperText={descriptionHelperText}
       />
 
       <InputField 
