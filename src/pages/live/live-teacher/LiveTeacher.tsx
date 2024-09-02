@@ -341,6 +341,10 @@ const LiveTeacher: React.FC = () => {
         body: JSON.stringify(chatMessage),
       });
 
+      console.log('Sent message:', chatMessage);
+      
+      // 새로 추가된 코드: 메시지를 UI에 바로 추가
+      showGreeting(classId, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
     } else {
       alert('STOMP client is not connected. Cannot send message.');
@@ -455,7 +459,7 @@ const LiveTeacher: React.FC = () => {
             <div key={index} className={styles.chat}>
               <div className={styles.profContainer}>
                 <img
-                  src={profImage} // {msg.profileImage}
+                  src={msg.profileImage}
                   alt="프로필"
                   className={styles.icon}
                 />
@@ -478,6 +482,11 @@ const LiveTeacher: React.FC = () => {
             placeholder="메시지를 입력하세요" 
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                  sendMessage();
+              }
+            }}
           />
           <button onClick={sendMessage}>Send</button>
         </div>
