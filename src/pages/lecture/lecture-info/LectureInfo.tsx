@@ -74,9 +74,11 @@ const LectureInfo: React.FC = () => {
 
     const handleButtonClick = async () => {
         if (isEnrolled) {
+            console.log('수강신청 되어 있나요?: ', isEnrolled);
             navigate(`/dashboard/student/${classId}`);
         } else {
             try {
+                console.log('수강신청 요청 드갑니다');
                 const response = await axios.post(endpoints.enrollment.replace('{classId}', classId || ''), {}, {
                     headers: {
                         Authorization: `Bearer ${token}`,
