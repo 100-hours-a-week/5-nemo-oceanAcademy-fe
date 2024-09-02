@@ -72,31 +72,35 @@ const LectureInfo: React.FC = () => {
         }
     }, [classId, token]);
 
-    const handleEnrollment = async () => {
-        try {
-            const response = await axios.post(endpoints.enrollment.replace('{classId}', classId || ''), {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+    const handleButtonClick = async () => {
+        if (isEnrolled) {
+            navigate(`/dashboard/student/${classId}`);
+        } else {
+            try {
+                const response = await axios.post(endpoints.enrollment.replace('{classId}', classId || ''), {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-            if (response.status === 200) {
-                // alert(response.data.message);
-                console.log(response.data.message_kor);
-                navigate(`/enrollment/${classId}`);
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                if (error.response?.status === 401) {
-                    alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
-                } else if (error.response?.status === 400) {
-                    alert(error.response.data.message || '수강신청을 실패했습니다.');
-                } else {
-                    alert('알 수 없는 오류가 발생했습니다.');
+                if (response.status === 200) {
+                    // alert(response.data.message);
+                    console.log(response.data.message_kor);
+                    navigate(`/enrollment/${classId}`);
                 }
-            } else {
-                console.error('Enrollment request failed:', error);
-                alert('수강신청을 실패했습니다.');
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 401) {
+                        alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
+                    } else if (error.response?.status === 400) {
+                        alert(error.response.data.message || '수강신청을 실패했습니다.');
+                    } else {
+                        alert('알 수 없는 오류가 발생했습니다.');
+                    }
+                } else {
+                    console.error('Enrollment request failed:', error);
+                    alert('수강신청을 실패했습니다.');
+                }
             }
         }
     };
@@ -110,7 +114,7 @@ const LectureInfo: React.FC = () => {
             <p className={styles.instructor}>{lectureData.instructor}</p>
             <h1 className={styles.title}>{lectureData.name}</h1>
             <div className={styles.banner} style={{ backgroundImage: `url(${lectureData.banner_image_path || '/default-image.png'})` }}></div>
-            <div className={styles.category}>카테고리: {lectureData.category}</div>
+            <div className={styles.category}>{lectureData.category}</div>
 
             <div className={styles.infoSection}>
                 <h3 className={styles.infoTitle}>강의 목표</h3>
@@ -133,7 +137,7 @@ const LectureInfo: React.FC = () => {
             </div>
 
             <div className={styles.buttonContainer}>
-                <Button text={isEnrolled ? "대시보드 가기" : "수강신청"} onClick={handleEnrollment} />
+                <Button text={isEnrolled ? "대시보드 가기" : "수강신청"} onClick={handleButtonClick} />
             </div>
 
             <Navigation />
