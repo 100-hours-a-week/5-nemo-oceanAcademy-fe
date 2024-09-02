@@ -3,34 +3,31 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
   background-color: white;
 }
   
 .profileContainer {
-  border: 1px solid red;
   width: 320px;
-  height: 60px;
+  height: 70px;
   background-color: #eee;
   padding: 0 20px;
   border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 20px;
   margin-top: -160px;
 }
   
 .profilePicture {
-  border: 1px solid red;
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  margin-right: 10px;
 }
   
 .profilePictureEditing {
-  border: 1px solid red;
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -38,13 +35,11 @@
 }
   
 .username {
-  border: 1px solid red;
   font-size: 16px;
   font-weight: bold;
 }
   
 .usernameInput {
-  border: 1px solid red;
   width: 200px;
   height: 30px;
   font-size: 16px;
@@ -54,6 +49,7 @@
 }
   
 .editButton {
+  margin-left: 160px;
   border: 1px solid red;
   background: none;
   border: none;

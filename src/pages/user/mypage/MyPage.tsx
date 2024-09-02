@@ -9,6 +9,7 @@ import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
 import { Container, Empty } from '../../../styles/GlobalStyles';
 import emptyImage from '../../../assets/images/empty.png';
+import profImage from '../../../assets/images/profile_default.png';
 
 // 기본 이미지 배열
 const defaultImages = [
@@ -25,16 +26,15 @@ const defaultImages = [
 ];
 
 interface Lecture {
-    classId: number; // id
-    name: string; // name
-    bannerImage: string | null; // banner_image_path
-    instructor: string; // instructor
-    category: string; // category
+    classId: number;
+    name: string;
+    bannerImage: string | null;
+    instructor: string;
+    category: string;
 }
 
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
-
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('닉네임');
   const [profilePic, setProfilePic] = useState('');
@@ -142,14 +142,14 @@ const MyPage: React.FC = () => {
   };
 
   const handleLectureClick = (classId: number) => {
-    navigate(`/dashboard/student/${classId}`);
+    navigate(`/dashboard/teacher/${classId}`);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.profileContainer}>
         <img 
-          src={profilePic} 
+          src={profImage} 
           alt="Profile" 
           className={isEditing ? styles.profilePictureEditing : styles.profilePicture} 
         />
