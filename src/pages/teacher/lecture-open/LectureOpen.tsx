@@ -29,20 +29,26 @@ const LectureOpen: React.FC = () => {
   const [bannerImage, setBannerImage] = useState<File | null>(null);
 
   const { classId } = useParams<{ classId: string }>();
-
+  
   useEffect(() => {
     // 카테고리 목록 가져오기
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(endpoints.getCategories);
-        setCategories(response.data.categories || []);
+        const categoryResponse = await axios.get(endpoints.getCategories, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCategories(categoryResponse.data || []);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
+        setCategories([]);
+        alert('카테고리 정보를 가져오는 데 실패했습니다.');
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [token]);
 
   const handleSubmit = async () => {
     if (!isFormValid) return;

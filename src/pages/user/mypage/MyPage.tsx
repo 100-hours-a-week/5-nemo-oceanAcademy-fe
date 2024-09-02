@@ -46,7 +46,7 @@ const MyPage: React.FC = () => {
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    axios.get(`${endpoints.classes}?target=created?page=${page}`, {
+    axios.get(`${endpoints.classes}?page=${page}&target=enrolled`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -67,7 +67,7 @@ const MyPage: React.FC = () => {
     })
     .catch(error => {
       if (error.response && error.response.status === 400) {
-        alert(error.response.data.message);
+        alert(error.response.data.message_kor);
       } else {
         console.error('Failed to fetch created classes:', error);
       }
@@ -191,7 +191,6 @@ const MyPage: React.FC = () => {
                 name={lecture.name} 
                 instructor={lecture.instructor} 
                 category={lecture.category}
-                onClick={() => navigate(`/dashboard/student/${lecture.classId}`)}
               />
             </div>
           ))}
