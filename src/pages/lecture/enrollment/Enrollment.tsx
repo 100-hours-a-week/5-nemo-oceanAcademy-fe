@@ -14,7 +14,7 @@ const Enrollment: React.FC = () => {
     const token = localStorage.getItem('accessToken');
 
     const handleButtonClick = () => {
-        navigate(`/student/dashboard/${classId}`);
+        navigate(`/dashboard/student/${classId}`);
     }
 
     return (

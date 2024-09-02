@@ -75,14 +75,13 @@ const Classroom: React.FC = () => {
     setIsLoading(true);
 
     try {
-      let url = `${endpoints.classes}?target=enrolled&page=${page}`;
-
+      let url = `${endpoints.classes}?page=${page}&target=enrolled`;
       // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
 
-      console.log("Request URL:", url); // URL 확인을 위해 로그 추가
+      console.log("Classroom Request URL:", url); // URL 확인을 위해 로그 추가
 
       const response = await axios.get(url, {
         headers: {
@@ -91,13 +90,14 @@ const Classroom: React.FC = () => {
       });
 
       console.log("Response data:", response.data); // 전체 응답 데이터 확인
+      const lecturesData = response.data.data;
 
       // 기존에 response.data.classes를 사용하던 부분을 response.data로 변경
       if (response.data && response.data.length > 0) {
-        console.log("Fetched lectures:", response.data);
+        console.log("Fetched Enrolled lectures:", response.data);
 
-        const classes = response.data.map((item: any) => ({
-          classId: item.class_id,
+        const classes = lecturesData.map((item: any) => ({
+          classId: item.id,
           name: item.name,
           bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
           instructor: item.instructor,
@@ -174,9 +174,9 @@ const Classroom: React.FC = () => {
           </div>
         ) : (
           <div className={styles.lectureGrid}>
-            {lectures.map((lecture) => (
+            {lectures.map((lecture, index) => (
               <LectureCard
-                key={lecture.classId}
+                key={`${lecture.classId}-${index}`}
                 classId={lecture.classId}
                 bannerImage={lecture.bannerImage}
                 name={lecture.name}
