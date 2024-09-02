@@ -25,7 +25,7 @@ const LectureOpen: React.FC = () => {
   const [objective, setObjective] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [instructorInfo, setInstructorInfo] = useState<string>('');
-  const [precourse, setPrecourse] = useState<string>('');
+  const [prerequisite, setPrerequisite] = useState<string>('');
   const [bannerImage, setBannerImage] = useState<File | null>(null);
 
   const { classId } = useParams<{ classId: string }>();
@@ -53,14 +53,17 @@ const LectureOpen: React.FC = () => {
   const handleSubmit = async () => {
     if (!isFormValid) return;
 
+    // [x] formData 확인
     const formData = new FormData();
+    const categoryId = categories.find(cat => cat.name === selectedCategory)?.id || 0;
+    formData.append('categoryId', categoryId.toString());  // 숫자를 문자열로 변환
     formData.append('name', title);
-    formData.append('category', selectedCategory);
     formData.append('object', objective);
     formData.append('description', description);
-    formData.append('instructor_info', instructorInfo);
-    formData.append('precourse', precourse);
-    if (bannerImage) formData.append('banner_image', bannerImage);
+    formData.append('instructorInfo', instructorInfo);
+    formData.append('prerequisite', prerequisite);
+    // [x] announcement 처리 x
+    if (bannerImage) formData.append('bannerImageFile', bannerImage);
 
     try {
       const response = await axios.post(endpoints.classes, formData, {
@@ -70,14 +73,26 @@ const LectureOpen: React.FC = () => {
         },
       });
 
+      // [x] response 상태코드 확인
       if (response.status === 200) {
-        navigate('/lecture/created'); 
-      } else {
-        alert('강의 개설에 실패했습니다. 다시 시도해 주세요.');
-      }
+        console.log(response.data.message_kor);
+        // [x] 생성된 강의의 id 넘겨주기
+        navigate('/lecture/created', { state: { lectureId: response.data.id } });
+      } 
+
     } catch (error) {
-      console.error('Error creating lecture:', error);
-      alert('강의 개설에 실패했습니다. 다시 시도해 주세요.');
+      if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+              alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
+          } else if (error.response?.status === 400) {
+            alert(error.response.data.message || '강의 개설에 실패했습니다.');
+          } else {
+              alert('알 수 없는 오류가 발생했습니다.');
+          }
+      } else {
+          console.error('Enrollment request failed:', error);
+          alert('강의 개설에 실패했습니다.');
+      }
     }
   };
 
@@ -90,10 +105,11 @@ const LectureOpen: React.FC = () => {
     setBannerImage(file);
   };
 
+  // [x] 버튼 valid 테스트 
   const validateForm = () => {
-    const isValid = title && selectedCategory && objective && description;
+    const isValid: boolean = !!title && !!selectedCategory && !!objective && !!description;
     setIsFormValid(isValid);
-  };
+  };  
   
   useEffect(validateForm, [title, selectedCategory, objective, description]);
 
@@ -105,6 +121,9 @@ const LectureOpen: React.FC = () => {
         categories={categories} 
         selected={selectedCategory} 
         onSelectCategory={handleCategoryChange} 
+        // NOTE : '전체 카테고리' 항목 대신 '카테고리 선택' 표시
+        defaultVal=''
+        defaultName='카테고리 선택'
       />
 
       <InputField 
@@ -150,8 +169,8 @@ const LectureOpen: React.FC = () => {
         placeholder="사전 지식 및 준비 안내를 작성해주세요" 
         isTextArea 
         height={100}
-        value={precourse}
-        onChange={(e) => setPrecourse(e.target.value)}
+        value={prerequisite}
+        onChange={(e) => setPrerequisite(e.target.value)}
       />
 
       <FileUpload />
