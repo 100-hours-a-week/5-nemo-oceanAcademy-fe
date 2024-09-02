@@ -60,7 +60,7 @@
   
 .chatWindow {
   width: 350px;
-  height: 450px;
+  height: 400px;
   background-color: #f0f0f0;
   border-radius: 8px;
   overflow-y: scroll;
@@ -107,6 +107,10 @@
 .chatInput {
   display: flex;
   margin-top: 10px;
+  width: 350px;
+  height: 35px;
+  bottom: 10px;
+  z-index: 1000;
 }
   
 .chatInput input {
