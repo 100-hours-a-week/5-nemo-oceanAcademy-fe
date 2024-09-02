@@ -22,7 +22,6 @@ import {
   startSystemAudioStream,
   stopSystemAudioStream
 } from '../../../components/web-rtc/utils/teacher/teacherClient';
-import ChatApp from '../../../components/ChatApp';
 
 const LiveTeacher: React.FC = () => {
   const token = localStorage.getItem('accessToken');
@@ -342,7 +341,7 @@ const LiveTeacher: React.FC = () => {
       });
 
       console.log('Sent message:', chatMessage);
-      
+
       // 새로 추가된 코드: 메시지를 UI에 바로 추가
       showGreeting(classId, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
@@ -371,6 +370,15 @@ const LiveTeacher: React.FC = () => {
       });
   };
 
+  // chatSection에 ref 추가
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+
+  // useEffect를 사용하여 새로운 메시지가 추가될 때 스크롤을 자동으로 아래로 이동
+  useEffect(() => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleLeaveClick = () => {
     setShowModal(true);
@@ -454,7 +462,7 @@ const LiveTeacher: React.FC = () => {
       </div>
       
       <div className={styles.chatSection}>
-        <div className={styles.chatWindow}>
+        <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.chat}>
               <div className={styles.profContainer}>
@@ -467,7 +475,7 @@ const LiveTeacher: React.FC = () => {
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
                   <h5>{msg.nickname}</h5>
-                  <p>{new Date().toLocaleTimeString()}</p>
+                  <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={styles.chatBubble}>
                   <p>{msg.message}</p>
@@ -484,7 +492,8 @@ const LiveTeacher: React.FC = () => {
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                  sendMessage();
+                e.preventDefault();
+                sendMessage();
               }
             }}
           />
