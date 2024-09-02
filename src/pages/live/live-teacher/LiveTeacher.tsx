@@ -349,7 +349,7 @@ const LiveTeacher: React.FC = () => {
   const loadChatHistory = (roomId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', roomId))
       .then(response => {
-        setMessages(response.data.map(msg => ({
+        setMessages(response.data.map((msg: any) => ({
           room: roomId,
           message: msg.content,
           nickname: msg.writerId || 'Anonymous',

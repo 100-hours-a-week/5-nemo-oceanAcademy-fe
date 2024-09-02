@@ -131,7 +131,7 @@ const LiveStudent: React.FC = () => {
 
       client.activate();
     };
-
+    /*
     const disconnect = () => {
       if (stompClient) {
         stompClient.deactivate();
@@ -139,15 +139,18 @@ const LiveStudent: React.FC = () => {
         console.log("Disconnected");
       }
     };
+    */
 
     if (classId) {
       connect();
     }
 
+    /*
     return () => {
       disconnect();
     };
-  }, [classId, stompClient]);
+    */
+  }, [classId]);
 
   // 채팅 관련 핸들러
   const subscribeToRoom = (roomId: string) => {
@@ -191,7 +194,7 @@ const LiveStudent: React.FC = () => {
   const loadChatHistory = (roomId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', roomId))
       .then(response => {
-        setMessages(response.data.map(msg => ({
+        setMessages(response.data.map((msg: any) => ({
           room: roomId,
           message: msg.content,
           nickname: msg.writerId || 'Anonymous',
