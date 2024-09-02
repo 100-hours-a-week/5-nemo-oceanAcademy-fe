@@ -288,6 +288,7 @@ const LiveTeacher: React.FC = () => {
       client.activate();
     };
 
+    /*
     const disconnect = () => {
       if (stompClient) {
         stompClient.deactivate();
@@ -295,15 +296,18 @@ const LiveTeacher: React.FC = () => {
         console.log("Disconnected");
       }
     };
+    */
 
     if (classId) {
       connect();
     }
 
+    /*
     return () => {
       disconnect();
     };
-  }, [classId, stompClient]);
+    */
+  }, [classId]);
 
   // 채팅 관련 핸들러
   const subscribeToRoom = (roomId: string) => {
