@@ -105,6 +105,7 @@ const Classroom: React.FC = () => {
         }));
 
         setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
+        console.log('내가 수강중인 강의가 잘 뜨는지 확인해보자: ', lectures);
         setHasMore(classes.length > 0); // 추가된 강의가 없으면 더 이상 불러올 강의가 없다고 설정
       } else {
         console.log("No classes found");

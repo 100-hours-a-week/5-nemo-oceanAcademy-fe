@@ -11,7 +11,7 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints'; 
 
 interface Category {
-  category_id: number;
+  id: number;
   name: string;
 }
 
@@ -29,7 +29,7 @@ const LectureOpen: React.FC = () => {
   const [bannerImage, setBannerImage] = useState<File | null>(null);
 
   const { classId } = useParams<{ classId: string }>();
-  
+
   useEffect(() => {
     // 카테고리 목록 가져오기
     const fetchCategories = async () => {
@@ -70,7 +70,7 @@ const LectureOpen: React.FC = () => {
         },
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         navigate('/lecture/created'); 
       } else {
         alert('강의 개설에 실패했습니다. 다시 시도해 주세요.');
@@ -105,7 +105,6 @@ const LectureOpen: React.FC = () => {
         categories={categories} 
         selected={selectedCategory} 
         onSelectCategory={handleCategoryChange} 
-        width="100%" // 드롭다운 너비를 더 넓게 설정
       />
 
       <InputField 
