@@ -47,34 +47,38 @@ const LiveStudent: React.FC = () => {
     }
   };
 
-  const connect = () => {
-    const socket = new SockJS(endpoints.connectWebSocket);
-    console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
-    const client = new Client({
-      webSocketFactory: () => socket,
-      beforeConnect: () => {
-        client.connectHeaders = {
-          Authorization: `Bearer ${token}`
-        };
-      },
-      onConnect: () => {
-          setStompClient(client); // 상태 업데이트
-          setConnectedState(true);
+  useEffect(() => {
+    const connect = () => {
+      const socket = new SockJS(endpoints.connectWebSocket);
+      console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
+      const client = new Client({
+        webSocketFactory: () => socket,
+        beforeConnect: () => {
+          client.connectHeaders = {
+            Authorization: `Bearer ${token}`
+          };
+        },
+        onConnect: () => {
+            setStompClient(client);
+            setConnectedState(true);
+  
+            console.log('STOMP client connected');
+        },
+        onStompError: (frame) => {
+            console.error('Broker reported error: ' + frame.headers['message']);
+            console.error('Additional details: ' + frame.body);
+        },
+        onDisconnect: () => {
+            setConnectedState(false);
+            console.log("Disconnected");
+        }
+      });
+  
+      client.activate();
+    }; 
 
-          console.log('STOMP client connected');
-      },
-      onStompError: (frame) => {
-          console.error('Broker reported error: ' + frame.headers['message']);
-          console.error('Additional details: ' + frame.body);
-      },
-      onDisconnect: () => {
-          setConnectedState(false);
-          console.log("Disconnected");
-      }
-    });
-
-    client.activate();
-  }; 
+    connect();
+  }, [classId]); 
 
   // useEffect를 사용하여 stompClient 상태가 업데이트된 후 작업 수행
   useEffect(() => {
