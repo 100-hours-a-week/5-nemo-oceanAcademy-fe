@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Client } from '@stomp/stompjs';
+import { Client, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
@@ -25,6 +25,7 @@ const LiveStudent: React.FC = () => {
   const [isScreenClicked, setIsScreenClicked] = useState(false);
 
   const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
   const [messages, setMessages] = useState<{ room: string; message: string; nickname: string; profileImage: string }[]>([]);
   const [connected, setConnected] = useState(false);
   const [content, setContent] = useState("");
@@ -32,6 +33,7 @@ const LiveStudent: React.FC = () => {
 
   const webcamVideoRef = useRef<HTMLVideoElement>(null);
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
 
   // 유저 정보 조회
   useEffect(() => {
@@ -155,14 +157,23 @@ const LiveStudent: React.FC = () => {
   // 채팅 관련 핸들러
   const subscribeToRoom = (roomId: string) => {
     if (stompClient && connected) {
-      stompClient.subscribe(`/topic/greetings/${roomId}`, (greeting) => {
+      // 이전 구독이 있을 경우 구독 해제
+      if (subscription) {
+        subscription.unsubscribe();
+        setSubscription(null);
+      }
+
+      const newSubscription = stompClient.subscribe(`/topic/greetings/${roomId}`, (greeting) => {
         const messageContent = JSON.parse(greeting.body).content;
-        const nickname = userInfo?.nickname || 'Anonymous';
+        const nickname = JSON.parse(greeting.body).writerId || 'Anonymous';
         const profileImage = userInfo?.profileImage || profImage;
 
         console.log(`Received message: ${messageContent}`);
         showGreeting(roomId, messageContent, nickname, profileImage);
       });
+
+      setSubscription(newSubscription);
+      console.log("Successfully subscribed to room " + roomId);
     }
   };
 
@@ -175,8 +186,15 @@ const LiveStudent: React.FC = () => {
         createdDate: new Date().toISOString()
       };
 
+      /* gpt가 고쳐준대로 안되면 이거 다시 써야함 
       stompClient.publish({
         destination: endpoints.sendMessage,
+        body: JSON.stringify(chatMessage),
+      });
+      */
+
+      stompClient.publish({
+        destination: `/app/classroom/${classId}`, // 메시지 전송 경로
         body: JSON.stringify(chatMessage),
       });
 
@@ -209,9 +227,6 @@ const LiveStudent: React.FC = () => {
         console.error("Failed to load chat history:", error);
       });
   };
-
-  // chatSection에 ref 추가
-  const chatWindowRef = useRef<HTMLDivElement>(null);
 
   // useEffect를 사용하여 새로운 메시지가 추가될 때 스크롤을 자동으로 아래로 이동
   useEffect(() => {
@@ -303,7 +318,7 @@ const LiveStudent: React.FC = () => {
             placeholder="메시지를 입력하세요" 
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            onKeyDown={(e) => {
+            onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
                 sendMessage();
