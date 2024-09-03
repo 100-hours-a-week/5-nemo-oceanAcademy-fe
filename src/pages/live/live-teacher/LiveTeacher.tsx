@@ -3,7 +3,7 @@ import { Client, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveTeacher.module.css';
 import { Container } from '../../../styles/GlobalStyles';
@@ -83,11 +83,13 @@ const LiveTeacher: React.FC = () => {
           setUserInfo(response.data.data);
         }
       } catch(error) {
-        if (error.response && error.response.status === 401) {
-          alert('권한이 없습니다.');
-          navigate('/');
+        const axiosError = error as AxiosError;
+
+        if (axiosError.response && axiosError.response.status === 401) {
+            alert('권한이 없습니다.');
+            navigate('/');
         } else {
-            console.error('Error occurred: ', error);
+            console.error('Error occurred: ', axiosError);
         }
       }
     };
@@ -140,6 +142,11 @@ const LiveTeacher: React.FC = () => {
 
   // 웹캠 스트림 시작/중지 핸들러
   const handleStartWebcam = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+    
     if (!webcamProducer) {
         const producer = await startWebcamStream(classId, useSimulcast, setWebcamStatus, webcamVideoRef.current);
         setWebcamProducer(producer);
@@ -148,6 +155,11 @@ const LiveTeacher: React.FC = () => {
 
   // 웹캠 토글 핸들러
   const handleToggleWebcam = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (isWebcamOn) {
       if (webcamProducer) {
         stopWebcamStream(webcamProducer, () => {});
@@ -163,6 +175,11 @@ const LiveTeacher: React.FC = () => {
 
   // 화면 공유 토글 핸들러
   const handleToggleScreenShare = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (isScreenShareOn) {
       if (screenShareProducer) {
         stopScreenShareStream(screenShareProducer, () => {});
@@ -178,6 +195,11 @@ const LiveTeacher: React.FC = () => {
 
   // 마이크 토글 핸들러
   const handleToggleMicrophone = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (isMicrophoneOn) {
       if (microphoneProducer) {
         stopMicrophoneStream(microphoneProducer, () => {});
@@ -193,6 +215,11 @@ const LiveTeacher: React.FC = () => {
 
   // 시스템 오디오 토글 핸들러
   const handleToggleSystemAudio = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (isSystemAudioOn) {
       if (systemAudioProducer) {
         stopSystemAudioStream(systemAudioProducer, () => {});
@@ -215,6 +242,11 @@ const LiveTeacher: React.FC = () => {
 
   // 화면 공유 스트림 시작/중지 핸들러
   const handleStartScreenShare = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (!screenShareProducer) {
         const producer = await startScreenShareStream(classId, useSimulcast, setScreenStatus, screenShareVideoRef.current);
         setScreenShareProducer(producer);
@@ -229,6 +261,11 @@ const LiveTeacher: React.FC = () => {
   };
   
   const handleStartMicrophone = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (!microphoneProducer) {
         const producer = await startMicrophoneStream(classId, setMicrophoneStatus);
         setMicrophoneProducer(producer);
@@ -243,6 +280,11 @@ const LiveTeacher: React.FC = () => {
   };
 
   const handleStartSystemAudio = async () => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     if (!systemAudioProducer) {
         const producer = await startSystemAudioStream(classId, setSystemAudioStatus);
         setSystemAudioProducer(producer);
@@ -258,6 +300,11 @@ const LiveTeacher: React.FC = () => {
 
   // Websocket Connection
   useEffect(() => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+
     const connect = () => {
       const socket = new SockJS(endpoints.connectWebSocket);
       const client = new Client({

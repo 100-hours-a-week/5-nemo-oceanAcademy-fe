@@ -3,7 +3,7 @@ import { Client, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
@@ -50,11 +50,13 @@ const LiveStudent: React.FC = () => {
           setUserInfo(response.data.data);
         }
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          alert('권한이 없습니다.');
-          navigate('/');
+        const axiosError = error as AxiosError;
+
+        if (axiosError.response && axiosError.response.status === 401) {
+            alert('권한이 없습니다.');
+            navigate('/');
         } else {
-          console.error('Error occurred: ', error);
+            console.error('Error occurred: ', axiosError);
         }
       }
     };
@@ -102,6 +104,11 @@ const LiveStudent: React.FC = () => {
 
   // WebSocket Connection
   useEffect(() => {
+    if (!classId) {
+      console.error('classId가 정의되지 않았습니다.');
+      return;
+    }
+    
     const connect = () => {
       const socket = new SockJS(endpoints.connectWebSocket);
       console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
