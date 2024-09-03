@@ -74,6 +74,7 @@ const LectureOpen: React.FC = () => {
 
     // JSON 데이터를 문자열로 변환하여 formData에 추가
     formData.append('classroomCreateDto', JSON.stringify(classroomCreateDto));
+    formData.append('classroomCreateDto', new Blob([JSON.stringify(classroomCreateDto)], { type: 'application/json' }));
 
     // 이미지 파일 추가
     if (bannerImage) {
@@ -157,7 +158,7 @@ const LectureOpen: React.FC = () => {
     setIsFormValid(isValid);
   }; 
   
-  useEffect(validateForm, [selectedCategory, title, selectedCategory, objective, description]);
+  useEffect(validateForm, [selectedCategory, title, objective, description]);
 
   return (
     <Container>
