@@ -21,7 +21,6 @@ import Login from './pages/user/login/Login';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
-import SignUp from './pages/user/signup/SignUp';
 import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
 import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
 import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';

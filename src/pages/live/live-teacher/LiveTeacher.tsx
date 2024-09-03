@@ -308,7 +308,7 @@ const LiveTeacher: React.FC = () => {
       disconnect();
     };
     */
-  }, [classId]);
+  }, [classId, stompClient]);
 
   // 채팅 관련 핸들러
   const subscribeToRoom = (roomId: string) => {
@@ -322,7 +322,7 @@ const LiveTeacher: React.FC = () => {
 
       const newSubscription = stompClient.subscribe(`/topic/greetings/${roomId}`, (greeting) => {
         const messageContent = JSON.parse(greeting.body).content;
-        const nickname = JSON.parse(greeting.body).writerId || 'Anonymous';
+        const nickname = userInfo?.nickname || 'Anonymous';
         const profileImage = userInfo?.profileImage || profImage;
 
         console.log(`Received message: ${messageContent}`);
@@ -343,22 +343,13 @@ const LiveTeacher: React.FC = () => {
         createdDate: new Date().toISOString()
       };
 
-      /* gpt 수정 이전 
       stompClient.publish({
-        destination: endpoints.sendMessage,
-        body: JSON.stringify(chatMessage),
-      });
-      */
-
-      // gpt가 왜 경로를 바꾼 걸까? 
-      stompClient.publish({
-        destination: `/app/classroom/${classId}`, // 메시지 전송 경로
+        destination: "/app/hello",
         body: JSON.stringify(chatMessage),
       });
 
       console.log('Sent message:', chatMessage);
 
-      // 새로 추가된 코드: 메시지를 UI에 바로 추가
       showGreeting(classId, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
     } else {

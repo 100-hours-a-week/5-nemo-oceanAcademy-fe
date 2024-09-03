@@ -133,6 +133,7 @@ const LiveStudent: React.FC = () => {
 
       client.activate();
     };
+
     /*
     const disconnect = () => {
       if (stompClient) {
@@ -152,11 +153,12 @@ const LiveStudent: React.FC = () => {
       disconnect();
     };
     */
-  }, [classId]);
+  }, [classId, stompClient]);
 
   // 채팅 관련 핸들러
   const subscribeToRoom = (roomId: string) => {
     if (stompClient && connected) {
+
       // 이전 구독이 있을 경우 구독 해제
       if (subscription) {
         subscription.unsubscribe();
@@ -165,7 +167,7 @@ const LiveStudent: React.FC = () => {
 
       const newSubscription = stompClient.subscribe(`/topic/greetings/${roomId}`, (greeting) => {
         const messageContent = JSON.parse(greeting.body).content;
-        const nickname = JSON.parse(greeting.body).writerId || 'Anonymous';
+        const nickname = userInfo?.nickname || 'Anonymous';
         const profileImage = userInfo?.profileImage || profImage;
 
         console.log(`Received message: ${messageContent}`);
@@ -186,21 +188,13 @@ const LiveStudent: React.FC = () => {
         createdDate: new Date().toISOString()
       };
 
-      /* gpt가 고쳐준대로 안되면 이거 다시 써야함 
       stompClient.publish({
-        destination: endpoints.sendMessage,
-        body: JSON.stringify(chatMessage),
-      });
-      */
-
-      stompClient.publish({
-        destination: `/app/classroom/${classId}`, // 메시지 전송 경로
+        destination: "/app/hello",
         body: JSON.stringify(chatMessage),
       });
 
       console.log('Sent message:', chatMessage);
 
-      // 새로 추가된 코드: 메시지를 UI에 바로 추가
       showGreeting(classId, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
     } else {
