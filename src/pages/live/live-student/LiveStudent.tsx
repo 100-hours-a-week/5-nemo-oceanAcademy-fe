@@ -108,7 +108,7 @@ const LiveStudent: React.FC = () => {
       console.error('classId가 정의되지 않았습니다.');
       return;
     }
-    
+
     const connect = () => {
       const socket = new SockJS(endpoints.connectWebSocket);
       console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
@@ -126,7 +126,7 @@ const LiveStudent: React.FC = () => {
           setConnected(true);
           subscribeToRoom(classId);
           loadChatHistory(classId);
-          console.log('STOMP client connected');
+          console.log('STOMP client connected (Student Page)');
         },
         onStompError: (frame) => {
           console.error('Broker reported error: ' + frame.headers['message']);

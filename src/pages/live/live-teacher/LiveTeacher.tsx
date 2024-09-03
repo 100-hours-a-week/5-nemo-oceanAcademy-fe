@@ -146,7 +146,7 @@ const LiveTeacher: React.FC = () => {
       console.error('classId가 정의되지 않았습니다.');
       return;
     }
-    
+
     if (!webcamProducer) {
         const producer = await startWebcamStream(classId, useSimulcast, setWebcamStatus, webcamVideoRef.current);
         setWebcamProducer(producer);
@@ -321,7 +321,7 @@ const LiveTeacher: React.FC = () => {
           setConnected(true);
           subscribeToRoom(classId);
           loadChatHistory(classId);
-          console.log('STOMP client connected');
+          console.log('STOMP client connected (Teacher Page)');
         },
         onStompError: (frame) => {
           console.error('Broker reported error: ' + frame.headers['message']);
