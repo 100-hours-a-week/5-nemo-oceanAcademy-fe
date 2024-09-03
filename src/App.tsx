@@ -58,7 +58,7 @@ const App: React.FC = () => {
         <Route path="/lecture/created" element={<LectureCreated />} />
         <Route path="/lecture/created/:classId" element={<LectureCreated />} />
         <Route path="/lecture/open" element={<LectureOpen />} />
-        <Route path="/lecture/students:classId" element={<StudentList />} />
+        <Route path="/lecture/students/:classId" element={<StudentList />} />
         
         {/* User Routes */}
         <Route path="/mypage" element={<MyPage />} />
