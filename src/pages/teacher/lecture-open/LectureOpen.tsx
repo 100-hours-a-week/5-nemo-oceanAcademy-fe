@@ -62,14 +62,23 @@ const LectureOpen: React.FC = () => {
     // [x] formData 확인
     const formData = new FormData();
     const categoryId = categories.find(cat => cat.name === selectedCategory)?.id || 0;
-    formData.append('categoryId', categoryId.toString());  // 숫자를 문자열로 변환
-    formData.append('name', title);
-    formData.append('object', objective);
-    formData.append('description', description);
-    formData.append('instructorInfo', instructorInfo);
-    formData.append('prerequisite', prerequisite);
-    // [x] announcement 처리 x
-    if (bannerImage) formData.append('bannerImageFile', bannerImage);
+
+    const classroomCreateDto = {
+      categoryId: categoryId,
+      name: title,
+      object: objective,
+      description: description,
+      instructorInfo: instructorInfo,
+      prerequisite: prerequisite
+    };
+
+    // JSON 데이터를 문자열로 변환하여 formData에 추가
+    formData.append('classroomCreateDto', JSON.stringify(classroomCreateDto));
+
+    // 이미지 파일 추가
+    if (bannerImage) {
+      formData.append('imagefile', bannerImage); // key를 'imagefile'로 설정
+    }
 
     try {
       const response = await axios.post(endpoints.classes, formData, {
@@ -79,19 +88,17 @@ const LectureOpen: React.FC = () => {
         },
       });
 
-      // [x] response 상태코드 확인
       if (response.status === 200) {
         console.log(response.data.message_kor);
-        // NOTE: 생성된 강의의 id를 다음 페이지에 상태값으로 넘겨주기
-        navigate('/lecture/created', { state: { lectureId: response.data.id } });
+        // NOTE: 생성된 강의의 id를 path로 전달하도록 변경
+        navigate(`/lecture/created/${response.data.data.id}`);
       } 
-
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+          if (axios.isAxiosError(error)) {
           if (error.response?.status === 401) {
               alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
           } else if (error.response?.status === 400) {
-            alert(error.response.data.message || '강의 개설에 실패했습니다.');
+            alert(error.response.data.message_kor || '강의 개설에 실패했습니다.');
           } else {
               alert('알 수 없는 오류가 발생했습니다.');
           }
