@@ -12,6 +12,13 @@ import noCam from '../../../assets/images/no_cam.png';
 import share from '../../../assets/images/share.png';
 import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
 
+interface Message {
+  room: string;
+  message: string;
+  nickname: string;
+  profileImage: string;
+}
+
 const LiveStudent: React.FC = () => {
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
@@ -23,13 +30,148 @@ const LiveStudent: React.FC = () => {
   const [subStatus, setSubStatus] = useState('');
   const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
   const [isScreenClicked, setIsScreenClicked] = useState(false);
+  const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
 
+  // Chat 관련
   const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [currentRoom, setCurrentRoom] = useState(classId);
   const [subscription, setSubscription] = useState<StompSubscription | null>(null);
-  const [messages, setMessages] = useState<{ room: string; message: string; nickname: string; profileImage: string }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [connected, setConnected] = useState(false);
   const [content, setContent] = useState("");
-  const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
+
+  const setConnectedState = (connected: boolean) => {
+    setConnected(connected);
+    if (!connected) {
+      setMessages([]);
+    }
+  };
+
+  const connect = () => {
+    const socket = new SockJS(endpoints.connectWebSocket);
+    console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
+    const client = new Client({
+      webSocketFactory: () => socket,
+      beforeConnect: () => {
+        client.connectHeaders = {
+          Authorization: `Bearer ${token}`
+        };
+      },
+      onConnect: () => {
+          setStompClient(client); // 상태 업데이트
+          setConnectedState(true);
+
+          console.log('STOMP client connected');
+      },
+      onStompError: (frame) => {
+          console.error('Broker reported error: ' + frame.headers['message']);
+          console.error('Additional details: ' + frame.body);
+      },
+      onDisconnect: () => {
+          setConnectedState(false);
+          console.log("Disconnected");
+      }
+    });
+
+    client.activate();
+  }; 
+
+  // useEffect를 사용하여 stompClient 상태가 업데이트된 후 작업 수행
+  useEffect(() => {
+    if (stompClient && connected && currentRoom) {
+      console.log(stompClient);
+      console.log("Attempting to subscribe...");
+      subscribeToRoom(currentRoom); // 현재 방에 구독
+      loadChatHistory(currentRoom); // 현재 방의 채팅 기록 로드
+    }
+  }, [stompClient, connected, currentRoom]);
+
+  const disconnect = () => {
+    if (stompClient) {
+      stompClient.deactivate();
+      setConnectedState(false);
+      console.log("Disconnected");
+    }
+  };
+
+  const subscribeToRoom = (classId: string) => {
+    if (!stompClient) {
+      console.error('STOMP client is not initialized. Cannot subscribe.');
+      return;
+    }
+
+    if (!stompClient.connected) {
+      console.error('STOMP client is not connected. Cannot subscribe.');
+      return;
+    }
+
+    if (subscription) {
+      console.log('Unsubscribing from previous room');
+      subscription.unsubscribe();  // 이전 방에 대한 구독 해제
+    }
+    
+    console.log("Attempting to subscribe to roomId = " + classId);
+    console.log("currentRoom = " + currentRoom);
+    
+    try {
+      const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
+        const messageContent = JSON.parse(greeting.body);
+        console.log(`Received message: ${messageContent.content}`);
+        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+      });
+
+      setSubscription(newSubscription);
+      console.log("Successfully subscribed to room " + classId);
+    } catch (error) {
+      console.error("Failed to subscribe: ", error);
+    }
+  };
+
+  const sendMessage = () => {
+    if (stompClient && stompClient.connected) {
+      const chatMessage = {
+        roomId: Number(currentRoom), 
+        content: content,
+        writerId: userInfo ? userInfo.nickname : 'Anonymous',
+        createdDate: new Date().toISOString()
+      };
+
+      console.log("Student: chat message = " + JSON.stringify(chatMessage));
+
+      // 메시지를 서버로 전송
+      stompClient.publish({
+        destination: "/app/hello",
+        body: JSON.stringify(chatMessage),
+      });
+
+      // 입력 필드를 초기화하고 메시지를 UI에 추가
+      setContent('');
+      //showGreeting(currentRoom, content);
+    } else {
+      console.error('STOMP client is not connected. Cannot send message.');
+    }
+  };
+
+  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
+    console.log('showGreeting 실행중 - Room:', room, 'Message:', message); // 디버그용
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { room, message, nickname, profileImage }
+    ]);
+  };  
+  
+  const loadChatHistory = (classId: string) => {
+    axios.get(endpoints.getChatHistory.replace('{classId}', classId))
+      .then(response => {
+          setMessages(response.data.map((msg:any) => ({
+              room: classId,
+              message: msg.content
+          })));
+      })
+      .catch(error => {
+          console.error("Failed to load chat history:", error);
+      });
+  };
 
   const webcamVideoRef = useRef<HTMLVideoElement>(null);
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
@@ -102,140 +244,13 @@ const LiveStudent: React.FC = () => {
     }
   }, [classId]);
 
-  // WebSocket Connection
-  useEffect(() => {
-    if (!classId) {
-      console.error('classId가 정의되지 않았습니다.');
-      return;
-    }
-
-    const connect = () => {
-      const socket = new SockJS(endpoints.connectWebSocket);
-      console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
-      const client = new Client({
-        webSocketFactory: () => socket,
-
-        beforeConnect: () => {
-          client.connectHeaders = {
-            Authorization: `Bearer ${token}`
-          };
-        },
-
-        onConnect: () => {
-          setStompClient(client);
-          setConnected(true);
-          subscribeToRoom(classId);
-          loadChatHistory(classId);
-          console.log('STOMP client connected (Student Page)');
-        },
-        onStompError: (frame) => {
-          console.error('Broker reported error: ' + frame.headers['message']);
-          console.error('Additional details: ' + frame.body);
-        },
-        onDisconnect: () => {
-          setConnected(false);
-          console.log("Disconnected");
-        }
-      });
-
-      client.activate();
-    };
-
-    /*
-    const disconnect = () => {
-      if (stompClient) {
-        stompClient.deactivate();
-        setConnected(false);
-        console.log("Disconnected");
-      }
-    };
-    */
-
-    if (classId) {
-      connect();
-    }
-
-    /*
-    return () => {
-      disconnect();
-    };
-    */
-  }, [classId]);
-
-  // 채팅 관련 핸들러
-  const subscribeToRoom = (roomId: string) => {
-    if (stompClient && connected) {
-
-      // 이전 구독이 있을 경우 구독 해제
-      if (subscription) {
-        subscription.unsubscribe();
-        setSubscription(null);
-      }
-
-      const newSubscription = stompClient.subscribe(`/topic/greetings/${roomId}`, (greeting) => {
-        const messageContent = JSON.parse(greeting.body).content;
-        const nickname = userInfo?.nickname || 'Anonymous';
-        const profileImage = userInfo?.profileImage || profImage;
-
-        console.log(`Received message: ${messageContent}`);
-        showGreeting(roomId, messageContent, nickname, profileImage);
-      });
-
-      setSubscription(newSubscription);
-      console.log("Successfully subscribed to room " + roomId);
-    }
-  };
-
-  const sendMessage = () => {
-    if (stompClient && stompClient.connected && classId) {
-      const chatMessage = {
-        roomId: Number(classId),
-        content: content,
-        writerId: userInfo ? userInfo.nickname : 'Anonymous',
-        createdDate: new Date().toISOString()
-      };
-
-      stompClient.publish({
-        destination: "/app/hello",
-        body: JSON.stringify(chatMessage),
-      });
-
-      console.log('Sent message:', chatMessage);
-
-      showGreeting(classId, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
-      setContent('');
-    } else {
-      alert('STOMP client is not connected. Cannot send message.');
-      console.error('STOMP client is not connected. Cannot send message.');
-    }
-  };
-
-  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
-    setMessages(prevMessages => [...prevMessages, { room, message, nickname, profileImage }]);
-  };
-
-  const loadChatHistory = (roomId: string) => {
-    axios.get(endpoints.getChatHistory.replace('{classId}', roomId))
-      .then(response => {
-        setMessages(response.data.map((msg: any) => ({
-          room: roomId,
-          message: msg.content,
-          nickname: msg.writerId || 'Anonymous',
-          profileImage: profImage
-        })));
-      })
-      .catch(error => {
-        console.error("Failed to load chat history:", error);
-      });
-  };
-
-  // useEffect를 사용하여 새로운 메시지가 추가될 때 스크롤을 자동으로 아래로 이동
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
   }, [messages]);
 
+  // Modal handler
   const handleLeaveClick = () => {
     setShowModal(true);
   };
