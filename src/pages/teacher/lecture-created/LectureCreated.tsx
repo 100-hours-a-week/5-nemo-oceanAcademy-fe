@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './LectureCreated.module.css';
@@ -7,15 +7,14 @@ import styles from './LectureCreated.module.css';
 const LectureCreated: React.FC = () => {
   const navigate = useNavigate();
 
-  // 전달된 state에서 lectureId 가져오기
-  const location = useLocation();
-  const { lectureId } = location.state || {};
+  // [x] lectureId -> classId로 변경
+  const { classId } = useParams();
 
   const handleButtonClick = () => {
-    if (lectureId) {
-      navigate(`/lecture/info/${lectureId}`);
+    if (classId) {
+      navigate(`/lecture/info/${classId}`);
     } else {
-      alert('Lecture ID가 없습니다.');
+      alert('class ID가 없습니다.');
     }
   };
 
