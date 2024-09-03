@@ -308,7 +308,7 @@ const LiveTeacher: React.FC = () => {
       disconnect();
     };
     */
-  }, [classId, stompClient]);
+  }, [classId]);
 
   // 채팅 관련 핸들러
   const subscribeToRoom = (roomId: string) => {
