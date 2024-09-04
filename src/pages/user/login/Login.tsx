@@ -53,23 +53,6 @@ const Login: React.FC = () => {
         });
     };
 
-    const handleLogout = () => {
-        if (window.Kakao.Auth.getAccessToken()) {
-            window.Kakao.Auth.logout(() => {
-                console.log('Kakao logout completed');
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                setIsLoggedIn(false);
-                navigate('/'); // 로그아웃 후 리다이렉션
-            });
-        } else {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            setIsLoggedIn(false);
-            alert('로그인 상태가 아닙니다.');
-        }
-    };
-
     const handleAltClick = () => {
         alert('현재 해당 기능을 지원하지 않습니다. 카카오 로그인을 이용해주세요.');
     };

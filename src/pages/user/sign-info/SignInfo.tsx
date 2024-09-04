@@ -17,20 +17,20 @@ interface LocationState {
 
 const SignInfo: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // 파일 객체 저장
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [email, setEmail] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [helperText, setHelperText] = useState<string>('');
   const navigate = useNavigate();
   const location = useLocation();
-  const { token, refreshToken } = location.state as LocationState; // KakaoCallback에서 전달된 토큰
+  const { token, refreshToken } = location.state as LocationState;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
       setSelectedFile(file); // 파일 객체 저장
       const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result as string); // 미리보기
+      reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
     } else {
       alert('유효하지 않은 파일입니다. 5MB 이하의 .jpg/jpeg 또는 .png 파일만 가능합니다.');
@@ -46,14 +46,14 @@ const SignInfo: React.FC = () => {
 
     const signupRequestDto = {
       nickname,
-      email,
+      email: email.trim() === '' ? null : email,
     };
 
     const formData = new FormData();
     formData.append('signupRequestDto', new Blob([JSON.stringify(signupRequestDto)], { type: 'application/json' }));
 
     if (selectedFile) {
-      formData.append('imagefile', selectedFile); // 이미지 파일이 있을 경우 추가
+      formData.append('imagefile', selectedFile);
     }
 
     try {
