@@ -44,18 +44,19 @@ const SignInfo: React.FC = () => {
       nickname,
       email,
     };
-
+    /*
     const formData = new FormData();
     formData.append('userUpdateDTO', new Blob([JSON.stringify(userUpdateDTO)], { type: 'application/json' }));
     if (selectedFile) {
       formData.append('imagefile', selectedFile); // 파일 객체를 FormData에 추가
     }
+    */
 
     try {
-      const response = await axios.post(endpoints.user, formData, {
+      const response = await axios.post(endpoints.user, userUpdateDTO, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json',
         },
       });
 
@@ -81,11 +82,12 @@ const SignInfo: React.FC = () => {
               type="file"
               id="fileInput"
               style={{ display: 'none' }}
-              onChange={handleFileChange}
+              // onChange={handleFileChange}
           />
           <button
               className={styles.uploadButton}
-              onClick={() => document.getElementById('fileInput')?.click()}
+              // onClick={() => document.getElementById('fileInput')?.click()}
+              onClick={() => alert('현재는 이미지 업로드를 지원하고 있지 않습니다. 죄송합니다.')}
           >
             {preview ? (
                 <img src={preview} alt="Preview" className={styles.previewImage} />
