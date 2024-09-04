@@ -37,8 +37,9 @@ const Header: React.FC = () => {
         },
       })
       .then((response) => {
-        setUserName(response.data.nickname);
-        setUserProfileImage(response.data.profile_image || profImage);
+        console.log('Header: userInfo useEffect ', response.data.message_kor);
+        setUserName(response.data.data.nickname);
+        setUserProfileImage(response.data.data.profile_image_path || profImage);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -136,11 +137,6 @@ const Header: React.FC = () => {
   const cancelDeleteAccount = () => {
     setShowDeleteModal(false);
   };
-
-  const handleLectureOut = () => {
-    // 강의 나가기 
-
-  }
 
   // 페이지에 따라 헤더의 버튼 요소 다르게 띄우는 코드 
   const renderLeftButton = () => {

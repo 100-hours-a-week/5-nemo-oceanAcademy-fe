@@ -20,6 +20,7 @@ const KakaoCallback: React.FC = () => {
             reject(new Error('Kakao SDK is not initialized'));
           }
       };
+
       checkKakaoInitialized();
     });
   };
@@ -50,12 +51,14 @@ const KakaoCallback: React.FC = () => {
               console.error('Kakao SDK 초기화 실패:', error);
             }
           }
-
+          console.log('토큰 잘 받아왔니?', data.accessToken, data.refreshToken);
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
 
           // 회원가입 여부 확인
-          axios.get(endpoints.user, {
+          console.log('endpoints.user: ', endpoints.user);
+          console.log('시발 주소 틀려? 왜 404야. https://www.nemooceanacademy.com:5000/api/auth/signup')
+          axios.get('https://www.nemooceanacademy.com:5000/api/auth/signup', {
               headers: {
                   Authorization: `Bearer ${data.accessToken}`,
               },
@@ -63,7 +66,7 @@ const KakaoCallback: React.FC = () => {
               .then(response => {
               if (response.status === 200 && response.data.data === "success") {
                   // 가입된 회원
-                  console.log(response.data.message_eng); // "Existing member"
+                  console.log(response.data.message_kor);
                   navigate('/');
               } else {
                   // 미가입 회원

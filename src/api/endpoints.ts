@@ -16,7 +16,6 @@ const endpoints = {
     lectureSchedule: `${SERVER_URL}/api/classes/{classId}/schedule`, // 강의 일정 불러오기 (GET) / 강의 일정 생성 (POST) / 강의 일정 삭제 (DELETE)
     enrollment: `${SERVER_URL}/api/classes/{classId}/enroll`, // 수강 신청
     getCategories: `${SERVER_URL}/api/categories`, // 카테고리 정보 가져오기
-    
     connectWebSocket: `${SERVER_URL}/ws`,
     getChatHistory: `${SERVER_URL}/find/chat/list/{classId}`,
     sendMessage: `${SERVER_URL}/app/hello`,
