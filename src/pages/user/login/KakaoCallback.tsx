@@ -82,8 +82,7 @@ const KakaoCallback: React.FC = () => {
     }
   }, [navigate]);
 
-  return null;
-  // return <Container>잠깐만 기다료봐~</Container>
+  return <Container>세상에서 제일 지루한 중학교는? 로 딩 중</Container>
 };
 
 export default KakaoCallback;
