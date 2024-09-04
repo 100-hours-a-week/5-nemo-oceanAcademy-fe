@@ -168,8 +168,10 @@ const LiveStudent: React.FC = () => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
           setMessages(response.data.map((msg:any) => ({
-              room: classId,
-              message: msg.content
+            room: classId,
+            message: msg.content,
+            nickname: msg.writerId || 'Anonymous',
+            profileImage: msg.profileImage || profImage
           })));
       })
       .catch(error => {

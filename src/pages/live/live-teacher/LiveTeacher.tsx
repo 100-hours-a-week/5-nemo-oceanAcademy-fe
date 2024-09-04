@@ -192,8 +192,10 @@ const LiveTeacher: React.FC = () => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
           setMessages(response.data.map((msg:any) => ({
-              room: classId,
-              message: msg.content
+            room: classId,
+            message: msg.content,
+            nickname: msg.writerId || 'Anonymous',
+            profileImage: msg.profileImage || profImage
           })));
       })
       .catch(error => {
@@ -541,7 +543,7 @@ const LiveTeacher: React.FC = () => {
                   alt="프로필"
                   className={styles.icon}
                 />
-              </div>  
+              </div>
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
                   <h5>{msg.nickname}</h5>
