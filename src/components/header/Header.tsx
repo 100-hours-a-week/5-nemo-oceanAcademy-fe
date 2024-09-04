@@ -14,6 +14,8 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfileImage, setUserProfileImage] = useState(profImage);
   const [userName, setUserName] = useState<string | null>(null);
@@ -68,7 +70,7 @@ const Header: React.FC = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     setIsLoggedIn(false);
-    navigate('/login');
+    navigate('/');
   };
 
   const handleLeaveClick = () => {
@@ -93,9 +95,46 @@ const Header: React.FC = () => {
   };
 
   const handleSettingClick = () => {
-    // 세팅 버튼 클릭 시 드롭다운 메뉴 표시 로직 필요
-    alert('아직 구현 안됐거든요 로그아웃 안해드립니다 탈퇴? 못합니다');
-    console.log('들어올 땐 마음대로지만 나갈 땐 아니란다. ');
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleDeleteAccount = () => {
+    setShowDeleteModal(true); // 회원탈퇴 모달 열기
+  };
+
+  const confirmDeleteAccount = () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('권한이 없습니다.');
+      return;
+    }
+    axios.delete(endpoints.user, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        alert('회원탈퇴가 완료되었습니다.');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setIsLoggedIn(false);
+        navigate('/');
+      }
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 401) {
+        alert('권한이 없습니다.');
+      } else {
+        console.error('Failed to delete account:', error);
+        alert('회원탈퇴에 실패했습니다. 다시 시도해주세요.');
+      }
+    });
+    setShowDeleteModal(false);
+  };
+
+  const cancelDeleteAccount = () => {
+    setShowDeleteModal(false);
   };
 
   const handleLectureOut = () => {
@@ -144,12 +183,20 @@ const Header: React.FC = () => {
     }
     if (location.pathname.includes('/mypage')) {
       return (
-        <img
-          src={settingIcon}
-          alt="설정"
-          className={styles.icon}
-          onClick={handleSettingClick}
-        />
+        <>
+          <img
+            src={settingIcon}
+            alt="설정"
+            className={styles.icon}
+            onClick={handleSettingClick}
+          />
+          {showDropdown && (
+            <div className={styles.dropdown}>
+              <div onClick={handleLogout}>로그아웃</div>
+              <div onClick={handleDeleteAccount}>회원탈퇴</div>
+            </div>
+          )}
+        </>
       );
     } else if (!isLoggedIn) {
       return (
@@ -198,6 +245,17 @@ const Header: React.FC = () => {
           rightButtonText="취소"
           onLeftButtonClick={handleModalLeave}
           onRightButtonClick={handleModalCancel}
+        />
+      )}
+      {showDeleteModal && (
+        <Modal
+          title="탈퇴하시겠습니까?"
+          content="삭제한 계정은 복구할 수 없습니다.
+          그래도 탈퇴하시겠습니까?"
+          leftButtonText="탈퇴"
+          rightButtonText="취소"
+          onLeftButtonClick={confirmDeleteAccount}
+          onRightButtonClick={cancelDeleteAccount}
         />
       )}
     </header>
