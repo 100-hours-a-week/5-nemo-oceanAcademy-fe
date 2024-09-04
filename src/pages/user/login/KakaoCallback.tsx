@@ -51,37 +51,41 @@ const KakaoCallback: React.FC = () => {
               console.error('Kakao SDK 초기화 실패:', error);
             }
           }
-          console.log('토큰 잘 받아왔니?', data.accessToken, data.refreshToken);
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
 
           // 회원가입 여부 확인
-          console.log('endpoints.user: ', endpoints.user);
-          console.log('시발 주소 틀려? 왜 404야. https://www.nemooceanacademy.com:5000/api/auth/signup')
-          axios.get('https://www.nemooceanacademy.com:5000/api/auth/signup', {
+          axios.get(endpoints.user, {
               headers: {
                   Authorization: `Bearer ${data.accessToken}`,
-              },
+                },
               })
               .then(response => {
               if (response.status === 200 && response.data.data === "success") {
                   // 가입된 회원
                   console.log(response.data.message_kor);
                   navigate('/');
-              } else {
-                  // 미가입 회원
-                  console.log("미가입 회원입니다.");
-                  navigate('/sign-info', { state: { token: data.accessToken } });
               }
             })
             .catch((error) => {
-              if (error instanceof Error) {
-                console.error('Error during signup check:', error.message);
+              if (axios.isAxiosError(error) && error.response) {
+                if (error.response.status === 404) {
+                  // 미가입 회원
+                  console.log("미가입 회원입니다.");
+                  navigate('/sign-info', { state: { token: data.accessToken } });
+                } else if (error.response.status === 401) {
+                  console.error('Unauthorized access:', error.response);
+                  alert('권한이 없습니다. 다시 로그인해주세요.');
+                  navigate('/login');
+                } else {
+                  console.error('뭔 에러징. Error during signup check:', error.message);
+                  navigate('/');
+                }
               } else {
                 console.error('Error during signup check:', error);
+                alert('회원 확인 중 문제가 발생했습니다. 처음부터 다시 시도해주세요.');
+                navigate('/login'); // 에러 시 로그인 페이지로 이동
               }
-              alert('회원 확인 중 문제가 발생했습니다. 처음부터 다시 시도해주세요.');
-              navigate('/login'); // 에러 시 로그인 페이지로 이동
             });
         } else {
             throw new Error('No access token received');
@@ -105,4 +109,5 @@ const KakaoCallback: React.FC = () => {
   return null; // 화면에 아무것도 표시하지 않음
   // return <Container>잠깐만 기다료봐~</Container>
 };
+
 export default KakaoCallback;

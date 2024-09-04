@@ -55,7 +55,7 @@ const SignInfo: React.FC = () => {
       const response = await axios.post(endpoints.user, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data'
         },
       });
 
