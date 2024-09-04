@@ -52,7 +52,7 @@ const SignInfo: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(endpoints.userInfo, formData, {
+      const response = await axios.post(endpoints.user, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
