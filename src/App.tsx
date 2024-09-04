@@ -62,12 +62,6 @@ const App: React.FC = () => {
         {/* User Routes */}
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-info" element={<SignInfo />} />
-        {/*<Route path="/signup" element={<SignUp />} />*/}
-
-        {/* webRTC 테스트 페이지 */}
-        <Route path="/webrtc-test" element={<WebRTCTestComponent />} />
-        <Route path="/webrtc-student" element={<WebRTCTestStudent />} />
-        <Route path="/webrtc-teacher" element={<WebRTCTestTeacher />} />
       </Routes>
     </Router>
   );
