@@ -50,9 +50,11 @@ const LiveStudent: React.FC = () => {
   useEffect(() => {
     const connect = () => {
       const socket = new SockJS(endpoints.connectWebSocket);
-      console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
       const client = new Client({
         webSocketFactory: () => socket,
+        debug: (str) => {
+          console.log('STOMP Debug:', str);
+        },
         beforeConnect: () => {
           client.connectHeaders = {
             Authorization: `Bearer ${token}`
@@ -119,6 +121,8 @@ const LiveStudent: React.FC = () => {
     
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
+        console.log('Raw message received:', greeting.body || 'Test message'); // raw data
+
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
         showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
@@ -134,9 +138,9 @@ const LiveStudent: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: Number(currentRoom), 
+        roomId: currentRoom, 
         content: content,
-        writerId: userInfo ? userInfo.nickname : 'Anonymous',
+        writer: userInfo ? userInfo.nickname : 'Anonymous',
         createdDate: new Date().toISOString()
       };
 
@@ -149,15 +153,14 @@ const LiveStudent: React.FC = () => {
       });
 
       // 입력 필드를 초기화하고 메시지를 UI에 추가
+      showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
-      //showGreeting(currentRoom, content);
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
 
   const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
-    console.log('showGreeting 실행중 - Room:', room, 'Message:', message); // 디버그용
     setMessages((prevMessages) => [
       ...prevMessages,
       { room, message, nickname, profileImage }

@@ -146,19 +146,10 @@ const LiveTeacher: React.FC = () => {
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
         console.log('Raw message received:', greeting.body || 'Test message'); // raw data
-
-        // 강제로 테스트 메시지를 넣어보기
-        const testMessageContent = {
-        content: "Test message",
-        nickname: "Test user",
-        profileImage: profImage
-        };
-        showGreeting(classId, testMessageContent.content, testMessageContent.nickname, testMessageContent.profileImage);
-        /*
+        // 여기서 이 코드가 필요 없을 것 같은데... 
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
         showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
-        */
       });
 
       setSubscription(newSubscription);
@@ -173,7 +164,7 @@ const LiveTeacher: React.FC = () => {
       const chatMessage = {
         roomId: currentRoom, 
         content: content,
-        writerId: userInfo ? userInfo.nickname : 'Anonymous',
+        writer: userInfo ? userInfo.nickname : 'Anonymous',
         createdDate: new Date().toISOString()
       };
 
@@ -188,14 +179,12 @@ const LiveTeacher: React.FC = () => {
       // 입력 필드를 초기화하고 메시지를 UI에 추가
       showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
-      //showGreeting(currentRoom, content);
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
 
   const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
-    console.log('showGreeting 실행중 - Room:', room, 'Message:', message, 'Nickname:', nickname); // 디버그용
     setMessages((prevMessages) => [
       ...prevMessages,
       { room, message, nickname, profileImage }
@@ -211,7 +200,6 @@ const LiveTeacher: React.FC = () => {
             nickname: msg.writerId || 'Anonymous',
             profileImage: msg.profileImage || profImage
           })));
-          console.log('loadChatHistory 요청 성공: ', response.data);
       })
       .catch(error => {
           console.error("Failed to load chat history:", error);
@@ -547,24 +535,26 @@ const LiveTeacher: React.FC = () => {
       
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
-            <div className={styles.chat}>
+          {messages.map((msg, index) => (
+            <div key={index} className={styles.chat}>
               <div className={styles.profContainer}>
                 <img
-                  src={profImage}
+                  src={msg.profileImage}
                   alt="프로필"
                   className={styles.icon}
                 />
               </div>
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>미아</h5>
+                  <h5>{msg.nickname}</h5>
                   <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={styles.chatBubble}>
-                  <p>안녕</p>
+                  <p>{msg.message}</p>
                 </div>
               </div>
             </div>
+          ))}
         </div>
         <div className={styles.chatInput}>
           <input 
