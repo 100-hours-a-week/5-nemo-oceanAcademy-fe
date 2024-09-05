@@ -30,6 +30,8 @@ const KakaoCallback: React.FC = () => {
     console.log('Authorization code:', code);
 
     if (code) {
+      // axios.get(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback`, {
+      // axios.get(`http://localhost:3000/api/auth/kakao/callback`, {
       axios.get(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback`, {
         params: { code }
       })

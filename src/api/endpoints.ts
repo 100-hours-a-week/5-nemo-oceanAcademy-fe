@@ -1,4 +1,4 @@
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'https://www.nemooceanacademy.com:5000';
+const SERVER_URL = 'https://www.nemooceanacademy.com:5000';
 
 const endpoints = {
     user: `${SERVER_URL}/api/auth/signup`, // 회원가입 여부 확인 (GET) / 회원가입 신청 (POST) / 회원 탈퇴 (DELETE)

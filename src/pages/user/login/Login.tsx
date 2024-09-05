@@ -20,7 +20,7 @@ const Login: React.FC = () => {
 
         const loadKakaoSDK = async () => {
             try {
-                const response = await axios.get('https://www.nemooceanacademy.com:5000/api/auth/kakao/app-key');
+                const response = await axios.get(endpoints.getKakaoAppKey);
                 const { appKey } = response.data;
 
                 if (!window.Kakao?.isInitialized()) {
