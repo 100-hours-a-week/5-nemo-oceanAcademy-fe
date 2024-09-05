@@ -1,14 +1,17 @@
+// Header Component - App.tsx에서 사용 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
-import profImage from '../../assets/images/profile_default.png';
-import backIcon from '../../assets/images/back.png';
-import settingIcon from '../../assets/images/setting.png';
-import outIcon from '../../assets/images/out.png';
-import closeIcon from '../../assets/images/close.png';
 import Modal from '../modal/Modal';
 import axios from 'axios';
-import endpoints from '../../api/endpoints';  
+import endpoints from '../../api/endpoints';
+
+// image import
+import profImage from '../../assets/images/profile/profile_default.png';
+import backIcon from '../../assets/images/icon/back.png';
+import settingIcon from '../../assets/images/icon/setting.png';
+import outIcon from '../../assets/images/icon/out.png';
+import closeIcon from '../../assets/images/icon/close.png';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -37,9 +40,8 @@ const Header: React.FC = () => {
         },
       })
       .then((response) => {
-        console.log('Header: userInfo useEffect ', response.data.message_kor);
         setUserName(response.data.data.nickname);
-        setUserProfileImage(response.data.data.profile_image_path || profImage);
+        setUserProfileImage(response.data.data.profile_image_path);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -80,7 +82,7 @@ const Header: React.FC = () => {
 
   const handleModalLeave = () => {
     setShowModal(false);
-    navigate(-1); // 이전 화면으로 이동
+    navigate(-1);
   };
 
   const handleModalCancel = () => {
@@ -216,6 +218,10 @@ const Header: React.FC = () => {
           alt="프로필"
           className={styles.icon}
           onClick={handleProfileClick}
+          onError={(e) => {
+            // 이미지 로드에 실패하면 기본 이미지로 교체
+            (e.target as HTMLImageElement).src = profImage;
+          }}
         />
       );
     }
