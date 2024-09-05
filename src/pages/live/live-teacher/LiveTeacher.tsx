@@ -74,9 +74,11 @@ const LiveTeacher: React.FC = () => {
   useEffect(() => {
     const connect = () => {
       const socket = new SockJS(endpoints.connectWebSocket);
-      console.log('connect 시도 중, url: ', endpoints.connectWebSocket)
       const client = new Client({
         webSocketFactory: () => socket,
+        debug: (str) => {
+          console.log('STOMP Debug:', str);
+        },
         beforeConnect: () => {
           client.connectHeaders = {
             Authorization: `Bearer ${token}`
@@ -143,9 +145,20 @@ const LiveTeacher: React.FC = () => {
     
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
+        console.log('Raw message received:', greeting.body || 'Test message'); // raw data
+
+        // 강제로 테스트 메시지를 넣어보기
+        const testMessageContent = {
+        content: "Test message",
+        nickname: "Test user",
+        profileImage: profImage
+        };
+        showGreeting(classId, testMessageContent.content, testMessageContent.nickname, testMessageContent.profileImage);
+        /*
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
         showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+        */
       });
 
       setSubscription(newSubscription);
@@ -158,7 +171,7 @@ const LiveTeacher: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: Number(currentRoom), 
+        roomId: currentRoom, 
         content: content,
         writerId: userInfo ? userInfo.nickname : 'Anonymous',
         createdDate: new Date().toISOString()
@@ -173,6 +186,7 @@ const LiveTeacher: React.FC = () => {
       });
 
       // 입력 필드를 초기화하고 메시지를 UI에 추가
+      showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
       //showGreeting(currentRoom, content);
     } else {
@@ -181,7 +195,7 @@ const LiveTeacher: React.FC = () => {
   };
 
   const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
-    console.log('showGreeting 실행중 - Room:', room, 'Message:', message); // 디버그용
+    console.log('showGreeting 실행중 - Room:', room, 'Message:', message, 'Nickname:', nickname); // 디버그용
     setMessages((prevMessages) => [
       ...prevMessages,
       { room, message, nickname, profileImage }
@@ -197,6 +211,7 @@ const LiveTeacher: React.FC = () => {
             nickname: msg.writerId || 'Anonymous',
             profileImage: msg.profileImage || profImage
           })));
+          console.log('loadChatHistory 요청 성공: ', response.data);
       })
       .catch(error => {
           console.error("Failed to load chat history:", error);
@@ -215,7 +230,7 @@ const LiveTeacher: React.FC = () => {
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null)
 
-  // 유저 정보 조회
+  // 유저 정보 조회 (for 채팅)
   useEffect(() => {
     const fetchUserInfo = async() => {
       try {
@@ -226,7 +241,6 @@ const LiveTeacher: React.FC = () => {
         });
 
         if (response.status === 200) {
-          console.log('LiveTeacher: 유저 정보를 정상적으로 받아왔습니다: ', response.data);
           setUserInfo(response.data.data);
         }
       } catch(error) {
@@ -253,7 +267,6 @@ const LiveTeacher: React.FC = () => {
           const lectureData = response.data.data;
           setTitle(lectureData.name);
           setInstructor(lectureData.instructor);
-          console.log(response.data.message_eng, response.data.timestamp);
         } catch (error) {
           console.error('LiveTeacher: 강의 정보를 가져오는 데 실패했습니다 > ', error);
         }
@@ -279,7 +292,6 @@ const LiveTeacher: React.FC = () => {
       connectToServerAsTeacher(classId.toString(), setConnectionStatus, setIsPublishingDisabled)
         .then(() => {
           console.log("RTC: Successfully connected to server as a teacher");
-          console.log("연결 상태: ", connectionStatus);
         })
         .catch((error) => {
           console.error("Failed to connect to server:", error);
@@ -535,26 +547,24 @@ const LiveTeacher: React.FC = () => {
       
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={styles.chat}>
+            <div className={styles.chat}>
               <div className={styles.profContainer}>
                 <img
-                  src={msg.profileImage}
+                  src={profImage}
                   alt="프로필"
                   className={styles.icon}
                 />
               </div>
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>{msg.nickname}</h5>
+                  <h5>미아</h5>
                   <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={styles.chatBubble}>
-                  <p>{msg.message}</p>
+                  <p>안녕</p>
                 </div>
               </div>
             </div>
-          ))}
         </div>
         <div className={styles.chatInput}>
           <input 
