@@ -8,21 +8,33 @@ import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
 import { Container, Empty } from '../../../styles/GlobalStyles';
-import emptyImage from '../../../assets/images/empty.png';
-import profImage from '../../../assets/images/profile_default.png';
+
+// import images
+import profImage from '../../../assets/images/profile/profile_default.png';
+import emptyImage from '../../../assets/images/utils/empty.png';
+import image1 from '../../../assets/images/banner/image1.png';
+import image2 from '../../../assets/images/banner/image2.png';
+import image3 from '../../../assets/images/banner/image3.png';
+import image4 from '../../../assets/images/banner/image4.png';
+import image5 from '../../../assets/images/banner/image5.png';
+import image6 from '../../../assets/images/banner/image6.png';
+import image7 from '../../../assets/images/banner/image7.png';
+import image8 from '../../../assets/images/banner/image8.png';
+import image9 from '../../../assets/images/banner/image9.png';
+import image10 from '../../../assets/images/banner/image10.png';
 
 // 기본 이미지 배열
 const defaultImages = [
-  '/classroom/image1.png',
-  '/classroom/image2.png',
-  '/classroom/image3.png',
-  '/classroom/image4.png',
-  '/classroom/image5.png',
-  '/classroom/image6.png',
-  '/classroom/image7.png',
-  '/classroom/image8.png',
-  '/classroom/image9.png',
-  '/classroom/image10.png',
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  image7,
+  image8,
+  image9,
+  image10,
 ];
 
 interface Lecture {

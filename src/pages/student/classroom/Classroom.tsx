@@ -9,7 +9,7 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './Classroom.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import emptyImage from '../../../assets/images/empty.png';
+import emptyImage from '../../../assets/images/utils/empty.png';
 
 // 기본 이미지 배열
 const defaultImages = [

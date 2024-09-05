@@ -7,9 +7,9 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import profImage from '../../../assets/images/profile_default.png';
-import noCam from '../../../assets/images/no_cam.png';
-import share from '../../../assets/images/share.png';
+import profImage from '../../../assets/images/profile/profile_default.png';
+import noCam from '../../../assets/images/icon/no_cam.png';
+import share from '../../../assets/images/icon/share.png';
 import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
 
 interface Message {

@@ -8,20 +8,32 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureList.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import emptyImage from '../../../assets/images/empty.png';
+
+// import images
+import emptyImage from '../../../assets/images/utils/empty.png';
+import image1 from '../../../assets/images/banner/image1.png';
+import image2 from '../../../assets/images/banner/image2.png';
+import image3 from '../../../assets/images/banner/image3.png';
+import image4 from '../../../assets/images/banner/image4.png';
+import image5 from '../../../assets/images/banner/image5.png';
+import image6 from '../../../assets/images/banner/image6.png';
+import image7 from '../../../assets/images/banner/image7.png';
+import image8 from '../../../assets/images/banner/image8.png';
+import image9 from '../../../assets/images/banner/image9.png';
+import image10 from '../../../assets/images/banner/image10.png';
 
 // 기본 이미지 배열
 const defaultImages = [
-  '/classroom/image1.png',
-  '/classroom/image2.png',
-  '/classroom/image3.png',
-  '/classroom/image4.png',
-  '/classroom/image5.png',
-  '/classroom/image6.png',
-  '/classroom/image7.png',
-  '/classroom/image8.png',
-  '/classroom/image9.png',
-  '/classroom/image10.png',
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  image7,
+  image8,
+  image9,
+  image10,
 ];
 
 interface Lecture {
@@ -124,7 +136,7 @@ const LectureList: React.FC = () => {
   useEffect(() => {
     setLectures([]); // 강의 목록 초기화
     fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 다시 불러오기
-  }, [selectedCategory, fetchLectures]);
+  }, [selectedCategory]);
 
   // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
@@ -135,7 +147,11 @@ const LectureList: React.FC = () => {
 
   // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
-    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page);
+    if (page === 0) {
+      fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 불러오기
+    } else {
+      fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page); // 페이지 기반으로 추가 로딩
+    }
   }, [page, fetchLectures, selectedCategory]);
 
   // 스크롤 이벤트 등록
