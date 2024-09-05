@@ -1,0 +1,19 @@
+.emptyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 362px;
+    gap: 5px;
+    p {
+        font-size: 10px;
+    }
+    h5 {
+        font-size: 18px;
+    }
+}
+
+.emptyImage {
+    margin: 10px;
+    width: 140px;
+}
