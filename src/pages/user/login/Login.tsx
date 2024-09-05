@@ -49,7 +49,7 @@ const Login: React.FC = () => {
         }
 
         window.Kakao.Auth.authorize({
-            redirectUri: 'http://www.nemooceanacademy.com/oauth/kakao/callback',
+            redirectUri: 'https://www.nemooceanacademy.com/oauth/kakao/callback',
         });
     };
 
