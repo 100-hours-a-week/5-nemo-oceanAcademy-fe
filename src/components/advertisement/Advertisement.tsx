@@ -1,26 +1,24 @@
 // Advertisement - Main, LectureList의 광고 섹션
 import React from 'react';
 import styles from './Advertisement.module.css';
-import adImageSmall from '../../assets/images/ad_nemo3.png';
-import adImageLarge from '../../assets/images/ad_big0.png';
 
 // 광고 이미지 가져오기
-import adImageSmall1 from '../../assets/images/ad_nemo0.png';
-import adImageSmall2 from '../../assets/images/ad_nemo1.png';
-import adImageSmall3 from '../../assets/images/ad_nemo2.png';
-import adImageSmall4 from '../../assets/images/ad_nemo3.png';
-import adImageSmall5 from '../../assets/images/ad_small1.png';
-import adImageSmall6 from '../../assets/images/ad_small2.png';
-import adImageSmall7 from '../../assets/images/ad_small3.png';
-import adImageSmall8 from '../../assets/images/ad_small4.png';
-import adImageLarge1 from '../../assets/images/ad_big0.png';
-import adImageLarge2 from '../../assets/images/ad_big1.png';
-import adImageLarge3 from '../../assets/images/ad_big2.png';
-import adImageLarge4 from '../../assets/images/ad_big3.png';
-import adImageLarge5 from '../../assets/images/ad_big4.png';
-import adImageLarge6 from '../../assets/images/ad_big5.png';
-import adImageLarge7 from '../../assets/images/ad_big6.png';
-import adImageLarge8 from '../../assets/images/ad_big7.png';
+import adImageSmall1 from '../../assets/images/ad/ad_nemo0.png';
+import adImageSmall2 from '../../assets/images/ad/ad_nemo1.png';
+import adImageSmall3 from '../../assets/images/ad/ad_nemo2.png';
+import adImageSmall4 from '../../assets/images/ad/ad_nemo3.png';
+import adImageSmall5 from '../../assets/images/ad/ad_small1.png';
+import adImageSmall6 from '../../assets/images/ad/ad_small2.png';
+import adImageSmall7 from '../../assets/images/ad/ad_small3.png';
+import adImageSmall8 from '../../assets/images/ad/ad_small4.png';
+import adImageLarge1 from '../../assets/images/ad/ad_big0.png';
+import adImageLarge2 from '../../assets/images/ad/ad_big1.png';
+import adImageLarge3 from '../../assets/images/ad/ad_big2.png';
+import adImageLarge4 from '../../assets/images/ad/ad_big3.png';
+import adImageLarge5 from '../../assets/images/ad/ad_big4.png';
+import adImageLarge6 from '../../assets/images/ad/ad_big5.png';
+import adImageLarge7 from '../../assets/images/ad/ad_big6.png';
+import adImageLarge8 from '../../assets/images/ad/ad_big7.png';
 
 interface AdvertisementProps {
   size?: 'small' | 'large';

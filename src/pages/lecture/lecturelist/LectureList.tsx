@@ -150,46 +150,46 @@ const LectureList: React.FC = () => {
   };
 
   return (
-      <Container>
-        <section className={styles.adSection}>
-          <Advertisement size="large" />
-        </section>
+    <Container>
+      <section className={styles.adSection}>
+        <Advertisement size="large" />
+      </section>
 
-        <section className={styles.filterSection}>
-          <CategorySelect
-              selected={selectedCategory}
-              onSelectCategory={handleCategoryChange}
-              categories={categories}
-          />
-        </section>
+      <section className={styles.filterSection}>
+        <CategorySelect
+            selected={selectedCategory}
+            onSelectCategory={handleCategoryChange}
+            categories={categories}
+        />
+      </section>
 
-        <section className={styles.lectureSection}>
-          {isLoading && lectures.length === 0 ? (
-              <p>Loading...</p>
-          ) : lectures.length === 0 ? (
-              <div className={styles.emptyContainer}>
-                <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-                <h5>아직 강의가 없어요!</h5>
-              </div>
-          ) : (
-              <div className={styles.lectureGrid}>
-                {lectures.map((lecture, index) => (
-                    <LectureCard
-                        key={`${lecture.classId}-${index}`} // classId와 index를 조합해 고유한 key 생성
-                        classId={lecture.classId}
-                        bannerImage={lecture.bannerImage}
-                        name={lecture.name}
-                        instructor={lecture.instructor}
-                        category={lecture.category}
-                    />
-                ))}
-              </div>
-          )}
-        </section>
+      <section className={styles.lectureSection}>
+        {isLoading && lectures.length === 0 ? (
+            <p>Loading...</p>
+        ) : lectures.length === 0 ? (
+            <div className={styles.emptyContainer}>
+              <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
+              <h5>아직 강의가 없어요!</h5>
+            </div>
+        ) : (
+            <div className={styles.lectureGrid}>
+              {lectures.map((lecture, index) => (
+                  <LectureCard
+                      key={`${lecture.classId}-${index}`} // classId와 index를 조합해 고유한 key 생성
+                      classId={lecture.classId}
+                      bannerImage={lecture.bannerImage}
+                      name={lecture.name}
+                      instructor={lecture.instructor}
+                      category={lecture.category}
+                  />
+              ))}
+            </div>
+        )}
+      </section>
 
-        {isLoading && <p>Loading more lectures...</p>}
-        <Navigation />
-      </Container>
+      {isLoading && <p>Loading more lectures...</p>}
+      <Navigation />
+    </Container>
   );
 };
 
