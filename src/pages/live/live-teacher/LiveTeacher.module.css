@@ -23,6 +23,14 @@
   border: 0.5px solid red;
   width: 100px;
   height: 70px;
+  /*
+  width: 120px;
+  height: 84px;
+  */
+  /* 
+  width: 80px;
+  height: 50px;
+  */
   background-color: #4A4B4D;
   border-radius: 4px;
   position: absolute;
@@ -44,35 +52,44 @@
 .info {
   width: 350px;
   text-align: left;
-  margin: 2px;
+  margin: 10px 0;
+  padding-left: 4px;
   h2 {
-    font-size: 18px;
+    font-size: 16px;
   }
   p {
-    font-size: 15px;
+    margin-top: 3px;
+    font-size: 12px;
     color: #555;
   }
 }
 
 .controls {
-  padding: 10px 20px;
+  border: 0.5px solid #4A4B4D;
+  padding: 5px 20px;
   margin-top: 10px;
   width: 350px;
   display: flex;
   justify-content: space-between;
-  display: flex;
   gap: 10px;
-  background-color: #B2B6D0;
   border-radius: 5px;
 }
 
+.icon {
+  width: 18px;
+  height: auto;
+}
+
 .controls button {
+  width: 80px;
   border: none;
   padding: 5px;
   border-radius: 5px;
   background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 10px;
+  font-weight: bold;
   transition: box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .controls button:active {
@@ -86,7 +103,7 @@
   
 .chatWindow {
   width: 350px;
-  height: 400px;
+  height: 300px;
   background-color: #f0f0f0;
   border-radius: 8px;
   overflow-y: scroll;
@@ -102,8 +119,8 @@
 
 .profContainer {
   img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     margin-right: 5px;
   }
 }
@@ -112,20 +129,20 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   h5 {
-    padding-left: 10px;
-    font-size: 15px;
+    padding-left: 5px;
+    font-size: 12px;
     margin-right: 10px;
   }
   p {
-    font-size: 12px;
+    font-size: 9px;
   }
 }
 
 .chatBubble {
-  padding: 8px 18px;
-  font-size: 15px;
+  padding: 6px 12px;
+  font-size: 12px;
   background-color: white;
   border-radius: 20px;
 }
@@ -139,16 +156,16 @@
   z-index: 1000;
 }
   
-.chatInput input {
+.chatInput textarea {
   flex: 1;
-  padding: 5px;
+  padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
   
 .chatInput button {
   margin-left: 10px;
-  padding: 5px 10px;
+  padding: 5px 15px;
   border-radius: 5px;
   background-color: var(--primary-color);
   color: white;

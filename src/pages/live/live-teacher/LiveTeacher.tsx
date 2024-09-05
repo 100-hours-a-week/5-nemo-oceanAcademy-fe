@@ -7,9 +7,6 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveTeacher.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import profImage from '../../../assets/images/profile/profile_default.png';
-import noCam from '../../../assets/images/icon/no_cam.png';
-import share from '../../../assets/images/icon/share.png';
 import {
   Producer,
   connectToServerAsTeacher,
@@ -22,6 +19,18 @@ import {
   startSystemAudioStream,
   stopSystemAudioStream
 } from '../../../components/web-rtc/utils/teacher/teacherClient';
+
+// import images
+import profImage from '../../../assets/images/profile/profile_default.png';
+import noCam from '../../../assets/images/icon/no_cam.png';
+import share from '../../../assets/images/icon/share.png';
+import videoOn from '../../../assets/images/icon/video.png';
+import videoOff from '../../../assets/images/icon/no_video.png';
+import shareScreen from '../../../assets/images/icon/share.png';
+import micOn from '../../../assets/images/icon/mic.png';
+import micOff from '../../../assets/images/icon/no_mic.png';
+import audioOn from '../../../assets/images/icon/audio.png';
+import audioOff from '../../../assets/images/icon/no_audio.png';
 
 interface Message {
   room: string;
@@ -145,7 +154,7 @@ const LiveTeacher: React.FC = () => {
     
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
-        console.log('Raw message received:', greeting.body || 'Test message'); // raw data
+        console.log('Raw message received:', greeting.body); // raw data
         // 여기서 이 코드가 필요 없을 것 같은데... 
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
@@ -164,7 +173,7 @@ const LiveTeacher: React.FC = () => {
       const chatMessage = {
         roomId: currentRoom, 
         content: content,
-        writer: userInfo ? userInfo.nickname : 'Anonymous',
+        writer: userInfo ? userInfo.nickname : '누구세요',
         createdDate: new Date().toISOString()
       };
 
@@ -177,7 +186,8 @@ const LiveTeacher: React.FC = () => {
       });
 
       // 입력 필드를 초기화하고 메시지를 UI에 추가
-      showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
+      // showGreeting(currentRoom!, content, chatMessage.writer, userInfo?.profileImage || profImage);
+      // 여기서 미아야 (닉네임 유) 채팅을 보내고 있었스빈다
       setContent('');
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
@@ -501,42 +511,31 @@ const LiveTeacher: React.FC = () => {
         </div>
       </div>
 
+      <div className={styles.controls}>
+        <button onClick={handleToggleWebcam} style={{ backgroundColor: isWebcamOn ? '#4A4B4D' : '#FFFFFF' }}>
+          <img src={isWebcamOn ? videoOn : videoOff} alt="캠" className={styles.icon} />
+        </button>
+        <button onClick={handleToggleScreenShare} style={{ backgroundColor: isScreenShareOn ? '#4A4B4D' : '#FFFFFF' }}>
+          <img src={shareScreen} alt="화면 공유" className={styles.icon} />
+        </button>
+        <button onClick={handleToggleMicrophone} style={{ backgroundColor: isMicrophoneOn ? '#4A4B4D' : '#FFFFFF' }}>
+          <img src={isMicrophoneOn ? micOn : micOff} alt="마이크" className={styles.icon} />
+        </button>
+        <button onClick={handleToggleSystemAudio} style={{ backgroundColor: isSystemAudioOn ? '#4A4B4D' : '#FFFFFF' }}>
+          <img src={isSystemAudioOn ? audioOn : audioOff} alt="오디오" className={styles.icon} />
+        </button>
+      </div>
+
       <div className={styles.info}>
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.instructor}>{instructor}</p>
-      </div>
-
-      <div className={styles.controls}>
-        <button
-          onClick={handleToggleWebcam}
-          style={{ backgroundColor: isWebcamOn ? '#FCFAC5' : '#FFFFFF' }}
-        >
-          Cam
-        </button>
-        <button
-          onClick={handleToggleScreenShare}
-          style={{ backgroundColor: isScreenShareOn ? '#FCFAC5' : '#FFFFFF' }}
-        >
-          Share
-        </button>
-        <button
-          onClick={handleToggleMicrophone}
-          style={{ backgroundColor: isMicrophoneOn ? '#FCFAC5' : '#FFFFFF' }}
-        >
-          Mic
-        </button>
-        <button
-          onClick={handleToggleSystemAudio}
-          style={{ backgroundColor: isSystemAudioOn ? '#FCFAC5' : '#FFFFFF' }}
-        >
-          Audio
-        </button>
       </div>
       
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.chat}>
+              {/*
               <div className={styles.profContainer}>
                 <img
                   src={msg.profileImage}
@@ -544,6 +543,7 @@ const LiveTeacher: React.FC = () => {
                   className={styles.icon}
                 />
               </div>
+              */}
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
                   <h5>{msg.nickname}</h5>
@@ -557,17 +557,18 @@ const LiveTeacher: React.FC = () => {
           ))}
         </div>
         <div className={styles.chatInput}>
-          <input 
-            type="text" 
-            placeholder="메시지를 입력하세요" 
+          <textarea
+            placeholder="채팅을 입력하세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyPress={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
               }
             }}
+            rows={1} // 기본 행의 높이 설정
+            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
           />
           <button 
             onClick={sendMessage}
