@@ -83,7 +83,7 @@ const Main: React.FC = () => {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category
         }));

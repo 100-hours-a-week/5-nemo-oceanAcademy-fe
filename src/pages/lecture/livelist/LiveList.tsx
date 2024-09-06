@@ -59,7 +59,6 @@ const LiveList: React.FC = () => {
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    // 카테고리 목록 가져오기
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(endpoints.getCategories, {
@@ -78,7 +77,7 @@ const LiveList: React.FC = () => {
     fetchCategories();
   }, []);
 
-  // 강의 목록 가져오기 API 요청 (페이지와 카테고리, 라이브 필터 적용)
+  // 강의 목록 가져오기 API 요청 (페이지와 카테고리, 필터 적용)
   const fetchLectures = useCallback(async (categoryId: number | null = null, page: number = 0) => {
     setIsFetching(true);
     setIsLoading(true);
@@ -90,8 +89,6 @@ const LiveList: React.FC = () => {
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
-
-      console.log("Request URL:", url);
 
       const response = await axios.get(url, {
         headers: {
@@ -108,7 +105,7 @@ const LiveList: React.FC = () => {
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category,
         }));
@@ -134,8 +131,8 @@ const LiveList: React.FC = () => {
   // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
   useEffect(() => {
     setLectures([]);
-    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 다시 불러오기
-  }, [selectedCategory, fetchLectures]);
+    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0);
+  }, [fetchLectures]);
 
   // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
@@ -146,6 +143,10 @@ const LiveList: React.FC = () => {
 
   // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
+    if (page === 0) {
+      setLectures([]);
+    }
+
     fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page);
   }, [page, fetchLectures, selectedCategory]);
 

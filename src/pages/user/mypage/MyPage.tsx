@@ -1,9 +1,10 @@
 // #C-1: MyPage(/mypage) - 사용자 페이지 (프로필 수정, 내가 개설한 강의 조회, 강의 개설 페이지로 이동)
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import LectureCard from '../../../components/lecture-card/LectureCard';
+import EmptyContent from '../../../components/empty-content/EmptyContent';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
@@ -45,57 +46,54 @@ interface Lecture {
     category: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState('닉네임');
-  const [profilePic, setProfilePic] = useState('');
   const [lectures, setLectures] = useState<Lecture[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('전체 카테고리');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [nickname, setNickname] = useState('닉네임');
+  const [profilePic, setProfilePic] = useState('');
   const [page, setPage] = useState(0); // 페이지 번호
   const [hasMore, setHasMore] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(false); // 스크롤 시 데이터 가져오는 상태
+  const [isFetching, setIsFetching] = useState(false);
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    axios.get(`${endpoints.classes}?page=${page}&target=created`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      const classes = response.data.data.map((item: any) => ({
-        classId: item.id,
-        name: item.name,
-        bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
-        instructor: item.instructor,
-        category: item.category
-      }));
-      setLectures(classes);
-    })
-    .catch(error => {
-      if (error.response && error.response.status === 400) {
-        alert(error.response.data.message_kor);
-      } else {
-        console.error('Failed to fetch created classes:', error);
+    const fetchCategories = async () => {
+      try {
+        const categoryResponse = await axios.get(endpoints.getCategories, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCategories(categoryResponse.data || []);
+        console.log('/live-list 카테고리 조회 성공!');
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        setCategories([]);
       }
-    });
+    };
+
+    fetchCategories();
   }, []);
 
-  /* 무한 스크롤 적용 - 나중에 
-    const fetchLectures = useCallback(async (categoryId: number | null = null, page: number = 0) => {
-    setIsFetching(true); // 스크롤 요청 중
+  const fetchLectures = useCallback(async (categoryId: number | null = null, page: number = 0) => {
+    setIsFetching(true);
     setIsLoading(true);
 
     try {
-      let url = `${endpoints.classes}?page=${page}`;
+      let url = `${endpoints.classes}?page=${page}&target=created`;
 
-      // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
-
-      console.log("Request URL:", url); // URL 확인을 위해 로그 추가
 
       const response = await axios.get(url, {
         headers: {
@@ -105,7 +103,6 @@ const MyPage: React.FC = () => {
 
       const lecturesData = response.data.data;
       console.log("Response data:", response.data);
-      console.log(response.data.message_kor);
 
       if (lecturesData && lecturesData.length > 0) {
         console.log("Fetched lectures:", lecturesData);
@@ -113,20 +110,20 @@ const MyPage: React.FC = () => {
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category,
         }));
 
-        setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
-        setHasMore(classes.length > 0); // 추가된 강의가 없으면 더 이상 불러올 강의가 없다고 설정
+        setLectures((prevLectures) => [...prevLectures, ...classes]);
+        setHasMore(classes.length > 0);
       } else {
-        console.log("더 불러올 데이터 없음! 목록 끝 ");
-        setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
+        console.log("더 이상 로드할 클래스 없음!");
+        setHasMore(false);
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Failed to fetch lectures:', error.message); // 오류 메시지 확인
+        console.error('Failed to fetch lectures:', error.message);
       } else {
         console.error('An unknown error occurred:', error);
       }
@@ -135,7 +132,26 @@ const MyPage: React.FC = () => {
       setIsFetching(false);
     }
   }, []);
-  */
+
+   // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
+   useEffect(() => {
+    setPage(0); // 페이지 번호를 0으로 초기화
+    fetchLectures(categories.find((cat) => cat.name === selectedCategory)?.id || 0, 0); // 첫 페이지 강의 목록 불러오기
+  }, [selectedCategory, fetchLectures]);
+
+  // 스크롤이 끝에 도달했는지 확인하는 함수
+  const handleScroll = useCallback(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isFetching && hasMore) {
+      setPage((prevPage) => prevPage + 1); // 페이지 증가
+    }
+  }, [isFetching, hasMore]);
+
+  // 페이지가 변경되면 새 강의 목록을 불러옴
+  useEffect(() => {
+    if (page > 0) {
+      fetchLectures(categories.find((cat) => cat.name === selectedCategory)?.id || 0, page);
+    }
+  }, [page, fetchLectures, selectedCategory]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -164,12 +180,12 @@ const MyPage: React.FC = () => {
         {isEditing ? (
           <input 
             type="text" 
-            value={username} 
+            value={nickname} 
             onChange={(e) => setUsername(e.target.value)} 
             className={styles.usernameInput} 
           />
         ) : (
-          <p className={styles.username}>{username}</p>
+          <p className={styles.username}>{nickname}</p>
         )}
         {isEditing ? (
           <Button text="완료" onClick={handleSaveClick} />

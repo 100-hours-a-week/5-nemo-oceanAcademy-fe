@@ -60,7 +60,6 @@ const LectureList: React.FC = () => {
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    // 카테고리 목록 가져오기
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(endpoints.getCategories, {
@@ -91,8 +90,6 @@ const LectureList: React.FC = () => {
         url += `&category=${categoryId}`;
       }
 
-      console.log("Request URL:", url); // URL 확인을 위해 로그 추가
-
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,8 +97,9 @@ const LectureList: React.FC = () => {
       });
 
       const lecturesData = response.data.data;
+
       console.log("Response data:", response.data);
-      console.log(response.data.message_kor);
+      console.log("LectureList: ", response.data.message_kor);
 
       if (lecturesData && lecturesData.length > 0) {
         console.log("Fetched lectures:", lecturesData);
@@ -109,13 +107,19 @@ const LectureList: React.FC = () => {
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category,
         }));
 
-        setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
-        setHasMore(classes.length > 0); // 추가된 강의가 없으면 더 이상 불러올 강의가 없다고 설정
+        if (page === 0) {
+          // 새 카테고리로 변경될 때는 강의 목록을 초기화
+          setLectures(classes);
+        } else {
+          setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
+        }
+
+        setHasMore(classes.length > 0);
       } else {
         console.log("더 불러올 데이터 없음! 목록 끝 ");
         setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
@@ -134,9 +138,9 @@ const LectureList: React.FC = () => {
 
   // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
   useEffect(() => {
-    setLectures([]); // 강의 목록 초기화
-    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 다시 불러오기
-  }, [selectedCategory]);
+    setLectures([]);
+    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0);
+  }, [selectedCategory,fetchLectures]);
 
   // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
@@ -148,9 +152,9 @@ const LectureList: React.FC = () => {
   // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
     if (page === 0) {
-      fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 불러오기
+      fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); 
     } else {
-      fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page); // 페이지 기반으로 추가 로딩
+      fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page);
     }
   }, [page, fetchLectures, selectedCategory]);
 
