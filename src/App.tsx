@@ -21,9 +21,7 @@ import Login from './pages/user/login/Login';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
-import WebRTCTestComponent from 'components/web-rtc/WebRTCTestComponent';
-import WebRTCTestStudent from 'components/web-rtc/WebRTCTestStudent';
-import WebRTCTestTeacher from 'components/web-rtc/WebRTCTestTeacher';
+import PrivateRoute from 'components/PrivateRoute';
 import { Container } from './styles/GlobalStyles'
 
 const App: React.FC = () => {  
@@ -35,13 +33,14 @@ const App: React.FC = () => {
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
+        <Route path="/sign-info" element={<SignInfo />} />
+        <Route path="/list" element={<LectureList />} />
+        <Route path="/live-list" element={<LiveList />} />
 
-        {/* Lecture Routes */}
+        {/* 이하 로그인 후 접근 가능 */}
         <Route path="/enrollment" element={<Enrollment />} />
         <Route path="/enrollment/:classId" element={<Enrollment />} />
         <Route path="/lecture/info/:classId" element={<LectureInfo />} />
-        <Route path="/list" element={<LectureList />} />
-        <Route path="/live-list" element={<LiveList />} />
         
         {/* Live Routes */}
         <Route path="/live/student/:classId" element={<LiveStudent />} />
@@ -60,8 +59,14 @@ const App: React.FC = () => {
         <Route path="/lecture/students/:classId" element={<StudentList />} />
         
         {/* User Routes */}
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/sign-info" element={<SignInfo />} />
+        <Route
+          path="/mypage"
+          element={
+            <PrivateRoute>
+              <MyPage />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
