@@ -38,25 +38,116 @@ const App: React.FC = () => {
         <Route path="/live-list" element={<LiveList />} />
 
         {/* 이하 로그인 후 접근 가능 */}
-        <Route path="/enrollment" element={<Enrollment />} />
-        <Route path="/enrollment/:classId" element={<Enrollment />} />
-        <Route path="/lecture/info/:classId" element={<LectureInfo />} />
-        
+        <Route
+          path="/enrollment"
+          element={
+            <PrivateRoute>
+              <Enrollment />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/enrollment/:classId"
+          element={
+            <PrivateRoute>
+              <Enrollment />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lecture/info/:classId"
+          element={
+            <PrivateRoute>
+              <LectureInfo />
+            </PrivateRoute>
+          }
+        />
+
         {/* Live Routes */}
-        <Route path="/live/student/:classId" element={<LiveStudent />} />
-        <Route path="/live/teacher/:classId" element={<LiveTeacher />} />
+        <Route
+          path="/live/student/:classId"
+          element={
+            <PrivateRoute>
+              <LiveStudent />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/live/teacher/:classId"
+          element={
+            <PrivateRoute>
+              <LiveTeacher />
+            </PrivateRoute>
+          }
+        />
         
         {/* Student Routes */}
-        <Route path="/classroom" element={<Classroom />} />
-        <Route path="/dashboard/student/:classId" element={<DashboardStudent />} />
-        
+        <Route
+          path="/classroom"
+          element={
+            <PrivateRoute>
+              <Classroom />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/student/:classId"
+          element={
+            <PrivateRoute>
+              <DashboardStudent />
+            </PrivateRoute>
+          }
+        />
+
         {/* Teacher Routes */}
-        <Route path="/dashboard/teacher/:classId" element={<DashboardTeacher />} />
-        <Route path="/dashboard/edit/:classId" element={<EditDashboard />} />
-        <Route path="/lecture/created" element={<LectureCreated />} />
-        <Route path="/lecture/created/:classId" element={<LectureCreated />} />
-        <Route path="/lecture/open" element={<LectureOpen />} />
-        <Route path="/lecture/students/:classId" element={<StudentList />} />
+        <Route
+          path="/dashboard/teacher/:classId"
+          element={
+            <PrivateRoute>
+              <DashboardTeacher />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/edit/:classId"
+          element={
+            <PrivateRoute>
+              <EditDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lecture/created"
+          element={
+            <PrivateRoute>
+              <LectureCreated />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lecture/created/:classId"
+          element={
+            <PrivateRoute>
+              <LectureCreated />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lecture/open"
+          element={
+            <PrivateRoute>
+              <LectureOpen />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lecture/students/:classId"
+          element={
+            <PrivateRoute>
+              <StudentList />
+            </PrivateRoute>
+          }
+        />
         
         {/* User Routes */}
         <Route
