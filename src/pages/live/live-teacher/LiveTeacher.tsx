@@ -207,7 +207,7 @@ const LiveTeacher: React.FC = () => {
           setMessages(response.data.map((msg:any) => ({
             room: classId,
             message: msg.content,
-            nickname: msg.writerId || 'Anonymous',
+            nickname: msg.writerId || '익명',
             profileImage: msg.profileImage || profImage
           })));
       })
@@ -546,7 +546,7 @@ const LiveTeacher: React.FC = () => {
               */}
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>{msg.nickname}</h5>
+                  <h5>익명</h5>
                   <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={styles.chatBubble}>

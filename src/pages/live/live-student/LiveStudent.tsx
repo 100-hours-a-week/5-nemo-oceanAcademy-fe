@@ -121,7 +121,7 @@ const LiveStudent: React.FC = () => {
     
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
-        console.log('Raw message received:', greeting.body || 'Test message'); // raw data
+        console.log('Raw message received:', greeting.body); // raw data
 
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
@@ -153,7 +153,7 @@ const LiveStudent: React.FC = () => {
       });
 
       // 입력 필드를 초기화하고 메시지를 UI에 추가
-      showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
+      // showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
@@ -173,7 +173,8 @@ const LiveStudent: React.FC = () => {
           setMessages(response.data.map((msg:any) => ({
             room: classId,
             message: msg.content,
-            nickname: msg.writerId || 'Anonymous',
+            // nickname: msg.writerId || '익명',
+            nickname: '익명',
             profileImage: msg.profileImage || profImage
           })));
       })
@@ -239,17 +240,31 @@ const LiveStudent: React.FC = () => {
   // WebRTC Connection
   useEffect(() => {
     const handleConnect = async () => {
-      await connectToServerAsStudent(
-        classId ?? '',
-        setConnectionStatus,
-        setIsSubscriptionDisabled,
-        webcamVideoRef,
-        screenShareVideoRef
-      );
+      // webcamVideoRef와 screenShareVideoRef가 존재할 때만 connectToServerAsStudent 호출
+      if (webcamVideoRef.current && screenShareVideoRef.current) {
+        try {
+          await connectToServerAsStudent(
+            classId ?? '',
+            setConnectionStatus,
+            setIsSubscriptionDisabled,
+            webcamVideoRef.current,
+            screenShareVideoRef.current
+          );
+        } catch (error) {
+          console.error("WebRTC connection failed:", error);
+        }
+      } else {
+        console.warn("webcamVideoRef or screenShareVideoRef is not ready.");
+      }
     };
 
     if (classId) {
-      handleConnect();
+      // DOM이 완전히 렌더된 후에 연결 시도
+      const timeoutId = setTimeout(() => {
+        handleConnect();
+      }, 100); // 약간의 지연을 두어 DOM이 완전히 렌더된 후에 실행되도록 함
+  
+      return () => clearTimeout(timeoutId); // clean-up 함수
     }
   }, [classId]);
 
@@ -318,6 +333,7 @@ const LiveStudent: React.FC = () => {
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.chat}>
+              {/*
               <div className={styles.profContainer}>
                 <img
                   src={msg.profileImage}
@@ -325,9 +341,10 @@ const LiveStudent: React.FC = () => {
                   className={styles.icon}
                 />
               </div>  
+              */}
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>{msg.nickname}</h5>
+                  <h5>익명</h5>
                   <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={styles.chatBubble}>
@@ -338,19 +355,25 @@ const LiveStudent: React.FC = () => {
           ))}
         </div>
         <div className={styles.chatInput}>
-          <input 
-            type="text" 
-            placeholder="메시지를 입력하세요" 
+          <textarea
+            placeholder="채팅을 입력하세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyPress={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
               }
             }}
+            rows={1} // 기본 행의 높이 설정
+            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
           />
-          <button onClick={sendMessage}>Send</button>
+          <button 
+            onClick={sendMessage}
+            disabled={!connected}
+          >
+            Send
+          </button>
         </div>
       </div>
     </Container>
