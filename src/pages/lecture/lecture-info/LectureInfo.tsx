@@ -14,13 +14,13 @@ interface LectureData {
     category_id: number;
     instructor: string;
     category: string;
-    name: string; // 강의 제목
-    object: string; // 강의 목표
-    description: string; // 강의 소개
-    instructor_info: string; // 강사 소개
-    prerequisite: string; // precourse, 강의에 필요한 사전 지식 및 준비 안내
-    announcement: string; // 강의 공지 
-    banner_image_path: string | null; // 배너 이미지 경로
+    name: string;
+    object: string;
+    description: string;
+    instructor_info: string;
+    prerequisite: string;
+    announcement: string;
+    banner_image_path: string | null;
     is_active: boolean;
 }
 
@@ -40,8 +40,6 @@ const LectureInfo: React.FC = () => {
                     },
                 });
                 setLectureData(response.data.data);
-                console.log(response.data.message_kor);
-                console.log(response.data.message_eng);
             } catch (error) {
                 console.error('Failed to fetch lecture data:', error);
             }
