@@ -27,13 +27,13 @@ const LectureOpen: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [instructorInfo, setInstructorInfo] = useState<string>('');
   const [prerequisite, setPrerequisite] = useState<string>('');
+  const [announcement, setAnnouncement] = useState<string | null>(null);
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   
   const [categoryHelperText, setCategoryHelperText] = useState<string>('카테고리는 필수 항목입니다.');
   const [titleHelperText, setTitleHelperText] = useState<string>('강의 제목은 필수 항목입니다.');
   const [objectiveHelperText, setObjectiveHelperText] = useState<string>('강의 목표는 필수 항목입니다.');
   const [descriptionHelperText, setDescriptionHelperText] = useState<string>('강의 소개는 필수 항목입니다.');
-
   const { classId } = useParams<{ classId: string }>();
 
   useEffect(() => {
@@ -69,11 +69,33 @@ const LectureOpen: React.FC = () => {
       object: objective,
       description: description,
       instructorInfo: instructorInfo,
-      prerequisite: prerequisite
+      prerequisite: prerequisite || null,
+      announcement: announcement || null,
     };
 
-    // JSON 데이터를 문자열로 변환하여 formData에 추가
+    // JSON 데이터를 문자열로 변환하여 FormData에 추가하지 않고
+    Object.keys(classroomCreateDto).forEach(key => {
+      formData.append(key, (classroomCreateDto as any)[key]);
+    });
+    /*
+    (Object.keys(classroomCreateDto) as (keyof typeof classroomCreateDto)[]).forEach(key => {
+      const value = classroomCreateDto[key];
+      formData.append(key, value ? value.toString() : '');
+    });
+    */
+
+    /*
+    // 콘솔에 DTO 정보 로그 출력
+    console.log("classroomCreateDto: ", classroomCreateDto);
+    if (bannerImage) {
+      console.log("Banner Image: ", bannerImage.name);
+    } else {
+      console.log("No banner image selected");
+    }
+
+    // JSON 데이터를 Blob으로 변환하여 추가
     formData.append('classroomCreateDto', new Blob([JSON.stringify(classroomCreateDto)], { type: 'application/json' }));
+    */
 
     // 이미지 파일 추가
     if (bannerImage) {
@@ -83,8 +105,8 @@ const LectureOpen: React.FC = () => {
     try {
       const response = await axios.post(endpoints.classes, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
+          // 'Content-Type': 'multipart/form-data',
         },
       });
 
@@ -108,7 +130,6 @@ const LectureOpen: React.FC = () => {
       }
     }
   };
-
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);

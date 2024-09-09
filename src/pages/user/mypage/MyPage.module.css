@@ -4,69 +4,166 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding-top: 60px;
+  padding-top: 20px;
   padding-bottom: 80px;
   background-color: white;
 }
   
 .profileContainer {
-  width: 320px;
-  height: 70px;
-  background-color: #eee;
+  width: 370px;
+  height: 80px;
+  background-color: var(--primary-color);
   padding: 0 20px;
   border-radius: 10px;
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-  margin-top: -160px;
+  margin-bottom: 30px;
+}
+
+.profileImageContainer {
+  position: relative;
 }
   
 .profilePicture {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   margin-right: 10px;
+  object-fit: cover;
 }
-  
+/*
 .profilePictureEditing {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   background-color: lightgray;
 }
-  
-.username {
-  font-size: 16px;
+*/
+
+.editOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 45px;
+  height: 45px;
+  background-color: rgba(0, 0, 0, 0.3); /* 어둡게 보이도록 처리 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.editIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 30px;
+  height: 30px;
+  opacity: 0.8;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.textContainer {
+  margin: 0;
+  width: 180px;
+}
+
+.nickname {
+  font-size: 15px;
   font-weight: bold;
+  color: white;
+}
+
+.email {
+  font-size: 12px;
+  color: white;
 }
   
-.usernameInput {
-  width: 200px;
-  height: 30px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+.nicknameInput {
+  height: 25px;
+  font-size: 12px;
+  border: 0.5px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 4px;
+}
+
+.emailInput {
+  height: 25px;
+  font-size: 12px;
+  border: 0.5px solid #ccc;
+  border-radius: 5px;
   padding: 5px;
 }
-  
+
+/*
 .editButton {
-  margin-left: 160px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
 }
+*/
+
+.editButton {
+  background-color: transparent;
+  border: none;
+  margin-left: 150px;
+  cursor: pointer;
+}
+
+.editButtonImage {
+  width: 25px;
+  height: 25px;
+  opacity: 0.7;
+}
+
+.saveButton {
+  margin-left: 20px;
+  width: 70px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  /* transition: background-color 0.3s; */
+}
+
+.saveButton:hover {
+  background-color: #F7F9E7;
+}
+
+/*
+.saveButton-active {
+  background-color:
+  cursor: pointer;
+}
+
+.saveButton-inactive {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+*/
 
 .lecturesHeader {
+  margin-bottom: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 320px;
-  height: 60px;
-  background-color: #eee;
+  width: 370px;
   padding: 0 20px;
-  border-radius: 10px;
 }
 
 .addLectureButton {
