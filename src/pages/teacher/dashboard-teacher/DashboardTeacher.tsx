@@ -82,6 +82,7 @@ const DashboardTeacher: React.FC = () => {
       });
 
       if (response.status === 200) {
+        alert('강의가 삭제되었습니다😢');
         navigate('/mypage');
       } else {
         alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');

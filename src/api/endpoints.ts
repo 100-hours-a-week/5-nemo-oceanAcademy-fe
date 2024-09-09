@@ -9,7 +9,7 @@ const endpoints = {
     checkNickname: `${SERVER_URL}/api/users/checkNickname?nickname={nickname}`, // 닉네임 중복 검사 
     classes: `${SERVER_URL}/api/classes`, // 강의 리스트 가져오기 (GET) / 강의 생성 (POST)
     getLectureInfo: `${SERVER_URL}/api/classes/{classId}`, // 특정 강의 정보 가져오기 (GET) / 대시보드 수정 (PATCH)
-    deleteLecture: `${SERVER_URL}/delete`, // 강의 삭제
+    deleteLecture: `${SERVER_URL}/api/classes/{classId}/delete`, // 강의 삭제
     getRole: `${SERVER_URL}/api/classes/{classId}/role`, // 강사/수강생/관계없음 구분
     getDashboard: `${SERVER_URL}/api/classes/{classId}/dashboard`, // 대시보드 정보 가져오기 
     getStudentList: `${SERVER_URL}/api/classes/{classId}/dashboard/students`, // 수강생 리스트 가져오기
