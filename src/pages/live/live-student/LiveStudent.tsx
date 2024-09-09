@@ -266,7 +266,7 @@ const LiveStudent: React.FC = () => {
   
       return () => clearTimeout(timeoutId); // clean-up 함수
     }
-  }, [classId]);
+  }, [classId, webcamVideoRef, screenShareVideoRef]);
 
   useEffect(() => {
     if (chatWindowRef.current) {

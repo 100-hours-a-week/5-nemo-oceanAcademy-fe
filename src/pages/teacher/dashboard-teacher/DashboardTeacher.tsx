@@ -79,7 +79,7 @@ const DashboardTeacher: React.FC = () => {
 
   const handleModalDelete = async () => {
     try {
-      const response = await axios.delete(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
+      const response = await axios.delete(endpoints.deleteLecture.replace('{classId}', classId || ''), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
