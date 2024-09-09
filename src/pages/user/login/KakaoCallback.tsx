@@ -27,8 +27,7 @@ const KakaoCallback: React.FC = () => {
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get('code');
-    console.log('Authorization code:', code);
-
+  
     if (code) {
       axios.get(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback`, {
         params: { code }
@@ -52,7 +51,6 @@ const KakaoCallback: React.FC = () => {
           })
           .then((signupResponse) => {
             if (signupResponse.status === 200) {
-              console.log('이미 회원입니다: ', response.data.message_kor);
               localStorage.setItem('accessToken', data.accessToken);
               localStorage.setItem('refreshToken', data.refreshToken);
               navigate('/');
@@ -61,7 +59,6 @@ const KakaoCallback: React.FC = () => {
             .catch((error) => {
               if (error.response?.status === 404) {
                 // 404일 경우 회원가입 필요
-                  console.log('미회원');
                   navigate('/sign-info', { state: { token: data.accessToken, refreshToken: data.refreshToken } });
                 } else {
                   console.error('Error during signup check:', error.response);
