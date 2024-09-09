@@ -65,10 +65,6 @@ const DashboardTeacher: React.FC = () => {
     }
   }, [classId, token]);
 
-  const handleLiveLectureStart = () => {
-    navigate(`/live/teacher/${classId}`);
-  };
-
   const handleDeleteClick = () => {
     setIsModalOpen(true);
   };
@@ -86,7 +82,7 @@ const DashboardTeacher: React.FC = () => {
       });
 
       if (response.status === 200) {
-        navigate('/mypage'); // 강의 삭제 후 마이페이지로 이동
+        navigate('/mypage');
       } else {
         alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
       }
@@ -168,7 +164,11 @@ const DashboardTeacher: React.FC = () => {
           <button className={styles.editButton} onClick={() => navigate(`/dashboard/edit/${classId}`)}>정보 수정하기</button>
           <button className={styles.deleteButton} onClick={handleDeleteClick}>강의 삭제하기</button>
         </div>
-        <button className={styles.wideButton} onClick={handleLiveLectureStart}>라이브 강의 시작</button>
+        <WideButton 
+          text="라이브 강의 시작" 
+          onClick={() => navigate(`/live/teacher/${classId}`)}
+          fixed
+        />
         {isModalOpen && (
             <Modal
                 title="강의를 삭제하시겠습니까?"
