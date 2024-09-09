@@ -73,18 +73,17 @@ const LectureOpen: React.FC = () => {
       announcement: announcement || null,
     };
 
+    /*
+    // 아래의 코드를 line 97 코드로 변경했습니다
     // JSON 데이터를 문자열로 변환하여 FormData에 추가하지 않고
     Object.keys(classroomCreateDto).forEach(key => {
       formData.append(key, (classroomCreateDto as any)[key]);
     });
-    /*
     (Object.keys(classroomCreateDto) as (keyof typeof classroomCreateDto)[]).forEach(key => {
       const value = classroomCreateDto[key];
       formData.append(key, value ? value.toString() : '');
     });
-    */
 
-    /*
     // 콘솔에 DTO 정보 로그 출력
     console.log("classroomCreateDto: ", classroomCreateDto);
     if (bannerImage) {
@@ -92,14 +91,14 @@ const LectureOpen: React.FC = () => {
     } else {
       console.log("No banner image selected");
     }
+    */
 
     // JSON 데이터를 Blob으로 변환하여 추가
     formData.append('classroomCreateDto', new Blob([JSON.stringify(classroomCreateDto)], { type: 'application/json' }));
-    */
 
     // 이미지 파일 추가
     if (bannerImage) {
-      formData.append('imagefile', bannerImage); // key를 'imagefile'로 설정
+      formData.append('imagefile', bannerImage || null); // key를 'imagefile'로 설정
     }
 
     try {
