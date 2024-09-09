@@ -67,7 +67,6 @@ const LiveList: React.FC = () => {
           },
         });
         setCategories(categoryResponse.data || []);
-        console.log('/live-list 카테고리 조회 성공!');
       } catch (error) {
         console.error('Failed to fetch categories:', error);
         setCategories([]);
@@ -85,7 +84,6 @@ const LiveList: React.FC = () => {
     try {
       let url = `${endpoints.classes}?page=${page}&target=live`;
 
-      // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
@@ -97,11 +95,8 @@ const LiveList: React.FC = () => {
       });
 
       const lecturesData = response.data.data;
-      console.log("Response data:", response.data);
 
       if (lecturesData && lecturesData.length > 0) {
-        console.log("Fetched lectures:", lecturesData);
-
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
@@ -113,7 +108,6 @@ const LiveList: React.FC = () => {
         setLectures((prevLectures) => [...prevLectures, ...classes]);
         setHasMore(classes.length > 0);
       } else {
-        console.log("더 이상 로드할 클래스 없음!");
         setHasMore(false);
       }
     } catch (error) {
@@ -158,7 +152,7 @@ const LiveList: React.FC = () => {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    setPage(0); // 카테고리 변경 시 페이지 0으로 리셋
+    setPage(0);
   };
 
   return (

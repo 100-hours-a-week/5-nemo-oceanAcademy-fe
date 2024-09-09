@@ -85,7 +85,6 @@ const LectureList: React.FC = () => {
     try {
       let url = `${endpoints.classes}?page=${page}`;
 
-      // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
@@ -98,12 +97,7 @@ const LectureList: React.FC = () => {
 
       const lecturesData = response.data.data;
 
-      console.log("Response data:", response.data);
-      console.log("LectureList: ", response.data.message_kor);
-
       if (lecturesData && lecturesData.length > 0) {
-        console.log("Fetched lectures:", lecturesData);
-
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
@@ -121,12 +115,11 @@ const LectureList: React.FC = () => {
 
         setHasMore(classes.length > 0);
       } else {
-        console.log("더 불러올 데이터 없음! 목록 끝 ");
-        setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
+        setHasMore(false);
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Failed to fetch lectures:', error.message); // 오류 메시지 확인
+        console.error('Failed to fetch lectures:', error.message);
       } else {
         console.error('An unknown error occurred:', error);
       }

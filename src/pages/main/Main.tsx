@@ -57,9 +57,6 @@ const Main: React.FC = () => {
   useEffect(() => {
     axios.get(`${endpoints.classes}?target=live?page=${page}`)
       .then(response => {
-        console.log(response.data.data);
-        console.log(response.data.message_kor);
-        console.log(response.data.message_eng);
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
