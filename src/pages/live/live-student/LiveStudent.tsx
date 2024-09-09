@@ -240,33 +240,19 @@ const LiveStudent: React.FC = () => {
   // WebRTC Connection
   useEffect(() => {
     const handleConnect = async () => {
-      // webcamVideoRef와 screenShareVideoRef가 존재할 때만 connectToServerAsStudent 호출
-      if (webcamVideoRef.current && screenShareVideoRef.current) {
-        try {
-          await connectToServerAsStudent(
-            classId ?? '',
-            setConnectionStatus,
-            setIsSubscriptionDisabled,
-            webcamVideoRef.current,
-            screenShareVideoRef.current
-          );
-        } catch (error) {
-          console.error("WebRTC connection failed:", error);
-        }
-      } else {
-        console.warn("webcamVideoRef or screenShareVideoRef is not ready.");
-      }
+      await connectToServerAsStudent(
+        classId ?? '',
+        setConnectionStatus,
+        setIsSubscriptionDisabled,
+        webcamVideoRef,
+        screenShareVideoRef
+      );
     };
 
     if (classId) {
-      // DOM이 완전히 렌더된 후에 연결 시도
-      const timeoutId = setTimeout(() => {
-        handleConnect();
-      }, 100); // 약간의 지연을 두어 DOM이 완전히 렌더된 후에 실행되도록 함
-  
-      return () => clearTimeout(timeoutId); // clean-up 함수
+      handleConnect();
     }
-  }, [classId, webcamVideoRef, screenShareVideoRef]);
+  }, [classId]);
 
   useEffect(() => {
     if (chatWindowRef.current) {
