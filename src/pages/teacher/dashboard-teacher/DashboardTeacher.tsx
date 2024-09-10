@@ -73,6 +73,27 @@ const DashboardTeacher: React.FC = () => {
     }
   }, [classId, token]);
 
+  // 일정 목록 불러오기
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const response = await axios.get(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSchedules(response.data.data || []);
+      } catch (error) {
+        console.error('Failed to fetch schedules:', error);
+        alert('일정을 불러오는 데 실패했습니다.');
+      }
+    };
+
+    if (classId) {
+      fetchSchedules();
+    }
+  }, [classId, token]);
+
   useEffect(() => {
     const fetchStudentCount = async () => {
       try {
@@ -121,6 +142,7 @@ const DashboardTeacher: React.FC = () => {
     }
   };
 
+  // 일정 추가 후 새로 불러오기
   const handleScheduleAdded = async () => {
     try {
       const response = await axios.get(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
@@ -140,6 +162,7 @@ const DashboardTeacher: React.FC = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        data: { schedule_id },
       });
 
       if (response.status === 200) {
@@ -200,12 +223,12 @@ const DashboardTeacher: React.FC = () => {
         />
         {isModalOpen && (
             <Modal
-                title="강의를 삭제하시겠습니까?"
-                content="삭제한 강의는 복구할 수 없습니다. 그래도 삭제하시겠습니까?"
-                leftButtonText="취소"
-                rightButtonText="강의 삭제"
-                onLeftButtonClick={handleModalCancel}
-                onRightButtonClick={handleModalDelete}
+              title="강의를 삭제하시겠습니까?"
+              content="삭제한 강의는 복구할 수 없습니다. 그래도 삭제하시겠습니까?"
+              leftButtonText="취소"
+              rightButtonText="강의 삭제"
+              onLeftButtonClick={handleModalCancel}
+              onRightButtonClick={handleModalDelete}
             />
         )}
       </Container>
