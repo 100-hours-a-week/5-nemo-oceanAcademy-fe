@@ -16,44 +16,48 @@ import endpoints from '../../../api/endpoints';
 
 interface Schedule {
   schedule_id: number;
+  class_id: number;
   content: string;
   date: string;
   start_time: string;
   end_time: string;
 }
 
-interface LectureData {
-  classId: number;
-  name: string;
-  bannerImage: string;
+interface Dashboard {
+  id: number; // classId
+  userId: string;
+  categoryId: number;
   instructor: string;
   category: string;
-  objective: string;
+  name: string;
+  object: string;
   description: string;
   instructorInfo: string;
-  precourse: string;
+  prerequisite: string;
   announcement: string;
-  schedules: Schedule[];
+  banner_image_path: string;
+  isActive: boolean; // 라이브 중인가요? 
 }
 
 const DashboardTeacher: React.FC = () => {
   const navigate = useNavigate();
   const { classId } = useParams<{ classId: string }>(); 
-  const [lectureData, setLectureData] = useState<LectureData | null>(null);
+  const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [studentCount, setStudentCount] = useState<number>(0);
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get(endpoints.getDashboard.replace('{classId}', classId || ''), {
+        const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId || ''), {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setLectureData(response.data);
-        setSchedules(response.data.schedules || []);
+        setDashboard(response.data.data);
+        
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
         alert('강의 정보를 불러오는 데 실패했습니다.');
@@ -62,6 +66,26 @@ const DashboardTeacher: React.FC = () => {
 
     if (classId) {
       fetchDashboardData();
+    }
+  }, [classId, token]);
+
+  useEffect(() => {
+    const fetchStudentCount = async () => {
+      try {
+        const response = await axios.get(endpoints.getStudentList.replace('{classId}', classId || ''), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setStudentCount(response.data.data.length);
+      } catch (error) {
+        console.error('Failed to fetch student count:', error);
+        alert('수강생 정보를 불러오는 데 실패했습니다.');
+      }
+    };
+
+    if (classId) {
+      fetchStudentCount();
     }
   }, [classId, token]);
 
@@ -100,7 +124,7 @@ const DashboardTeacher: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setSchedules(response.data.schedules || []);
+      setSchedules(response.data.data || []);
     } catch (error) {
       console.error('Failed to fetch updated schedules:', error);
     }
@@ -128,12 +152,12 @@ const DashboardTeacher: React.FC = () => {
 
   return (
       <Container>
-        {lectureData && (
+        {dashboard && (
             <>
               <LectureMeta
-                  instructor={lectureData.instructor}
-                  title={lectureData.name}
-                  category={lectureData.category}
+                  instructor={dashboard.instructor}
+                  title={dashboard.name}
+                  category={dashboard.category}
               />
               <Empty height="10px" />
               <div className={styles.buttonContainer}>
@@ -142,23 +166,23 @@ const DashboardTeacher: React.FC = () => {
                 </button>
               </div>
               <Empty height="10px" />
-              <Banner image={lectureData.bannerImage} />
+              <Banner image={dashboard.banner_image_path} />
               <Empty height="10px" />
-              <Announcement content={lectureData.announcement} />
+              <Announcement content={dashboard.announcement} />
               <Empty height="10px" />
               <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
               <Empty height="10px" />
               <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
               <Empty height="10px" />
-              <StudentCount count={20} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
+              <StudentCount count={studentCount} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
               <Empty height="10px" />
-              <InfoSection title="강의 목표" content={lectureData.objective} />
+              <InfoSection title="강의 목표" content={dashboard.object} />
               <Empty height="10px" />
-              <InfoSection title="강의 소개" content={lectureData.description} />
+              <InfoSection title="강의 소개" content={dashboard.description} />
               <Empty height="10px" />
-              <InfoSection title="강사 소개" content={lectureData.instructorInfo} />
+              <InfoSection title="강사 소개" content={dashboard.instructorInfo} />
               <Empty height="10px" />
-              <InfoSection title="사전 준비 사항" content={lectureData.precourse} />
+              <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
             </>
         )}
         <div className={styles.bottomButtons}>
