@@ -26,18 +26,18 @@ interface Schedule {
 
 interface Dashboard {
   id: number; // classId
-  userId: string;
-  categoryId: number;
+  user_id: string;
+  category_id: number;
   instructor: string;
   category: string;
   name: string;
   object: string;
   description: string;
-  instructorInfo: string;
+  instructor_info: string;
   prerequisite: string;
   announcement: string;
   banner_image_path: string;
-  isActive: boolean; // 라이브 중인가요? 
+  is_active: boolean; // 라이브 중인가요? 
 }
 
 const DashboardStudent: React.FC = () => {
@@ -56,6 +56,7 @@ const DashboardStudent: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log(response.data.data);
         setDashboard(response.data.data);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
@@ -96,16 +97,27 @@ const DashboardStudent: React.FC = () => {
           <Empty height="10px" />
           <InfoSection title="강의 소개" content={dashboard.description} />
           <Empty height="10px" />
-          <InfoSection title="강사 소개" content={dashboard.instructorInfo} />
+          <InfoSection title="강사 소개" content={dashboard.instructor_info} />
           <Empty height="10px" />
           <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
         </>
       )}
+      {dashboard && dashboard.is_active && (
+        <WideButton 
+          text="라이브 강의 입장" 
+          onClick={() => navigate(`/live/student/${classId}`)}
+          fixed
+        />
+      )}
+      {/*
       <WideButton 
         text="라이브 강의 입장" 
         onClick={() => navigate(`/live/student/${classId}`)}
         fixed
+        disabled={!dashboard.is_active} // 버튼 비활성화
+        style={{ backgroundColor: !dashboard.is_active ? 'grey' : undefined }}
       />
+      */}
     </Container>
   );
 };

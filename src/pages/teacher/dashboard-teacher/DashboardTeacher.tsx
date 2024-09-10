@@ -29,18 +29,18 @@ interface Schedule {
 
 interface Dashboard {
   id: number; // classId
-  userId: string;
-  categoryId: number;
+  user_id: string;
+  category_id: number;
   instructor: string;
   category: string;
   name: string;
   object: string;
   description: string;
-  instructorInfo: string;
+  instructor_info: string;
   prerequisite: string;
   announcement: string;
   banner_image_path: string;
-  isActive: boolean; // 라이브 중인가요? 
+  is_active: boolean; // 라이브 중인가요? 
 }
 
 const DashboardTeacher: React.FC = () => {
@@ -182,9 +182,9 @@ const DashboardTeacher: React.FC = () => {
         {dashboard && (
             <>
               <LectureMeta
-                  instructor={dashboard.instructor}
-                  title={dashboard.name}
-                  category={dashboard.category}
+                instructor={dashboard.instructor}
+                title={dashboard.name}
+                category={dashboard.category}
               />
               <Empty height="10px" />
               <div className={styles.buttonContainer}>
@@ -207,7 +207,7 @@ const DashboardTeacher: React.FC = () => {
               <Empty height="10px" />
               <InfoSection title="강의 소개" content={dashboard.description} />
               <Empty height="10px" />
-              <InfoSection title="강사 소개" content={dashboard.instructorInfo} />
+              <InfoSection title="강사 소개" content={dashboard.instructor_info} />
               <Empty height="10px" />
               <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
             </>
