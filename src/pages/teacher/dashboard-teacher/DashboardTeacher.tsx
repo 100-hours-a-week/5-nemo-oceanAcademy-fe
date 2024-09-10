@@ -1,5 +1,6 @@
+// #J-1: DashboardTeacher (`/dashboard/teacher/${classId}`) - 강의 대시보드 강사용 페이지
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
 import Announcement from '../../../components/dashboard/Announcement';
@@ -13,6 +14,9 @@ import { Container, Empty } from '../../../styles/GlobalStyles';
 import ScheduleForm from 'components/dashboard/ScheduleForm';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
+
+// import image
+import bn from '../../../assets/images/banner/banner_ex.png';
 
 interface Schedule {
   schedule_id: number;
@@ -166,7 +170,7 @@ const DashboardTeacher: React.FC = () => {
                 </button>
               </div>
               <Empty height="10px" />
-              <Banner image={dashboard.banner_image_path} />
+              <Banner image={dashboard.banner_image_path || bn} />
               <Empty height="10px" />
               <Announcement content={dashboard.announcement} />
               <Empty height="10px" />

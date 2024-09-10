@@ -84,7 +84,7 @@ const DashboardStudent: React.FC = () => {
             </button>
           </div>
           <Empty height="10px" />
-          <Banner image={dashboard.banner_image_path} />
+          <Banner image={dashboard.banner_image_path || bn} />
           <Empty height="10px" />
           <Announcement content={dashboard.announcement} />
           <Empty height="10px" />
