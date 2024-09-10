@@ -26,7 +26,7 @@ import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
 import videoOn from '../../../assets/images/icon/video.png';
 import videoOff from '../../../assets/images/icon/no_video.png';
-import shareScreen from '../../../assets/images/icon/share.png';
+import shareScreen from '../../../assets/images/icon/sharescreen.png';
 import micOn from '../../../assets/images/icon/mic.png';
 import micOff from '../../../assets/images/icon/no_mic.png';
 import audioOn from '../../../assets/images/icon/audio.png';
