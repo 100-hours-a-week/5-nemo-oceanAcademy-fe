@@ -158,13 +158,15 @@ const DashboardTeacher: React.FC = () => {
 
   const handleScheduleDelete = async (schedule_id: number) => {
     try {
-      const response = await axios.delete(`${endpoints.lectureSchedule.replace('{classId}', classId || '')}/${schedule_id}`, {
+      const response = await axios({
+        method: 'delete',
+        url: endpoints.lectureSchedule.replace('{classId}', classId || ''),
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        data: { schedule_id },
+        data: { schedule_id }, // Request Body에 schedule_id를 포함
       });
-
+  
       if (response.status === 200) {
         const updatedSchedules = schedules.filter(schedule => schedule.schedule_id !== schedule_id);
         setSchedules(updatedSchedules);
