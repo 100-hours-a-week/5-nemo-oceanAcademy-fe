@@ -1,3 +1,13 @@
+.container {
+  width: 390px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  background-color: white;
+}
+
 .listContainer {
   width: 390px;
   background-color: white;
@@ -6,9 +16,11 @@
 }
   
 .title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  margin-left: 5px;
   text-align: left;
 }
 
@@ -17,17 +29,17 @@
   border-collapse: collapse;
   font-size: 12px;
   font-weight: normal;
-
   background-color: white;
   border-radius: 8px;
 }
 
 .table thead th {
-  position: sticky; /* 고정 위치 설정 */
-  top: 0; /* 스크롤 시 고정할 위치 (상단) */
-  background-color: var(--primary-color); /* 배경색 설정 */
-  color: white; /* 텍스트 색상 */
-  z-index: 1; /* 다른 요소보다 위에 표시되도록 설정 */
+  position: sticky;
+  height: 40px;
+  top: 0;
+  background-color: black;
+  color: white;
+  z-index: 1000;
   padding: 8px;
 }
 
@@ -37,29 +49,29 @@
 }
 
 .table th {
-  background-color: var(--primary-color);
   color: white;
   font-weight: bold;
 }
 
 .table th:first-child {
-  border-top-left-radius: 8px; /* 왼쪽 상단 둥근 모서리 */
+  border-top-left-radius: 5px; /* 왼쪽 상단 둥근 모서리 */
 }
 
 .table th:last-child {
-  border-top-right-radius: 8px; /* 오른쪽 상단 둥근 모서리 */
+  border-top-right-radius: 5px; /* 오른쪽 상단 둥근 모서리 */
 }
 
 .table tr:last-child {
-  border-bottom-left-radius: 8px; /* 왼쪽 하단 둥근 모서리 */
+  border-bottom-left-radius: 5px; /* 왼쪽 하단 둥근 모서리 */
   border-bottom: none;
 }
-
-
 
 .table th:nth-child(1),
 .table td:nth-child(1) {
   width: 10%; /* No. 열 */
+  justify-content: center;
+  align-items: center;
+  padding-left: 10px;
 }
 
 .table th:nth-child(2),
@@ -70,12 +82,25 @@
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 50%; /* 닉네임 열 */
+  width: 20%; /* 닉네임 열 */
 }
 
 .table th:nth-child(4),
 .table td:nth-child(4) {
-  width: 30%; /* 신청일자 열 */
+  width: 30%; /* email 열 */
+}
+
+.table td:nth-child(4) {
+  font-size: 10px;
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 20%; /* 신청일자 열 */
+}
+
+.table td:nth-child(5) {
+  font-size: 10px;
 }
 
 .table td {
