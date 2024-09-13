@@ -1,11 +1,9 @@
 .container {
-  border: 1px solid red;
   width: 180px;
   padding: 5px;
   overflow: hidden;
   text-align: left;
   cursor: pointer;
-
 }
 
 .container:hover {
@@ -29,7 +27,7 @@
   /* font-weight: bold; */
   margin-top: 10px;
   margin-bottom: 5px;
-  word-break: break-word;
+  word-break: break-all;
   overflow-wrap: break-word;
 }
   
