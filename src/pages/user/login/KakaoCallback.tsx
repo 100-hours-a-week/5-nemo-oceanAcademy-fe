@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
+import LoadingScreen from './LoadingScreen';
 import { Container } from '../../../styles/GlobalStyles';
 
 const KakaoCallback: React.FC = () => {
@@ -79,7 +80,9 @@ const KakaoCallback: React.FC = () => {
     }
   }, [navigate]);
 
-  return <Container>세상에서 제일 지루한 중학교는? 로 딩 중</Container>
+  return (
+    <LoadingScreen />
+  );
 };
 
 export default KakaoCallback;
