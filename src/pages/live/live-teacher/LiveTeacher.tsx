@@ -480,7 +480,7 @@ const LiveTeacher: React.FC = () => {
   };
 
   return (
-    <Container>
+    <div className={styles.container}>
       {showModal && (
         <Modal 
           title="강의를 종료하시겠습니까?"
@@ -578,7 +578,7 @@ const LiveTeacher: React.FC = () => {
           </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
