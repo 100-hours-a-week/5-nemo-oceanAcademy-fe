@@ -6,7 +6,10 @@ const LoadingScreen: React.FC = () => {
   return (
     <div className={styles.loaderContainer}>
       <div className={styles.loader}></div>
-      <p>세상에서 제일 지루한 중학교는? 로 딩 중...</p>
+      <p>바다서원으로 이동 중입니다
+        <br />
+        ⚓️
+      </p>
     </div>
   );
 };
