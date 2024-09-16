@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connectToServerAsStudent } from './utils/student/studentClient';
  
 const WebRTCTestStudent: React.FC = () => {
-
     const [roomId, setRoomId] = useState('');
     const [connectionStatus, setConnectionStatus] = useState('');
     const [subStatus, setSubStatus] = useState('');

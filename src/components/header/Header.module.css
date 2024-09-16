@@ -1,5 +1,5 @@
 .header {
-  width: 390px;
+  width: 400px;
   height: 60px;
   background-color: black;
   display: flex;
@@ -27,6 +27,28 @@
   cursor: pointer;
   font-size: 15px;
   margin-right: 10px;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0px; /* 헤더 오른쪽 정렬 */
+  top: 60px; /* 헤더 아래로 드롭다운 위치 */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  width: 100px;
+  z-index: 1000;
+}
+
+.dropdown div {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown div:hover {
+  background-color: #f0f0f0;
 }
 
 .leftButton {

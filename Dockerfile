@@ -11,8 +11,11 @@ RUN npm install --production
 # 애플리케이션 코드 복사
 COPY . .
 
+# 환경 변수로 포트를 설정하고 기본값을 3000으로 지정
+ENV PORT=3000
+
 # 애플리케이션 포트 설정
-EXPOSE 3000
+EXPOSE $PORT
 
 # 애플리케이션 시작 명령어
 CMD ["npm", "start"]

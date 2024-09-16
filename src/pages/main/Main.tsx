@@ -1,5 +1,5 @@
 // #A-1: Main (/) - 메인 화면/랜딩페이지 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Advertisement from '../../components/advertisement/Advertisement';
 import LectureCard from '../../components/lecture-card/LectureCard';
@@ -9,10 +9,37 @@ import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
 import { Empty } from '../../styles/GlobalStyles';
 
+// import images
+import emptyImage from '../../assets/images/utils/empty.png';
+import image1 from '../../assets/images/banner/image1.png';
+import image2 from '../../assets/images/banner/image2.png';
+import image3 from '../../assets/images/banner/image3.png';
+import image4 from '../../assets/images/banner/image4.png';
+import image5 from '../../assets/images/banner/image5.png';
+import image6 from '../../assets/images/banner/image6.png';
+import image7 from '../../assets/images/banner/image7.png';
+import image8 from '../../assets/images/banner/image8.png';
+import image9 from '../../assets/images/banner/image9.png';
+import image10 from '../../assets/images/banner/image10.png';
+
+// 기본 이미지 배열
+const defaultImages = [
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  image7,
+  image8,
+  image9,
+  image10,
+];
+
 interface Lecture {
   classId: number;
   name: string;
-  bannerImage: string;
+  bannerImage: string | null;
   instructor: string;
   category: string;
 }
@@ -23,36 +50,50 @@ const Main: React.FC = () => {
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0); // 페이지 번호
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   
-  // 데이터를 가져오는 공통 함수
-  const fetchLectures = async (target: string, setState: React.Dispatch<React.SetStateAction<Lecture[]>>) => {
-    try {
-      const response = await axios.get(`${endpoints.classes}?target=${target}`);
-      const classes = response.data.classes.map((item: any) => ({
-        classId: item.class_id,
-        name: item.name,
-        bannerImage: item.banner_image,
-        instructor: item.instructor,
-        category: item.category
-      }));
-      setState(classes);
-    } catch (err) {
-      setError('Failed to fetch classes.');
-      console.error(`Failed to fetch ${target} classes:`, err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchLectures('live', setLiveClasses);
-    fetchLectures('topten', setTopTenClasses);
-  }, []);
+    axios.get(`${endpoints.classes}?target=live?page=${page}`)
+      .then(response => {
+        const classes = response.data.data.map((item: any) => ({
+          classId: item.id,
+          name: item.name,
+          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          instructor: item.instructor,
+          category: item.category
+        }));
+        
+        setLiveClasses(classes);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.message);
+        } else {
+          console.error('Failed to fetch live classes:', error);
+        }
+      });
 
-  // 로딩 관리 - 나중에 디자인 잡기 
-  if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
+    axios.get(`${endpoints.classes}?target=topten?page=${page}`)
+      .then(response => {
+        const classes = response.data.data.map((item: any) => ({
+          classId: item.id,
+          name: item.name,
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          instructor: item.instructor,
+          category: item.category
+        }));
+        setTopTenClasses(classes);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.message);
+        } else {
+          console.error('Failed to fetch top ten classes:', error);
+        }
+      });
+  }, []);
 
   return (
       <div className={styles.container}>
@@ -83,6 +124,8 @@ const Main: React.FC = () => {
             ))}
           </div>
         </section>
+
+        <Empty />
 
         <section className={styles.toptenSection}>
           <div className={styles.titleSection}>

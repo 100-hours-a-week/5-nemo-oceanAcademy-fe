@@ -36,17 +36,6 @@ strong, h1, h2, h3 {
 p {
     font-weight: 400; /* Regular 스타일 */
 }
-  
-.container {
-    width: 390px;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
-}
 
 /* 기본 버튼 스타일 */
 button {

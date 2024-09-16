@@ -1,14 +1,39 @@
 .container {
     padding: 20px;
-  }
+}
   
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 32px;
+  margin-top: 32px;
+}
+
+.buttonContainer {
+  margin-top: 20px;
+  margin-bottom: 60px; /* 네비게이션 바와의 간격 */
+}
+
+.inputField {
+  margin-bottom: 20px;
+}
   
-  .buttonContainer {
-    margin-top: 20px;
-    margin-bottom: 60px; /* 네비게이션 바와의 간격 */
-  }
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  margin-left: 10px;
+}
+  
+.required {
+  color: red;
+}
+
+.helperText {
+  font-size: 12px;
+  color: #D13939;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+  

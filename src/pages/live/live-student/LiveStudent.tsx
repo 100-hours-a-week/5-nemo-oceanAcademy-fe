@@ -1,14 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Client, StompSubscription } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import profImage from '../../../assets/images/profile_default.png';
+import profImage from '../../../assets/images/profile/profile_default.png';
+import noCam from '../../../assets/images/icon/no_cam.png';
+import share from '../../../assets/images/icon/share.png';
 import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
 
+interface Message {
+  room: string;
+  message: string;
+  nickname: string;
+  profileImage: string;
+}
+
 const LiveStudent: React.FC = () => {
+  const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const { classId } = useParams<{ classId: string }>();
   const [showModal, setShowModal] = useState(false);
@@ -17,31 +29,216 @@ const LiveStudent: React.FC = () => {
   const [connectionStatus, setConnectionStatus] = useState('');
   const [subStatus, setSubStatus] = useState('');
   const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
+  const [isScreenClicked, setIsScreenClicked] = useState(false);
+  const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
+
+  // Chat 관련
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [currentRoom, setCurrentRoom] = useState(classId);
+  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [connected, setConnected] = useState(false);
+  const [content, setContent] = useState("");
+
+  const setConnectedState = (connected: boolean) => {
+    setConnected(connected);
+    if (!connected) {
+      setMessages([]);
+    }
+  };
+
+  useEffect(() => {
+    const connect = () => {
+      const socket = new SockJS(endpoints.connectWebSocket);
+      const client = new Client({
+        webSocketFactory: () => socket,
+        debug: (str) => {
+          console.log('STOMP Debug:', str);
+        },
+        beforeConnect: () => {
+          client.connectHeaders = {
+            Authorization: `Bearer ${token}`
+          };
+        },
+        onConnect: () => {
+            setStompClient(client);
+            setConnectedState(true);
+  
+            console.log('STOMP client connected');
+        },
+        onStompError: (frame) => {
+            console.error('Broker reported error: ' + frame.headers['message']);
+            console.error('Additional details: ' + frame.body);
+        },
+        onDisconnect: () => {
+            setConnectedState(false);
+            console.log("Disconnected");
+        }
+      });
+  
+      client.activate();
+    }; 
+
+    connect();
+  }, [classId]); 
+
+  // useEffect를 사용하여 stompClient 상태가 업데이트된 후 작업 수행
+  useEffect(() => {
+    if (stompClient && connected && currentRoom) {
+      console.log(stompClient);
+      console.log("Attempting to subscribe...");
+      subscribeToRoom(currentRoom); // 현재 방에 구독
+      loadChatHistory(currentRoom); // 현재 방의 채팅 기록 로드
+    }
+  }, [stompClient, connected, currentRoom]);
+
+  const disconnect = () => {
+    if (stompClient) {
+      stompClient.deactivate();
+      setConnectedState(false);
+      console.log("Disconnected");
+    }
+  };
+
+  const subscribeToRoom = (classId: string) => {
+    if (!stompClient) {
+      console.error('STOMP client is not initialized. Cannot subscribe.');
+      return;
+    }
+
+    if (!stompClient.connected) {
+      console.error('STOMP client is not connected. Cannot subscribe.');
+      return;
+    }
+
+    if (subscription) {
+      console.log('Unsubscribing from previous room');
+      subscription.unsubscribe();  // 이전 방에 대한 구독 해제
+    }
+    
+    console.log("Attempting to subscribe to roomId = " + classId);
+    console.log("currentRoom = " + currentRoom);
+    
+    try {
+      const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
+        console.log('Raw message received:', greeting.body); // raw data
+
+        const messageContent = JSON.parse(greeting.body);
+        console.log(`Received message: ${messageContent.content}`);
+        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+      });
+
+      setSubscription(newSubscription);
+      console.log("Successfully subscribed to room " + classId);
+    } catch (error) {
+      console.error("Failed to subscribe: ", error);
+    }
+  };
+
+  const sendMessage = () => {
+    if (stompClient && stompClient.connected) {
+      const chatMessage = {
+        roomId: currentRoom, 
+        content: content,
+        writer: userInfo ? userInfo.nickname : 'Anonymous',
+        createdDate: new Date().toISOString()
+      };
+
+      console.log("Student: chat message = " + JSON.stringify(chatMessage));
+
+      // 메시지를 서버로 전송
+      stompClient.publish({
+        destination: "/app/hello",
+        body: JSON.stringify(chatMessage),
+      });
+
+      // 입력 필드를 초기화하고 메시지를 UI에 추가
+      // showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
+      setContent('');
+    } else {
+      console.error('STOMP client is not connected. Cannot send message.');
+    }
+  };
+
+  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { room, message, nickname, profileImage }
+    ]);
+  };  
+  
+  const loadChatHistory = (classId: string) => {
+    axios.get(endpoints.getChatHistory.replace('{classId}', classId))
+      .then(response => {
+          setMessages(response.data.map((msg:any) => ({
+            room: classId,
+            message: msg.content,
+            // nickname: msg.writerId || '익명',
+            nickname: '익명',
+            profileImage: msg.profileImage || profImage
+          })));
+      })
+      .catch(error => {
+          console.error("Failed to load chat history:", error);
+      });
+  };
 
   const webcamVideoRef = useRef<HTMLVideoElement>(null);
   const screenShareVideoRef = useRef<HTMLVideoElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
 
-    // 페이지 로딩 시 강의 정보 가져오기
-    useEffect(() => {
-      const fetchLectureInfo = async () => {
-        if (classId) {
-          try {
-            const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
-            const lectureData = response.data;
-            setTitle(lectureData.title);
-            setInstructor(lectureData.instructor);
-          } catch (error) {
-            console.error('Failed to fetch lecture info:', error);
-          }
-        } else {
-          console.error('Invalid classId');
+  // 유저 정보 조회
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(endpoints.userInfo, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          console.log('LiveStudent: 유저 정보를 정상적으로 받아왔습니다: ', response.data);
+          setUserInfo(response.data.data);
         }
-      };
-  
-      fetchLectureInfo();
-    }, [classId]);
-  
-    // 서버 연결 및 강의 참여 핸들러
+      } catch (error) {
+        const axiosError = error as AxiosError;
+
+        if (axiosError.response && axiosError.response.status === 401) {
+            alert('권한이 없습니다.');
+            navigate('/');
+        } else {
+            console.error('Error occurred: ', axiosError);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [navigate, token]);
+
+  // 페이지 로딩 시 강의 정보 가져오기
+  useEffect(() => {
+    const fetchLectureInfo = async () => {
+      if (classId) {
+        try {
+          const response = await axios.get(endpoints.getLectureInfo.replace('{classId}', classId));
+          const lectureData = response.data.data;
+          setTitle(lectureData.name);
+          setInstructor(lectureData.instructor);
+          console.log(response.data.message_eng, response.data.timestamp);
+        } catch (error) {
+          console.error('LiveStudent: 강의 정보를 불러오는 데 실패했습니다 > ', error);
+        }
+      } else {
+        console.error('Invalid classId');
+      }
+    };
+
+    fetchLectureInfo();
+  }, [classId]);
+
+  // WebRTC Connection
+  useEffect(() => {
     const handleConnect = async () => {
       await connectToServerAsStudent(
         classId ?? '',
@@ -51,68 +248,19 @@ const LiveStudent: React.FC = () => {
         screenShareVideoRef
       );
     };
-  
-    const joinLiveLecture = async () => {
-      await handleConnect();
-    };
-  
-  // 비디오 스트림 이벤트 처리
+
+    if (classId) {
+      handleConnect();
+    }
+  }, [classId]);
+
   useEffect(() => {
-    const handleWebcamLoadedMetadata = () => {
-      console.log('Webcam video metadata loaded');
-    };
-
-    const handleWebcamCanPlay = () => {
-      console.log('Webcam video can play');
-    };
-
-    const handleWebcamPlaying = () => {
-      console.log('Webcam video is playing');
-    };
-
-    const handleScreenShareLoadedMetadata = () => {
-      console.log('Screen share video metadata loaded');
-    };
-
-    const handleScreenShareCanPlay = () => {
-      console.log('Screen share video can play');
-    };
-
-    const handleScreenSharePlaying = () => {
-      console.log('Screen share video is playing');
-    };
-
-    if (webcamVideoRef.current) {
-      const webcamVideo = webcamVideoRef.current;
-      webcamVideo.addEventListener('loadedmetadata', handleWebcamLoadedMetadata);
-      webcamVideo.addEventListener('canplay', handleWebcamCanPlay);
-      webcamVideo.addEventListener('playing', handleWebcamPlaying);
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
+  }, [messages]);
 
-    if (screenShareVideoRef.current) {
-      const screenShareVideo = screenShareVideoRef.current;
-      screenShareVideo.addEventListener('loadedmetadata', handleScreenShareLoadedMetadata);
-      screenShareVideo.addEventListener('canplay', handleScreenShareCanPlay);
-      screenShareVideo.addEventListener('playing', handleScreenSharePlaying);
-    }
-
-    return () => {
-      if (webcamVideoRef.current) {
-        const webcamVideo = webcamVideoRef.current;
-        webcamVideo.removeEventListener('loadedmetadata', handleWebcamLoadedMetadata);
-        webcamVideo.removeEventListener('canplay', handleWebcamCanPlay);
-        webcamVideo.removeEventListener('playing', handleWebcamPlaying);
-      }
-
-      if (screenShareVideoRef.current) {
-        const screenShareVideo = screenShareVideoRef.current;
-        screenShareVideo.removeEventListener('loadedmetadata', handleScreenShareLoadedMetadata);
-        screenShareVideo.removeEventListener('canplay', handleScreenShareCanPlay);
-        screenShareVideo.removeEventListener('playing', handleScreenSharePlaying);
-      }
-    };
-  }, []);
-
+  // Modal handler
   const handleLeaveClick = () => {
     setShowModal(true);
   };
@@ -124,6 +272,10 @@ const LiveStudent: React.FC = () => {
 
   const handleModalCancel = () => {
     setShowModal(false);
+  };
+
+  const handleScreenClick = () => {
+    setIsScreenClicked((prev) => !prev);
   };
 
   return (
@@ -139,23 +291,22 @@ const LiveStudent: React.FC = () => {
         />
       )}
       <div className={styles.videoSection}>
-        <div className={styles.video}>
-          <video 
-            ref={webcamVideoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            style={{ width: '100%', height: '100%' }}
-          ></video>
-        </div>
-        <div className={styles.smallVideo}>
+        <div className={styles.screenShare}>
           <video 
             ref={screenShareVideoRef} 
             autoPlay 
             playsInline 
             muted 
-            style={{ width: '100%', height: '100%' }}
-          ></video>
+            style={{ objectFit: isScreenClicked ? 'cover' : 'contain' }}
+          />
+        </div>
+        <div className={styles.smallVideo}>
+          <video 
+            ref={webcamVideoRef} 
+            autoPlay
+            playsInline
+            muted 
+          />
         </div>
       </div>
 
@@ -165,47 +316,50 @@ const LiveStudent: React.FC = () => {
       </div>
 
       <div className={styles.chatSection}>
-        <div className={styles.chatWindow}>
-          <div className={styles.chat}>
-            <div className={styles.profContainer}>
-              <img
-                src={profImage}
-                alt="프로필"
-                className={styles.icon}
-              />
-            </div>  
-            <div className={styles.chatContainer}>
-              <div className={styles.chatInfo}>
-                <h5>스티븐</h5>
-                <p>9:43 am</p>
-              </div>
-              <div className={styles.chatBubble}>
-                <p>유석이형 아프지마</p>
-              </div>
-            </div>
-          </div>
-          <div className={styles.chat}>
-            <div className={styles.profContainer}>
-              <img
-                src={profImage}
-                alt="프로필"
-                className={styles.icon}
-              />
-            </div>  
-            <div className={styles.chatContainer}>
-              <div className={styles.chatInfo}>
-                <h5>지렁이</h5>
-                <p>9:43 am</p>
-              </div>
-              <div className={styles.chatBubble}>
-                <p>유석이형 건강해</p>
+        <div className={styles.chatWindow} ref={chatWindowRef}>
+          {messages.map((msg, index) => (
+            <div key={index} className={styles.chat}>
+              {/*
+              <div className={styles.profContainer}>
+                <img
+                  src={msg.profileImage}
+                  alt="프로필"
+                  className={styles.icon}
+                />
+              </div>  
+              */}
+              <div className={styles.chatContainer}>
+                <div className={styles.chatInfo}>
+                  <h5>익명</h5>
+                  <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div className={styles.chatBubble}>
+                  <p>{msg.message}</p>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
         <div className={styles.chatInput}>
-          <input type="text" placeholder="메시지를 입력하세요" />
-          <button>Send</button>
+          <textarea
+            placeholder="채팅을 입력하세요."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+            rows={1} // 기본 행의 높이 설정
+            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+          />
+          <button 
+            onClick={sendMessage}
+            disabled={!connected}
+          >
+            Send
+          </button>
         </div>
       </div>
     </Container>

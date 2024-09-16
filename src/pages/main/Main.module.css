@@ -1,8 +1,6 @@
 .container {
-  width: 390px;
+  width: 400px;
   min-height: 100vh;
-/* max-height: 100vh; */
-/* 이렇게 해놔야 화면 크기 줄일 때 왔다갔다 하지 않는다고 한다. 땡큐 준원 하지만 일단 이번 스프린트는 패스! */
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -22,7 +20,7 @@
 .titleSection {
   width: 360px;
   padding: 10px;
-  margin: 10px;
+  margin: 10px 0;
   gap: 10px;
   display: flex;
   flex-direction: column;
@@ -63,6 +61,5 @@
 .lectureGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  width: 100%;
+  gap: 5px;
 }

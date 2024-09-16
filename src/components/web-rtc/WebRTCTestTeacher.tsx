@@ -151,7 +151,7 @@ const WebRTCTestTeacher: React.FC = () => {
             <div>
                 <video 
                     ref={webcamVideoRef} 
-                    autoPlay 
+                    autoPlay  
                     muted 
                     playsInline 
                     style={{ width: '400px', height: 'auto', maxWidth: '100%' }} 

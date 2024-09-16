@@ -1,37 +1,180 @@
 // #C-1: MyPage(/mypage) - 사용자 페이지 (프로필 수정, 내가 개설한 강의 조회, 강의 개설 페이지로 이동)
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
-import { Container } from '../../../styles/GlobalStyles';
 import LectureCard from '../../../components/lecture-card/LectureCard';
-import Button from '../../../components/button/Button';
+import EmptyContent from '../../../components/empty-content/EmptyContent';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
+import { Container, Empty } from '../.\./../styles/GlobalStyles';
+
+// import images
+import profImage from '../../../assets/images/profile/profile_default.png';
+import emptyImage from '../../../assets/images/utils/empty.png';
+import editImage from '../../../assets/images/icon/edit_w.png';
+import image1 from '../../../assets/images/banner/image1.png';
+import image2 from '../../../assets/images/banner/image2.png';
+import image3 from '../../../assets/images/banner/image3.png';
+import image4 from '../../../assets/images/banner/image4.png';
+import image5 from '../../../assets/images/banner/image5.png';
+import image6 from '../../../assets/images/banner/image6.png';
+import image7 from '../../../assets/images/banner/image7.png';
+import image8 from '../../../assets/images/banner/image8.png';
+import image9 from '../../../assets/images/banner/image9.png';
+import image10 from '../../../assets/images/banner/image10.png';
+
+// 기본 이미지 배열
+const defaultImages = [
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  image7,
+  image8,
+  image9,
+  image10,
+];
 
 interface Lecture {
     classId: number;
     name: string;
-    bannerImage: string;
+    bannerImage: string | null;
     instructor: string;
     category: string;
 }
 
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
-
-  // 사용자 정보와 강의 정보 (예시 데이터)
+  const [lectures, setLectures] = useState<Lecture[]>([]);
+  const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('');
+  const [profilePic, setProfilePic] = useState('');
+  const [initialNickname, setInitialNickname] = useState('');
+  const [initialEmail, setInitialEmail] = useState('');
+  const [initialProfilePic, setInitialProfilePic] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState('닉네임');
-  const [profilePicture, setProfilePicture] = useState('');
-  const lectures: Lecture[] = []; // 개설한 강의 리스트
+  const [isLoading, setIsLoading] = useState(false);
+  const [isButtonActive, setIsButtonActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
+  const token = localStorage.getItem('accessToken');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(endpoints.userInfo, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          const userData = response.data.data;
+          setNickname(userData.nickname);
+          setEmail(userData.email || '이메일 정보 없음');
+          setProfilePic(userData.profile_image_path ? userData.profile_image_path : profImage);
+        }
+      } catch (error) {
+        const axiosError = error as AxiosError;
+
+        if (axiosError.response && axiosError.response.status === 401) {
+          alert('사용자 인증에 실패했습니다. 다시 로그인하세요.');
+          navigate('/login');
+        } else {
+          console.error('사용자 정보를 가져오는 중 오류가 발생했습니다:', axiosError.message);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [navigate, token]);
+
+  useEffect(() => {
+    axios.get(`${endpoints.classes}?page=${0}&target=created`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      const classes = response.data.data.map((item: any) => ({
+        classId: item.id,
+        name: item.name,
+        bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+        instructor: item.instructor,
+        category: item.category
+      }));
+      setLectures(classes);
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        alert(error.response.data.message_kor);
+      } else {
+        console.error('Failed to fetch created classes:', error);
+      }
+    });
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+      setProfilePic(URL.createObjectURL(e.target.files[0])); // preview
+      setIsButtonActive(true);
+    }
+  };
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
+    const isChanged = 
+    nickname !== initialNickname || 
+    email !== initialEmail || 
+    selectedFile !== null;
+
+    if (!isChanged) {
+      setIsEditing(false); // 아무 변경 사항이 없을 경우 편집 모드 해제만
+      return;
+    }
+
     setIsEditing(false);
+
+    // 수정된 정보를 FormData로 구성
+    const formData = new FormData();
+    const userUpdateDTO = { nickname, email };
+    formData.append(
+      'userUpdateDTO',
+      new Blob([JSON.stringify(userUpdateDTO)], { type: 'application/json' })
+    );
+    if (selectedFile) {
+      formData.append('imagefile', selectedFile);
+    }
+
+    try {
+      const response = await axios.patch(endpoints.userInfo, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("수정 요청 완료");
+        window.location.reload(); // 성공적으로 수정 후 페이지 새로고침
+        // alert('회원 정보가 수정되었습니다.');
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.status === 401) {
+        alert('사용자 인증에 실패했습니다. 다시 로그인하세요.');
+        navigate('/login');
+      } else {
+        console.error('회원 정보를 수정하는 중 오류가 발생했습니다:', axiosError.message);
+      }
+    }
   };
 
   const handleAddLectureClick = () => {
@@ -39,31 +182,71 @@ const MyPage: React.FC = () => {
   };
 
   const handleLectureClick = (classId: number) => {
-    navigate(`/dashboard/student/${classId}`);
+    navigate(`/dashboard/teacher/${classId}`);
+  };
+
+  const handleImageClick = () => {
+    if (isEditing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleImageError = () => {
+    setProfilePic(profImage);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.profileContainer}>
-        <img 
-          src={profilePicture} 
-          alt="Profile" 
-          className={isEditing ? styles.profilePictureEditing : styles.profilePicture} 
-        />
-        {isEditing ? (
-          <input 
-            type="text" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            className={styles.usernameInput} 
+        <div className={styles.profileImageContainer} onClick={handleImageClick}>
+          <img 
+            src={profilePic} 
+            alt="Profile" 
+            className={`${styles.profilePicture} ${isEditing ? styles.profilePictureEditing : ''}`} 
+            onError={handleImageError}
           />
-        ) : (
-          <p className={styles.username}>{username}</p>
-        )}
+          {isEditing && (
+            <div className={styles.editOverlay}>
+              <img src={editImage} alt="Edit Icon" className={styles.editIcon} />
+            </div>
+          )}
+        </div>
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          style={{ display: 'none' }} 
+          onChange={handleFileChange} 
+        />
+        <div className={styles.textContainer}>
+          {isEditing ? (
+            <input 
+              type="text" 
+              value={nickname} 
+              onChange={(e) => setNickname(e.target.value)} 
+              className={styles.nicknameInput} 
+            />
+          ) : (
+            <p className={styles.nickname}>{nickname}</p>
+          )}
+          {isEditing ? (
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={styles.emailInput}
+            />
+          ) : (
+            <p className={styles.email}>{email}</p>
+          )}
+        </div>
         {isEditing ? (
-          <Button text="완료" onClick={handleSaveClick} />
+          <button className={styles.saveButton} onClick={handleSaveClick}>
+            완료
+          </button>
         ) : (
-          <button className={styles.editButton} onClick={handleEditClick}>✏️</button>
+          <button className={styles.editButton} onClick={handleEditClick}>
+            <img src={editImage} alt="Edit" className={styles.editButtonImage} />
+          </button>
         )}
       </div>
 
@@ -73,10 +256,10 @@ const MyPage: React.FC = () => {
       </div>
 
       {lectures.length === 0 ? (
-        <div className={styles.noLecturesContainer}>
+        <div className={styles.emptyContainer}>
           <p>아직 강의를 개설하지 않았어요.</p>
           <p>+ 버튼을 눌러 강의를 시작해보세요!</p>
-          <div className={styles.placeholderImage}></div>
+          <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
         </div>
       ) : (
         <div className={styles.lectureGrid}>
@@ -88,13 +271,11 @@ const MyPage: React.FC = () => {
                 name={lecture.name} 
                 instructor={lecture.instructor} 
                 category={lecture.category}
-                onClick={() => navigate(`/dashboard/student/${lecture.classId}`)}
               />
             </div>
           ))}
         </div>
       )}
-
       <Navigation />
     </div>
   );

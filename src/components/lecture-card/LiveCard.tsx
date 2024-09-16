@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LiveCard.module.css';
+import { Empty } from '../../styles/GlobalStyles';
 
 interface LiveCardProps {
   classId: number;

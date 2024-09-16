@@ -9,20 +9,32 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './Classroom.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import emptyImage from '../../../assets/images/empty.png';
+
+// import images
+import emptyImage from '../../../assets/images/utils/empty.png';
+import image1 from '../../../assets/images/banner/image1.png';
+import image2 from '../../../assets/images/banner/image2.png';
+import image3 from '../../../assets/images/banner/image3.png';
+import image4 from '../../../assets/images/banner/image4.png';
+import image5 from '../../../assets/images/banner/image5.png';
+import image6 from '../../../assets/images/banner/image6.png';
+import image7 from '../../../assets/images/banner/image7.png';
+import image8 from '../../../assets/images/banner/image8.png';
+import image9 from '../../../assets/images/banner/image9.png';
+import image10 from '../../../assets/images/banner/image10.png';
 
 // 기본 이미지 배열
 const defaultImages = [
-  '/classroom/image1.png',
-  '/classroom/image2.png',
-  '/classroom/image3.png',
-  '/classroom/image4.png',
-  '/classroom/image5.png',
-  '/classroom/image6.png',
-  '/classroom/image7.png',
-  '/classroom/image8.png',
-  '/classroom/image9.png',
-  '/classroom/image10.png',
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  image7,
+  image8,
+  image9,
+  image10,
 ];
 
 interface Lecture {
@@ -75,14 +87,11 @@ const Classroom: React.FC = () => {
     setIsLoading(true);
 
     try {
-      let url = `${endpoints.classes}?target=enrolled&page=${page}`;
-
+      let url = `${endpoints.classes}?page=${page}&target=enrolled`;
       // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
-
-      console.log("Request URL:", url); // URL 확인을 위해 로그 추가
 
       const response = await axios.get(url, {
         headers: {
@@ -90,25 +99,20 @@ const Classroom: React.FC = () => {
         },
       });
 
-      console.log("Response data:", response.data); // 전체 응답 데이터 확인
-
-      // 기존에 response.data.classes를 사용하던 부분을 response.data로 변경
-      if (response.data && response.data.length > 0) {
-        console.log("Fetched lectures:", response.data);
-
-        const classes = response.data.map((item: any) => ({
-          classId: item.class_id,
+      const lecturesData = response.data.data;
+      if (lecturesData && lecturesData.length > 0) {
+        const classes = lecturesData.map((item: any) => ({
+          classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category,
         }));
 
-        setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
-        setHasMore(classes.length > 0); // 추가된 강의가 없으면 더 이상 불러올 강의가 없다고 설정
+        setLectures(prevLectures => page === 0 ? classes : [...prevLectures, ...classes]);
+        setHasMore(classes.length > 0);
       } else {
-        console.log("No classes found");
-        setHasMore(false); // 데이터가 없을 때 더 이상 불러올 강의 없음
+        setHasMore(false);
       }
     } catch (error) {
       // 오류 타입 확인 및 메시지 출력
@@ -121,18 +125,18 @@ const Classroom: React.FC = () => {
       setIsLoading(false);
       setIsFetching(false);
     }
-  }, []);
+  }, [token]);
 
   // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
   useEffect(() => {
     setLectures([]); // 강의 목록 초기화
-    fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 다시 불러오기
+    fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0);
   }, [selectedCategory, fetchEnrolledLectures]);
 
   // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isFetching && hasMore) {
-      setPage((prevPage) => prevPage + 1); // 페이지 증가
+      setPage((prevPage) => prevPage + 1);
     }
   }, [isFetching, hasMore]);
 
@@ -149,7 +153,7 @@ const Classroom: React.FC = () => {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    setPage(0); // 카테고리 변경 시 페이지 0으로 리셋
+    setPage(0);
   };
 
   return (
@@ -174,9 +178,9 @@ const Classroom: React.FC = () => {
           </div>
         ) : (
           <div className={styles.lectureGrid}>
-            {lectures.map((lecture) => (
+            {lectures.map((lecture, index) => (
               <LectureCard
-                key={lecture.classId}
+                key={`${lecture.classId}-${index}`}
                 classId={lecture.classId}
                 bannerImage={lecture.bannerImage}
                 name={lecture.name}

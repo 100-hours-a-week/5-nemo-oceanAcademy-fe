@@ -1,3 +1,4 @@
+// #E-1: LiveList (/live-list) - 라이브 강의 조회 페이지 (현재 라이브 중인 강의, 카테고리)
 import React, { useState, useEffect, useCallback } from 'react';
 import LiveCard from '../../../components/lecture-card/LiveCard';
 import CategorySelect from 'components/category-select/CategorySelect';
@@ -6,20 +7,32 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveList.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import emptyImage from '../../../assets/images/empty.png';
+
+// import images
+import emptyImage from '../../../assets/images/utils/empty.png';
+import image1 from '../../../assets/images/banner/image1.png';
+import image2 from '../../../assets/images/banner/image2.png';
+import image3 from '../../../assets/images/banner/image3.png';
+import image4 from '../../../assets/images/banner/image4.png';
+import image5 from '../../../assets/images/banner/image5.png';
+import image6 from '../../../assets/images/banner/image6.png';
+import image7 from '../../../assets/images/banner/image7.png';
+import image8 from '../../../assets/images/banner/image8.png';
+import image9 from '../../../assets/images/banner/image9.png';
+import image10 from '../../../assets/images/banner/image10.png';
 
 // 기본 이미지 배열
 const defaultImages = [
-  '/classroom/image1.png',
-  '/classroom/image2.png',
-  '/classroom/image3.png',
-  '/classroom/image4.png',
-  '/classroom/image5.png',
-  '/classroom/image6.png',
-  '/classroom/image7.png',
-  '/classroom/image8.png',
-  '/classroom/image9.png',
-  '/classroom/image10.png',
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  image7,
+  image8,
+  image9,
+  image10,
 ];
 
 interface Lecture {
@@ -45,7 +58,6 @@ const LiveList: React.FC = () => {
   const [isFetching, setIsFetching] = useState(false);
   const token = localStorage.getItem('accessToken');
 
-  // 카테고리 목록 가져오기
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -54,7 +66,7 @@ const LiveList: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCategories(categoryResponse.data.categories || []);
+        setCategories(categoryResponse.data || []);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
         setCategories([]);
@@ -64,7 +76,7 @@ const LiveList: React.FC = () => {
     fetchCategories();
   }, []);
 
-  // 강의 목록 가져오기 API 요청 (페이지와 카테고리, 라이브 필터 적용)
+  // 강의 목록 가져오기 API 요청 (페이지와 카테고리, 필터 적용)
   const fetchLectures = useCallback(async (categoryId: number | null = null, page: number = 0) => {
     setIsFetching(true);
     setIsLoading(true);
@@ -72,12 +84,9 @@ const LiveList: React.FC = () => {
     try {
       let url = `${endpoints.classes}?page=${page}&target=live`;
 
-      // 카테고리가 선택된 경우 URL에 category 파라미터 추가
       if (categoryId && categoryId !== 0) {
         url += `&category=${categoryId}`;
       }
-
-      console.log("Request URL:", url);
 
       const response = await axios.get(url, {
         headers: {
@@ -85,15 +94,13 @@ const LiveList: React.FC = () => {
         },
       });
 
-      console.log("Response data:", response.data);
+      const lecturesData = response.data.data;
 
-      if (response.data && response.data.length > 0) {
-        console.log("Fetched lectures:", response.data);
-
-        const classes = response.data.map((item: any) => ({
+      if (lecturesData && lecturesData.length > 0) {
+        const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category,
         }));
@@ -101,7 +108,6 @@ const LiveList: React.FC = () => {
         setLectures((prevLectures) => [...prevLectures, ...classes]);
         setHasMore(classes.length > 0);
       } else {
-        console.log("No classes found");
         setHasMore(false);
       }
     } catch (error) {
@@ -119,8 +125,8 @@ const LiveList: React.FC = () => {
   // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
   useEffect(() => {
     setLectures([]);
-    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); // 페이지 0부터 다시 불러오기
-  }, [selectedCategory, fetchLectures]);
+    fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0);
+  }, [fetchLectures]);
 
   // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
@@ -131,6 +137,10 @@ const LiveList: React.FC = () => {
 
   // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
+    if (page === 0) {
+      setLectures([]);
+    }
+
     fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page);
   }, [page, fetchLectures, selectedCategory]);
 
@@ -142,7 +152,7 @@ const LiveList: React.FC = () => {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    setPage(0); // 카테고리 변경 시 페이지 0으로 리셋
+    setPage(0);
   };
 
   return (
@@ -161,21 +171,23 @@ const LiveList: React.FC = () => {
               <p>Loading...</p>
           ) : lectures.length === 0 ? (
               <div className={styles.emptyContainer}>
-                <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-                <h5>아직 강의가 없어요!</h5>
+                <img src={emptyImage} alt="No live lectures available" className={styles.emptyImage} />
+                <h5>아직 라이브 강의가 없어요!</h5>
               </div>
           ) : (
               <div style={{"width":"100%"}}>
                 <div className={styles.lectureGrid}>
                   {lectures.map((lecture, index) => (
+                    <React.Fragment key={`${lecture.classId}-${index}`}>
                       <LiveCard
-                          key={`${lecture.classId}-${index}`}
-                          classId={lecture.classId}
-                          bannerImage={lecture.bannerImage ?? defaultImages[Math.floor(Math.random() * defaultImages.length)]} // null일 경우 기본 이미지 적용
-                          name={lecture.name}
-                          instructor={lecture.instructor}
-                          category={lecture.category}
+                        classId={lecture.classId}
+                        bannerImage={lecture.bannerImage ?? defaultImages[Math.floor(Math.random() * defaultImages.length)]}
+                        name={lecture.name}
+                        instructor={lecture.instructor}
+                        category={lecture.category}
                       />
+                      {index < lectures.length - 1 && <hr className={styles.divider} />}
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

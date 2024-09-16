@@ -2,81 +2,87 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
+import LoadingScreen from './LoadingScreen';
+import { Container } from '../../../styles/GlobalStyles';
 
 const KakaoCallback: React.FC = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const waitForKakao = (): Promise<any> => {
-        return new Promise((resolve, reject) => {
-            let attempts = 0;
-            const checkKakaoInitialized = () => {
-                attempts++;
-                if (window.Kakao && window.Kakao.Auth) {
-                    resolve(window.Kakao);
-                } else if (attempts < 10) {
-                    setTimeout(checkKakaoInitialized, 100);
+  const waitForKakao = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+      const checkKakaoInitialized = () => {
+        attempts++;
+          if (window.Kakao && window.Kakao.Auth) {
+            resolve(window.Kakao);
+          } else if (attempts < 10) {
+            setTimeout(checkKakaoInitialized, 100);
+          } else {
+            reject(new Error('Kakao SDK is not initialized'));
+          }
+      };
+
+      checkKakaoInitialized();
+    });
+  };
+
+  useEffect(() => {
+    const code = new URL(window.location.href).searchParams.get('code');
+  
+    if (code) {
+      axios.get(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback`, {
+        params: { code }
+      })
+      .then(async (response) => {
+        const data = response.data;
+        if (data.accessToken) {
+          try {
+            await waitForKakao();
+              window.Kakao.Auth.setAccessToken(data.accessToken);
+              console.log('Kakao accessToken 설정 완료');
+          } catch (error) {
+            console.error('Kakao SDK 초기화 실패:', error);
+          }
+        
+          // 회원가입 여부 확인
+          axios.get(endpoints.user, {
+            headers: { 
+              Authorization: `Bearer ${data.accessToken}`,
+            },
+          })
+          .then((signupResponse) => {
+            if (signupResponse.status === 200) {
+              localStorage.setItem('accessToken', data.accessToken);
+              localStorage.setItem('refreshToken', data.refreshToken);
+              navigate('/');
+              }
+            })
+            .catch((error) => {
+              if (error.response?.status === 404) {
+                // 404일 경우 회원가입 필요
+                  navigate('/sign-info', { state: { token: data.accessToken, refreshToken: data.refreshToken } });
                 } else {
-                    reject(new Error('Kakao SDK is not initialized'));
+                  console.error('Error during signup check:', error.response);
+                  navigate('/login');
                 }
-            };
-            checkKakaoInitialized();
-        });
-    };
-
-    useEffect(() => {
-        const code = new URL(window.location.href).searchParams.get('code');
-        console.log('Authorization code:', code);
-
-        if (code) {
-            axios.get(`${endpoints.getJwt}?code=${code}`)
-                .then(response => {
-                    const data = response.data;
-                    if (data.accessToken) {
-                        try {
-                            window.Kakao.Auth.setAccessToken(data.accessToken);
-                            console.log('Kakao accessToken 설정 완료');
-                        } catch (error) {
-                            console.error('Kakao SDK 초기화 실패:', error);
-                        }
-
-                        localStorage.setItem('accessToken', data.accessToken);
-                        localStorage.setItem('refreshToken', data.refreshToken);
-
-                        axios.get(endpoints.user, {
-                            headers: {
-                                Authorization: `Bearer ${data.accessToken}`,
-                            },
-                        })
-                            .then(response => {
-                                if (response.status === 204) {
-                                    // 회원가입 필요
-                                    navigate('/sign-info', { state: { token: data.accessToken } });
-                                } else {
-                                    navigate('/');
-                                }
-                            })
-                            .catch((error) => {
-                                console.error('Error during signup check:', error);
-                                alert('회원 확인 중 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
-                                navigate('/login');
-                            });
-                    } else {
-                        throw new Error('No access token received');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error during Kakao login callback:', error);
-                    alert('로그인 중 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
-                    navigate('/login');
-                });
+            });
         } else {
-            console.error('No authorization code found in URL');
-            alert('인증 과정에서 오류가 발생했습니다. 다시 로그인을 시도해주세요.');
-            navigate('/login');
-        }
-    }, [navigate]);
+        throw new Error('No access token received');
+      }
+    })
+    .catch((error) => {
+      console.error('Error during Kakao login callback:', error);
+      navigate('/login');
+    });
+    } else {
+      console.error('No authorization code found in URL');
+      navigate('/login');
+    }
+  }, [navigate]);
 
-    return null;
+  return (
+    <LoadingScreen />
+  );
 };
 
 export default KakaoCallback;

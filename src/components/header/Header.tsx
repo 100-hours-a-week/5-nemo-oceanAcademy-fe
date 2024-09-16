@@ -1,50 +1,61 @@
+// Header Component - App.tsx에서 사용 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
-import profImage from '../../assets/images/profile_default.png';
-import backIcon from '../../assets/images/back.png';
-import settingIcon from '../../assets/images/setting.png';
-import outIcon from '../../assets/images/out.png';
-import closeIcon from '../../assets/images/close.png';
 import Modal from '../modal/Modal';
 import axios from 'axios';
-import endpoints from '../../api/endpoints';  
+import endpoints from '../../api/endpoints';
+
+// image import
+import profImage from '../../assets/images/profile/profile_default.png';
+import backIcon from '../../assets/images/icon/back.png';
+import settingIcon from '../../assets/images/icon/setting.png';
+import outIcon from '../../assets/images/icon/out.png';
+import closeIcon from '../../assets/images/icon/close.png';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfileImage, setUserProfileImage] = useState(profImage);
   const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken'); 
-    setIsLoggedIn(!!token);
   
-    if (token) {
-      axios
-        .get(endpoints.userInfo, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setUserName(response.data.nickname);
-          setUserProfileImage(response.data.profile_image);
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            console.error('Unauthorized:', error.response);
-            // Handle unauthorized error, e.g., redirect to login
-            navigate('/login');
-          } else {
-            console.error('Failed to fetch user info:', error);
-          }
-        });
+    if (!token) { 
+      setIsLoggedIn(false);
+      return; 
     }
-  }, [navigate]);
 
+    setIsLoggedIn(true);
+
+    axios
+      .get(endpoints.userInfo, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setUserName(response.data.data.nickname);
+        setUserProfileImage(response.data.data.profile_image_path);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          console.error('Unauthorized:', error.response);
+          // 유효하지 않은 토큰인 경우, 토큰을 지우고 로그인 상태를 false로 설정
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          setIsLoggedIn(false);
+          // navigate('/login');
+        } else {
+          console.error('Failed to fetch user info:', error);
+        }
+      });
+  }, [navigate]);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -61,7 +72,8 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    navigate('/login');
+    setIsLoggedIn(false);
+    navigate('/');
   };
 
   const handleLeaveClick = () => {
@@ -70,7 +82,7 @@ const Header: React.FC = () => {
 
   const handleModalLeave = () => {
     setShowModal(false);
-    navigate(-1); // 이전 화면으로 이동
+    navigate(-1);
   };
 
   const handleModalCancel = () => {
@@ -86,15 +98,47 @@ const Header: React.FC = () => {
   };
 
   const handleSettingClick = () => {
-    // 세팅 버튼 클릭 시 드롭다운 메뉴 표시 로직 필요
-    alert('아직 구현 안됐거든요 로그아웃 안해드립니다 탈퇴? 못합니다');
-    console.log('들어올 땐 마음대로지만 나갈 땐 아니란다. ');
+    setShowDropdown(!showDropdown);
   };
 
-  const handleLectureOut = () => {
-    // 강의 나가기 
+  const handleDeleteAccount = () => {
+    setShowDeleteModal(true); // 회원탈퇴 모달 열기
+  };
 
-  }
+  const confirmDeleteAccount = () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('권한이 없습니다.');
+      return;
+    }
+    axios.delete(endpoints.user, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        alert('회원탈퇴가 완료되었습니다.');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setIsLoggedIn(false);
+        navigate('/');
+      }
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 401) {
+        alert('권한이 없습니다.');
+      } else {
+        console.error('Failed to delete account:', error);
+        alert('회원탈퇴에 실패했습니다. 다시 시도해주세요.');
+      }
+    });
+    setShowDeleteModal(false);
+  };
+
+  const cancelDeleteAccount = () => {
+    setShowDeleteModal(false);
+  };
 
   // 페이지에 따라 헤더의 버튼 요소 다르게 띄우는 코드 
   const renderLeftButton = () => {
@@ -137,12 +181,20 @@ const Header: React.FC = () => {
     }
     if (location.pathname.includes('/mypage')) {
       return (
-        <img
-          src={settingIcon}
-          alt="설정"
-          className={styles.icon}
-          onClick={handleSettingClick}
-        />
+        <>
+          <img
+            src={settingIcon}
+            alt="설정"
+            className={styles.icon}
+            onClick={handleSettingClick}
+          />
+          {showDropdown && (
+            <div className={styles.dropdown}>
+              <div onClick={handleLogout}>로그아웃</div>
+              <div onClick={handleDeleteAccount}>회원탈퇴</div>
+            </div>
+          )}
+        </>
       );
     } else if (!isLoggedIn) {
       return (
@@ -157,10 +209,8 @@ const Header: React.FC = () => {
       location.pathname.includes('/classroom') ||
       location.pathname.includes('/lecture/open') ||
       location.pathname.includes('/lecture/info') ||
-      location.pathname.includes('/dashboard/teacher') ||
-      location.pathname.includes('/dashboard/student') ||
-      location.pathname.includes('/lecture/students') ||
-      location.pathname.includes('/dashboard/edit')
+      location.pathname.includes('/dashboard') ||
+      location.pathname.includes('/lecture/students')
     ) {
       return (
         <img
@@ -168,6 +218,10 @@ const Header: React.FC = () => {
           alt="프로필"
           className={styles.icon}
           onClick={handleProfileClick}
+          onError={(e) => {
+            // 이미지 로드에 실패하면 기본 이미지로 교체
+            (e.target as HTMLImageElement).src = profImage;
+          }}
         />
       );
     }
@@ -193,6 +247,17 @@ const Header: React.FC = () => {
           rightButtonText="취소"
           onLeftButtonClick={handleModalLeave}
           onRightButtonClick={handleModalCancel}
+        />
+      )}
+      {showDeleteModal && (
+        <Modal
+          title="탈퇴하시겠습니까?"
+          content="삭제한 계정은 복구할 수 없습니다.
+          그래도 탈퇴하시겠습니까?"
+          leftButtonText="탈퇴"
+          rightButtonText="취소"
+          onLeftButtonClick={confirmDeleteAccount}
+          onRightButtonClick={cancelDeleteAccount}
         />
       )}
     </header>
