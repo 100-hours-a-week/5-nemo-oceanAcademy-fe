@@ -2,6 +2,7 @@ import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
 import { getServerUrl } from '../../serverUrl';
+import { useNavigate } from 'react-router-dom';
 
 let socket;
 let device;
@@ -100,6 +101,14 @@ export const connectToServerAsStudent = async (
                     await socket.request('resume', {roomId, producerKind, consumerId: consumer.id});
                 } 
             });
+        });
+
+        //강사에 의한 강의종료시
+        socket.on('teacherLeft', async () => {
+            socket.disconnect();
+            if (window.confirm('강의가 종료되었습니다.')) {
+                window.location.href = `/dashboard/student/${roomId}`;
+            }
         });
 
         socket.on('disconnect', () => {
