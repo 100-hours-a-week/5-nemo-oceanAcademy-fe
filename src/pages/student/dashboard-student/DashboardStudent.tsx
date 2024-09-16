@@ -13,7 +13,7 @@ import styles from './DashboardStudent.module.css';
 import { Empty, Container } from '../../../styles/GlobalStyles'
 
 // import image
-import bn from '../../../assets/images/banner/banner_ex.png';
+import bn from '../../../assets/images/banner/banner_ex.jpeg';
 
 interface Schedule {
   schedule_id: number;
