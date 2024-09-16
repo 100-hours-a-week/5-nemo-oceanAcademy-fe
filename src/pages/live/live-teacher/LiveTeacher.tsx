@@ -171,9 +171,10 @@ const LiveTeacher: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: currentRoom, 
+        roomId: currentRoom,
         content: content,
         writer: userInfo ? userInfo.nickname : '누구세요',
+        profile_image_path: userInfo?.profileImage,
         createdDate: new Date().toISOString()
       };
 
