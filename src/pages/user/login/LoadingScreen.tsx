@@ -5,12 +5,15 @@ import styled, { keyframes } from 'styled-components';
 const LoadingScreen: React.FC = () => {
   return (
     <LoaderContainer>
-      <Loader />
       <LoadingText>
         🪼🪼 <br />
         <br />
         바다서원으로 <br />
         이동 중입니다 <br />
+        <br />
+      </LoadingText>
+      <Loader />
+      <LoadingText>
         <br />
         🐙🐙
       </LoadingText>
