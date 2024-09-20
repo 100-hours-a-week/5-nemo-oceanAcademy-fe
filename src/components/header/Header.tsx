@@ -7,11 +7,16 @@ import axios from 'axios';
 import endpoints from '../../api/endpoints';
 
 // image import
-import profImage from '../../assets/images/profile/profile_default.png';
+import profileDefault from '../../assets/images/profile/profile_default.png';
+import profileDefault1 from '../../assets/images/profile/profile_color1.png';
+import profileDefault2 from '../../assets/images/profile/profile_color2.png';
+import profileDefault3 from '../../assets/images/profile/profile_color3.png';
 import backIcon from '../../assets/images/icon/back.png';
 import settingIcon from '../../assets/images/icon/setting.png';
 import outIcon from '../../assets/images/icon/out.png';
 import closeIcon from '../../assets/images/icon/close.png';
+
+const profileImages = [profileDefault, profileDefault1, profileDefault2, profileDefault3];
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -20,8 +25,18 @@ const Header: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userProfileImage, setUserProfileImage] = useState(profImage);
-  const [userName, setUserName] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
+  const [nickname, setNickname] = useState<string | null>(null);
+
+  const getProfileImage = (nickname: string): string => {
+    let hash = 0;
+    for (let i = 0; i < nickname.length; i++) {
+      hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    console.log('프사 번호: ', index);
+    return profileImages[index];
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken'); 
@@ -40,8 +55,11 @@ const Header: React.FC = () => {
         },
       })
       .then((response) => {
-        setUserName(response.data.data.nickname);
-        setUserProfileImage(response.data.data.profile_image_path);
+        const nickname = response.data.data.nickname;
+        setNickname(nickname);
+        const profilePath = response.data.data.profile_image_path;
+
+        setProfileImage(profilePath || getProfileImage(nickname));
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -214,13 +232,13 @@ const Header: React.FC = () => {
     ) {
       return (
         <img
-          src={userProfileImage}
+          src={profileImage}
           alt="프로필"
           className={styles.icon}
           onClick={handleProfileClick}
           onError={(e) => {
             // 이미지 로드에 실패하면 기본 이미지로 교체
-            (e.target as HTMLImageElement).src = profImage;
+            (e.target as HTMLImageElement).src = profileDefault;
           }}
         />
       );

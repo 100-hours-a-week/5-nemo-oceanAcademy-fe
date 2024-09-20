@@ -13,7 +13,7 @@ import styles from './DashboardStudent.module.css';
 import { Empty, Container } from '../../../styles/GlobalStyles'
 
 // import image
-import bn from '../../../assets/images/banner/banner_ex.png';
+import bn from '../../../assets/images/banner/banner_ex.jpeg';
 
 interface Schedule {
   schedule_id: number;
@@ -102,13 +102,11 @@ const DashboardStudent: React.FC = () => {
           <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
         </>
       )}
-      {dashboard && dashboard.is_active && (
-        <WideButton 
-          text="라이브 강의 입장" 
-          onClick={() => navigate(`/live/student/${classId}`)}
-          fixed
-        />
-      )}
+      <WideButton 
+        text="라이브 강의 입장" 
+        onClick={() => navigate(`/live/student/${classId}`)}
+        fixed
+      />
       {/*
       <WideButton 
         text="라이브 강의 입장" 

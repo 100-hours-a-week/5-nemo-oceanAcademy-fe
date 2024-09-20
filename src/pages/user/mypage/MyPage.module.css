@@ -76,14 +76,17 @@
 }
 
 .nickname {
+  margin: 0;
   font-size: 15px;
   font-weight: bold;
   color: white;
 }
 
 .email {
+  margin-top: 3px;
   font-size: 12px;
   color: white;
+  font-weight: normal;
 }
   
 .nicknameInput {

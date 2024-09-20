@@ -28,6 +28,7 @@ const KakaoCallback: React.FC = () => {
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get('code');
+    console.log('Authorization code:', code);
   
     if (code) {
       axios.get(`https://www.nemooceanacademy.com:5000/api/auth/kakao/callback`, {
