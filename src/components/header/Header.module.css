@@ -1,11 +1,17 @@
 .header {
-  width: 390px;
+  width: 400px;
   height: 60px;
   background-color: black;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+}
+
+@media (min-width: 1184px) {
+  .header {
+    width: 1184px;
+  }
 }
 
 .logo {

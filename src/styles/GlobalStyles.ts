@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 // 공통적인 컨테이너 스타일
 export const Container = styled.div`
-  width: 390px;
+  width: 400px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

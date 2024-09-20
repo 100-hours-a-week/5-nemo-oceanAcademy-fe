@@ -125,6 +125,8 @@ const Main: React.FC = () => {
           </div>
         </section>
 
+        <Empty />
+
         <section className={styles.toptenSection}>
           <div className={styles.titleSection}>
             <h1 className={styles.sectionTitle}>수강생이 많은 강의 Top10</h1>

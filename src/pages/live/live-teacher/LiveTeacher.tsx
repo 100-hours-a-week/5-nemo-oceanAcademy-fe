@@ -171,9 +171,10 @@ const LiveTeacher: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: currentRoom, 
+        roomId: currentRoom,
         content: content,
         writer: userInfo ? userInfo.nickname : '누구세요',
+        profile_image_path: userInfo?.profileImage,
         createdDate: new Date().toISOString()
       };
 
@@ -480,7 +481,7 @@ const LiveTeacher: React.FC = () => {
   };
 
   return (
-    <Container>
+    <div className={styles.container}>
       {showModal && (
         <Modal 
           title="강의를 종료하시겠습니까?"
@@ -578,7 +579,7 @@ const LiveTeacher: React.FC = () => {
           </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
