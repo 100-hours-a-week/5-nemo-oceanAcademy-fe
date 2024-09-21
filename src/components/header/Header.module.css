@@ -10,7 +10,7 @@
 
 @media (min-width: 1184px) {
   .header {
-    width: 1184px;
+    width: 100vw;
   }
 }
 

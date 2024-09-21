@@ -9,7 +9,7 @@ interface ButtonProps {
     backgroundColor?: string;   // 배경 색상
 }
 
-const Button: React.FC<ButtonProps> = ({ text, onClick, disabled, color = '#fff', backgroundColor = '#007BFF' }) => {
+const Button: React.FC<ButtonProps> = ({ text, onClick, disabled, color , backgroundColor }) => {
     return (
         <button
             className={styles.button}
