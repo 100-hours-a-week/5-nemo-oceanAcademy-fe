@@ -1,15 +1,17 @@
-// #H-1: LectureInfo (/lecture/info) - 강의 소개 페이지
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureInfo.module.css';
 import { Container } from '../../../styles/GlobalStyles';
+import Row from '../../../components/Row';
+import Column from '../../../components/Column';
+import Space from '../../../components/Space';
 
 interface Lecture {
-    id: number; // class ID
+    id: number;
     user_id: number;
     category_id: number;
     instructor: string;
@@ -29,6 +31,7 @@ const LectureInfo: React.FC = () => {
     const { classId } = useParams<{ classId: string }>();
     const [lecture, setLecture] = useState<Lecture | null>(null);
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 600);
     const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
@@ -60,7 +63,7 @@ const LectureInfo: React.FC = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch user role:', error);
-                setIsEnrolled(false); // 오류 시 수강 신청 버튼을 표시
+                setIsEnrolled(false);
             }
         };
 
@@ -68,15 +71,21 @@ const LectureInfo: React.FC = () => {
             fetchLectureInfo();
             fetchUserRole();
         }
+
+        // 윈도우 크기 변화 감지
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 600);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [classId, token]);
 
     const handleButtonClick = async () => {
         if (isEnrolled) {
-            console.log('수강신청 되어 있나요?: ', isEnrolled);
             navigate(`/dashboard/student/${classId}`);
         } else {
             try {
-                console.log('수강신청 요청 드갑니다');
                 const response = await axios.post(endpoints.enrollment.replace('{classId}', classId || ''), {}, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -84,63 +93,90 @@ const LectureInfo: React.FC = () => {
                 });
 
                 if (response.status === 200) {
-                    // alert(response.data.message);
-                    console.log(response.data.message_kor);
                     navigate(`/enrollment/${classId}`);
                 }
             } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    if (error.response?.status === 401) {
-                        alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
-                    } else if (error.response?.status === 400) {
-                        alert(error.response.data.message || '수강신청을 실패했습니다.');
-                    } else {
-                        alert('알 수 없는 오류가 발생했습니다.');
-                    }
-                } else {
-                    console.error('Enrollment request failed:', error);
-                    alert('수강신청을 실패했습니다.');
-                }
+                console.error('Enrollment request failed:', error);
+                alert('수강신청을 실패했습니다.');
             }
         }
     };
 
     if (!lecture) {
-        return <Container>Loading...</Container>; // 데이터를 불러오기 전 로딩 표시
+        return <Container>Loading...</Container>;
     }
 
     return (
-        <div className={styles.container}>
-            <p className={styles.instructor}>{lecture.instructor}</p>
-            <h1 className={styles.title}>{lecture.name}</h1>
-            <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || '/default-image.png'})` }}></div>
-            <div className={styles.category}>{lecture.category}</div>
+        <div>
+            {isMobile ? (
+                // Mobile HTML
+                <div className={styles.mobileContainer}>
+                    <h1 className={styles.title}>{lecture.name}</h1>
+                    <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || '/default-image.png'})` }}></div>
+                    <div className={styles.category}>{lecture.category}</div>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>강의 목표</h3>
-                <p className={styles.infoContent}>{lecture.object || '강의 목표 정보 없음'}</p>
-            </div>
+                    <div className={styles.infoSection}>
+                        <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
+                    </div>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>강의 소개</h3>
-                <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
-            </div>
+                    <div className={styles.buttonContainer}>
+                        <Button text={isEnrolled ? "대시보드 가기" : "수강신청"} onClick={handleButtonClick} />
+                    </div>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>강사 소개</h3>
-                <p className={styles.infoContent}>{lecture.instructor_info || '강사 소개 정보 없음'}</p>
-            </div>
+                    <Navigation />
+                </div>
+            ) : (
+                // Desktop HTML
+                <div className={styles.desktopContainer}>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>사전 준비 사항</h3>
-                <p className={styles.infoContent}>{lecture.prerequisite || '사전 준비 사항 정보 없음'}</p>
-            </div>
+                    <Row align={"fill"}>
+                        <div className={styles.desktopBanner} style={{ backgroundImage: `url(${lecture.banner_image_path || '/default-image.png'})` }}></div>
+                    </Row>
+                    <Space height={"80px"}/>
+                    <Row align={"fill"}>
+                        <Column align={"center"}>
+                            <div className={styles.desktopCategory}>{lecture.category}</div>
+                            <h1 className={styles.title}>{lecture.name}</h1>
+                            <div>리뷰 4.8 (12)</div>
 
-            <div className={styles.buttonContainer}>
-                <Button text={isEnrolled ? "대시보드 가기" : "수강신청"} onClick={handleButtonClick} />
-            </div>
+                        </Column>
+                        <Column align={"center"}>
+                            <Button text={isEnrolled ? "대시보드 가기" : "수강신청"} onClick={handleButtonClick} />
+                        </Column>
+                    </Row>
 
-            <Navigation />
+                    <Row align="left">
+                        <p className={styles.instructor}>{lecture.instructor}</p>
+                    </Row>
+
+
+
+
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>강의 목표</h3>
+                        <p className={styles.infoContent}>{lecture.object || '강의 목표 정보 없음'}</p>
+                    </div>
+
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>강의 소개</h3>
+                        <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
+                    </div>
+
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>강사 소개</h3>
+                        <p className={styles.infoContent}>{lecture.instructor_info || '강사 소개 정보 없음'}</p>
+                    </div>
+
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>사전 준비 사항</h3>
+                        <p className={styles.infoContent}>{lecture.prerequisite || '사전 준비 사항 정보 없음'}</p>
+                    </div>
+
+
+
+                    <Navigation />
+                </div>
+            )}
         </div>
     );
 };
