@@ -175,13 +175,13 @@ const LectureOpen: React.FC = () => {
         </div>
         <hr />
 
-        <Row align={"center"}>
-          <h1 className={styles.title}>강의 개설하기</h1>
-        </Row>
-
         {isMobile ? (
             // 모바일 UI
             <Container>
+              <Row align={"center"}>
+                <h1 className={styles.title}>강의 개설하기</h1>
+              </Row>
+
               <div className={styles.mobileContainer}>
               <div className={styles.inputField}>
                 <label className={styles.label}>
@@ -259,6 +259,7 @@ const LectureOpen: React.FC = () => {
             // 데스크탑 UI
             <Column align={"all"}>
               <div className={styles.desktopContainer}>
+                <Space height={"30px"} />
 
                 {/* 강의 배너 이미지 */}
                 <FileUpload />
@@ -271,7 +272,7 @@ const LectureOpen: React.FC = () => {
                       {/* 강의 제목 */}
                       <InputField
                           label="강의 제목"
-                          placeholder="8자 이상 24자 이하의 강의 제목을 작성해주세요."
+                          placeholder="2자 이상 24자 이하의 강의 제목을 작성해주세요."
                           isRequired
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
@@ -279,8 +280,11 @@ const LectureOpen: React.FC = () => {
                       />
 
                       {/* 카테고리 선택 */}
+                      {/* 카테고리 선택 */}
                       <div className={styles.inputField}>
-                        <label className={styles.label}>카테고리 <span className={styles.required}>*</span></label>
+                        <label className={styles.label}>
+                          카테고리 <span className={styles.required}>*</span>
+                        </label>
                         <Row align={"left"}>
                           <CategorySelect
                               categories={categories}
@@ -292,6 +296,7 @@ const LectureOpen: React.FC = () => {
                         </Row>
                         {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
                       </div>
+
                     </Row>
 
                     {/* 강의 목표 */}

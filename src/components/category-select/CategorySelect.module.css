@@ -1,15 +1,74 @@
+/* 공통 카테고리 컨테이너 스타일 */
 .categoryContainer {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+
+    position: relative; /* 드롭다운 목록 위치 제어를 위해 필요 */
 }
 
-.categoryDropdown {
+/* 드롭다운 헤더 */
+.dropdownHeader {
     width: 100%;
     height: 50px;
-    padding: 8px;
+    padding: 10px;
     font-size: 14px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.dropdownHeader:hover {
+    border-color: #2A62F2;
+}
+
+/* 드롭다운 화살표 */
+.arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.material-symbols-outlined {
+    font-size: 20px;
+    color: #333;
+}
+
+/* 드롭다운 목록 */
+.dropdownList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 드롭다운 항목 */
+.dropdownItem {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdownItem:active {
+    background-color: #2A62F2;
+    color: #fff;
 }

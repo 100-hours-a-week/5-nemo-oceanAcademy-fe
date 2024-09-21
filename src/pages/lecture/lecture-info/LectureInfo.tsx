@@ -125,7 +125,7 @@ const LectureInfo: React.FC = () => {
                     <div className={styles.category}>{lecture.category}</div>
 
                     <div className={styles.infoSection}>
-                        <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
+                        <p className={styles.infoContent}>{lecture.description || '등록된 강의 소개가 없습니다.'}</p>
                     </div>
 
                     <div className={styles.buttonContainer}>
@@ -176,7 +176,7 @@ const LectureInfo: React.FC = () => {
                             <hr />
                             <div className={styles.desktopBoxTitle}>강사 소개</div>
                             <div className={styles.desktopBoxContent}>
-                                {lecture.instructor_info || '강사 소개 정보 없음'}
+                                {lecture.instructor_info || '등록된 강사 소개가 없습니다.'}
                             </div>
                         </Column>
                     </div>
@@ -189,7 +189,7 @@ const LectureInfo: React.FC = () => {
                         <Column align={"fill"} gap={"10px"}>
                             <div className={styles.desktopBoxTitle}>강의 소개</div>
                             <div className={styles.desktopBoxContent}>
-                                {lecture.description || '강의 소개 정보 없음'}
+                                {lecture.description || '등록된 강의 소개가 없습니다.'}
                             </div>
                         </Column>
                     </div>
@@ -201,7 +201,7 @@ const LectureInfo: React.FC = () => {
                         <Column align={"fill"} gap={"10px"}>
                             <div className={styles.desktopBoxTitle}>강의 목표</div>
                             <div className={styles.desktopBoxContent}>
-                                {lecture.object || '강의 목표 정보 없음'}
+                                {lecture.object || '등록된 강의 목표가 없습니다.'}
                             </div>
                         </Column>
                     </div>
@@ -212,7 +212,7 @@ const LectureInfo: React.FC = () => {
                         <Column align={"fill"} gap={"10px"}>
                             <div className={styles.desktopBoxTitle}>강의에 필요한 사전 지식 및 준비 안내</div>
                             <div className={styles.desktopBoxContent}>
-                                {lecture.prerequisite || '사전 준비 사항 정보 없음'}
+                                {lecture.prerequisite || '등록된 사전 지식 및 준비 안내 정보가 없습니다.'}
                             </div>
                         </Column>
                     </div>
