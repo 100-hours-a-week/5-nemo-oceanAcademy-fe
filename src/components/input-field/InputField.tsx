@@ -12,7 +12,7 @@ interface InputFieldProps {
   height?: number;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, placeholder, value, onChange, helperText, isRequired, isTextArea, height }) => {
+const InputField: React.FC<InputFieldProps> = ({ label, placeholder, value, onChange, helperText = " ", isRequired, isTextArea, height }) => {
   return (
     <div className={styles.inputField}>
       <label className={styles.label}>
@@ -22,7 +22,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, placeholder, value, onCh
         <textarea 
           className={styles.textArea} 
           placeholder={placeholder} 
-          style={{ height: height ? `${height}px` : '55px' }}
+          style={{ height: height ? `${height}px` : '50px' }}
           value={value}
           onChange={onChange}
         />
@@ -30,12 +30,12 @@ const InputField: React.FC<InputFieldProps> = ({ label, placeholder, value, onCh
         <input 
           className={styles.input} 
           placeholder={placeholder} 
-          style={{ height: height ? `${height}px` : '55px' }}
+          style={{ height: height ? `${height}px` : '50px' }}
           value={value}
           onChange={onChange}
         />
       )}
-      {helperText && <p className={styles.helperText}>{helperText}</p>}
+        {helperText !== "no" && ( <p className={styles.helperText}>{helperText}</p> )}
     </div>
   );
 };

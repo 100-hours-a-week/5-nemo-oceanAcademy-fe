@@ -10,17 +10,20 @@ interface RowProps {
 const Row: React.FC<RowProps> = ({ align = 'left', gap = '0', children }) => {
     // 기본값 'left'
     let justifyContent = 'flex-start';
+    let alignItems = 'flex-start';
 
     if (align === 'center') {
         justifyContent = 'center';
     } else if (align === 'right') {
         justifyContent = 'flex-end';
+        alignItems = 'center';
     } else if (align === 'fill') {
         justifyContent = 'space-between';
+        alignItems = 'center';
     }
 
     return (
-        <div className={styles.row} style={{ justifyContent, gap }}>
+        <div className={styles.row} style={{ justifyContent, alignItems, gap }}>
             {children}
         </div>
     );

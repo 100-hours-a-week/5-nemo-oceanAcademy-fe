@@ -17,6 +17,7 @@
 }
 
 .inputField {
+  width: 100%;
   margin-bottom: 20px;
 }
   
@@ -25,18 +26,17 @@
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
-  margin-left: 10px;
 }
   
 .required {
-  color: red;
+  color: #2A62F2;
 }
 
 .helperText {
   font-size: 12px;
-  color: #D13939;
+  color: #2A62F2;
   margin-top: 5px;
-  margin-left: 10px;
+  min-height: 16px;
 }
 
 /* Desktop ---------------------------------------------------- */
@@ -63,7 +63,7 @@
   display: flex;
   width: 100%;
   border-radius: 16px;
-  padding: 40px;
+  padding: 40px 40px 20px 40px;
   justify-content: flex-start;
   border: 1px solid #ccc;
 }

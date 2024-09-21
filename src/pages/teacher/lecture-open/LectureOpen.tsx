@@ -260,87 +260,100 @@ const LectureOpen: React.FC = () => {
             <Column align={"all"}>
               <div className={styles.desktopContainer}>
 
+                {/* 강의 배너 이미지 */}
                 <FileUpload />
                 <Space height={"20px"} />
+
                 <div className={styles.desktopBox}>
                   <Column>
+                    <Row gap={"20px"}>
 
+                      {/* 강의 제목 */}
+                      <InputField
+                          label="강의 제목"
+                          placeholder="8자 이상 24자 이하의 강의 제목을 작성해주세요."
+                          isRequired
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          helperText={titleHelperText}
+                      />
 
+                      {/* 카테고리 선택 */}
+                      <div className={styles.inputField}>
+                        <label className={styles.label}>카테고리 <span className={styles.required}>*</span></label>
+                        <Row align={"left"}>
+                          <CategorySelect
+                              categories={categories}
+                              selected={selectedCategory}
+                              onSelectCategory={handleCategoryChange}
+                              defaultVal=''
+                              defaultName='카테고리 선택'
+                          />
+                        </Row>
+                        {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
+                      </div>
+                    </Row>
 
+                    {/* 강의 목표 */}
+                    <InputField
+                        label="강의 목표"
+                        placeholder="강의 목표를 작성해주세요"
+                        isRequired
+                        value={objective}
+                        onChange={(e) => setObjective(e.target.value)}
+                        helperText={objectiveHelperText}
+                    />
 
+                    {/* 강의 소개 */}
+                    <InputField
+                        label="강의 소개"
+                        placeholder="강의 소개를 작성해주세요"
+                        isRequired
+                        isTextArea
+                        height={100}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        helperText={descriptionHelperText}
+                    />
+
+                    {/* 강사 소개 */}
+                    <InputField
+                        label="강사 소개 (선택)"
+                        placeholder="강사 소개를 작성해주세요"
+                        isTextArea
+                        height={100}
+                        value={instructorInfo}
+                        onChange={(e) => setInstructorInfo(e.target.value)}
+                        helperText="no"
+                    />
+
+                    {/* 사전 지식 준비 */}
+                    <InputField
+                        label="강의에 필요한 사전 지식 및 준비 안내 (선택)"
+                        placeholder="사전 지식 및 준비 안내를 작성해주세요"
+                        isTextArea
+                        height={100}
+                        value={prerequisite}
+                        onChange={(e) => setPrerequisite(e.target.value)}
+                        helperText="no"
+                    />
 
                   </Column>
                 </div>
+                <Space height={"20px"} />
 
-                <div className={styles.inputField}>
-                  <label className={styles.label}>
-                    카테고리 <span className={styles.required}>*</span>
-                  </label>
-                  {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
-                  <CategorySelect
-                      categories={categories}
-                      selected={selectedCategory}
-                      onSelectCategory={handleCategoryChange}
-                      defaultVal=''
-                      defaultName='카테고리 선택'
-                  />
-                </div>
+                <Row align={"center"}>
+                  <div className={styles.buttonContainer}>
+                    <Button
+                        backgroundColor={"#2A62F2"}
+                        text="강의 개설하기"
+                        onClick={handleSubmit}
+                        disabled={!isFormValid}
+                    />
+                  </div>
+                </Row>
+                <Space height={"100px"} />
 
-                <InputField
-                    label="강의 제목"
-                    placeholder="강의 제목을 작성해주세요"
-                    isRequired
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    helperText={titleHelperText}
-                />
-
-                <InputField
-                    label="강의 목표"
-                    placeholder="강의 목표를 작성해주세요"
-                    isRequired
-                    value={objective}
-                    onChange={(e) => setObjective(e.target.value)}
-                    helperText={objectiveHelperText}
-                />
-
-                <InputField
-                    label="강의 소개"
-                    placeholder="강의 소개를 작성해주세요"
-                    isRequired
-                    isTextArea
-                    height={100}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    helperText={descriptionHelperText}
-                />
-
-                <InputField
-                    label="강사 소개 (선택)"
-                    placeholder="강사 소개를 작성해주세요"
-                    isTextArea
-                    height={100}
-                    value={instructorInfo}
-                    onChange={(e) => setInstructorInfo(e.target.value)}
-                />
-
-                <InputField
-                    label="강의에 필요한 사전 지식 및 준비 안내 (선택)"
-                    placeholder="사전 지식 및 준비 안내를 작성해주세요"
-                    isTextArea
-                    height={100}
-                    value={prerequisite}
-                    onChange={(e) => setPrerequisite(e.target.value)}
-                />
-
-
-                <div className={styles.buttonContainer}>
-                  <Button
-                      text="강의 개설하기"
-                      onClick={handleSubmit}
-                      disabled={!isFormValid}
-                  />
-                </div>
               </div>
             </Column>
         )}
