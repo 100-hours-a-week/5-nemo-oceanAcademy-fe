@@ -23,7 +23,7 @@ const FileUpload: React.FC = () => {
               {preview ? (
                   <img src={preview} alt="Preview" className={styles.previewImage} />
               ) : (
-                  <div className={styles.placeholder}>사진을 등록하세요</div>
+                  <div className={styles.placeholder}>사진을 등록해주세요</div>
               )}
           </div>
         <button className={styles.uploadButton} onClick={() => document.getElementById('fileInput')?.click()}>
