@@ -1,4 +1,6 @@
-.container {
+/* Mobile ---------------------------------------------------- */
+
+.mobileContainer {
     padding: 20px;
 }
   
@@ -36,4 +38,32 @@
   margin-top: 5px;
   margin-left: 10px;
 }
-  
+
+/* Desktop ---------------------------------------------------- */
+
+.desktopContainer {
+  width: 1184px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  justify-self: center;
+  justify-items: center;
+}
+
+/* 홈 > 내 강의실 > 강의소개 ------------ */
+.desktopNavigator {
+  padding: 15px 20px;
+  color: #888888;
+}
+
+/* 전체 화이트 박스 ------------ */
+.desktopBox {
+  display: flex;
+  width: 100%;
+  border-radius: 16px;
+  padding: 40px;
+  justify-content: flex-start;
+  border: 1px solid #ccc;
+}

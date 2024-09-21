@@ -16,10 +16,10 @@
 .input, .textArea {
   width: 367px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: 4px;
+  padding: 0 10px;
   font-size: 14px;
-  background-color: #f9f9f9;
+  background-color: white;
 }
   
 .textArea {

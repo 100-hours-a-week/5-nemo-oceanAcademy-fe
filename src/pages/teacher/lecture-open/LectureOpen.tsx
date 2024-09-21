@@ -6,10 +6,14 @@ import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import CategorySelect from 'components/category-select/CategorySelect';
 import styles from './LectureOpen.module.css';
-import { Container } from '../../../styles/GlobalStyles'
+import { Container } from '../../../styles/GlobalStyles';
 import axios from 'axios';
-import endpoints from '../../../api/endpoints'; 
+import endpoints from '../../../api/endpoints';
 import { isValidTextInput, getTitleHelperText } from '../../../utils/validation';
+
+import Row from '../../../components/Row';
+import Column from '../../../components/Column';
+import Space from '../../../components/Space';
 
 interface Category {
   id: number;
@@ -19,7 +23,7 @@ interface Category {
 const LectureOpen: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('accessToken');
-  const [isFormValid, setIsFormValid] = useState(false); // 필수값이 모두 입력되었는지 확인
+  const [isFormValid, setIsFormValid] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [title, setTitle] = useState<string>('');
@@ -29,15 +33,14 @@ const LectureOpen: React.FC = () => {
   const [prerequisite, setPrerequisite] = useState<string>('');
   const [announcement, setAnnouncement] = useState<string | null>(null);
   const [bannerImage, setBannerImage] = useState<File | null>(null);
-  
+
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184); // 모바일 상태 추가
   const [categoryHelperText, setCategoryHelperText] = useState<string>('카테고리는 필수 항목입니다.');
   const [titleHelperText, setTitleHelperText] = useState<string>('강의 제목은 필수 항목입니다.');
   const [objectiveHelperText, setObjectiveHelperText] = useState<string>('강의 목표는 필수 항목입니다.');
   const [descriptionHelperText, setDescriptionHelperText] = useState<string>('강의 소개는 필수 항목입니다.');
-  const { classId } = useParams<{ classId: string }>();
 
   useEffect(() => {
-    // 카테고리 목록 가져오기
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(endpoints.getCategories, {
@@ -54,12 +57,19 @@ const LectureOpen: React.FC = () => {
     };
 
     fetchCategories();
+
+    // 윈도우 크기 감지
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1184); // 1184px 이하일 경우 모바일 상태로 간주
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [token]);
 
   const handleSubmit = async () => {
     if (!isFormValid) return;
 
-    // [x] formData 확인
     const formData = new FormData();
     const categoryId = categories.find(cat => cat.name === selectedCategory)?.id || 0;
 
@@ -73,26 +83,6 @@ const LectureOpen: React.FC = () => {
       announcement: announcement || null,
     };
 
-    /*
-    // 아래의 코드를 line 97 코드로 변경했습니다
-    // JSON 데이터를 문자열로 변환하여 FormData에 추가하지 않고
-    Object.keys(classroomCreateDto).forEach(key => {
-      formData.append(key, (classroomCreateDto as any)[key]);
-    });
-    (Object.keys(classroomCreateDto) as (keyof typeof classroomCreateDto)[]).forEach(key => {
-      const value = classroomCreateDto[key];
-      formData.append(key, value ? value.toString() : '');
-    });
-
-    // 콘솔에 DTO 정보 로그 출력
-    console.log("classroomCreateDto: ", classroomCreateDto);
-    if (bannerImage) {
-      console.log("Banner Image: ", bannerImage.name);
-    } else {
-      console.log("No banner image selected");
-    }
-    */
-
     // JSON 데이터를 Blob으로 변환하여 추가
     formData.append('classroomCreateDto', new Blob([JSON.stringify(classroomCreateDto)], { type: 'application/json' }));
 
@@ -105,27 +95,24 @@ const LectureOpen: React.FC = () => {
       const response = await axios.post(endpoints.classes, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          // 'Content-Type': 'multipart/form-data',
         },
       });
 
       if (response.status === 200) {
-        console.log(response.data.message_kor);
-        // NOTE: 생성된 강의의 id를 path로 전달하도록 변경
         navigate(`/lecture/created/${response.data.data.id}`);
-      } 
+      }
     } catch (error) {
-          if (axios.isAxiosError(error)) {
-          if (error.response?.status === 401) {
-              alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
-          } else if (error.response?.status === 400) {
-            alert(error.response.data.message_kor || '강의 개설에 실패했습니다.');
-          } else {
-              alert('알 수 없는 오류가 발생했습니다.');
-          }
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
+        } else if (error.response?.status === 400) {
+          alert(error.response.data.message_kor || '강의 개설에 실패했습니다.');
+        } else {
+          alert('알 수 없는 오류가 발생했습니다.');
+        }
       } else {
-          console.error('Enrollment request failed:', error);
-          alert('강의 개설에 실패했습니다.');
+        console.error('Enrollment request failed:', error);
+        alert('강의 개설에 실패했습니다.');
       }
     }
   };
@@ -138,7 +125,7 @@ const LectureOpen: React.FC = () => {
     setBannerImage(file);
   };
 
-  // [x] 버튼 valid 테스트 
+  // [x] 버튼 valid 테스트
   const validateForm = () => {
     let isValid = true;
 
@@ -175,88 +162,191 @@ const LectureOpen: React.FC = () => {
     }
 
     setIsFormValid(isValid);
-  }; 
-  
+  };
+
   useEffect(validateForm, [selectedCategory, title, objective, description]);
 
   return (
-    <Container>
-      <h1 className={styles.title}>강의 개설하기</h1>
+      <div>
+        <div className={styles.desktopNavigator}>
+          <a href="/">홈</a> &gt;
+          <a href="/mypage"> 내 강의실</a> &gt;
+          <span> 강의개설</span>
+        </div>
+        <hr />
 
-      <div className={styles.inputField}>
-        <label className={styles.label}>
-          카테고리 <span className={styles.required}>*</span>
-        </label>
-        <CategorySelect 
-          categories={categories} 
-          selected={selectedCategory} 
-          onSelectCategory={handleCategoryChange} 
-          // NOTE : '전체 카테고리' 항목 대신 '카테고리 선택' 표시
-          defaultVal=''
-          defaultName='카테고리 선택'
-        />
-        {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
+        <Row align={"center"}>
+          <h1 className={styles.title}>강의 개설하기</h1>
+        </Row>
+
+        {isMobile ? (
+            // 모바일 UI
+            <Container>
+              <div className={styles.mobileContainer}>
+              <div className={styles.inputField}>
+                <label className={styles.label}>
+                  카테고리 <span className={styles.required}>*</span>
+                </label>
+                {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
+                <CategorySelect
+                    categories={categories}
+                    selected={selectedCategory}
+                    onSelectCategory={handleCategoryChange}
+                    defaultVal=''
+                    defaultName='카테고리 선택'
+                />
+              </div>
+
+              <InputField
+                  label="강의 제목"
+                  placeholder="강의 제목을 작성해주세요"
+                  isRequired
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  helperText={titleHelperText}
+              />
+
+              <InputField
+                  label="강의 목표"
+                  placeholder="강의 목표를 작성해주세요"
+                  isRequired
+                  value={objective}
+                  onChange={(e) => setObjective(e.target.value)}
+                  helperText={objectiveHelperText}
+              />
+
+              <InputField
+                  label="강의 소개"
+                  placeholder="강의 소개를 작성해주세요"
+                  isRequired
+                  isTextArea
+                  height={100}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  helperText={descriptionHelperText}
+              />
+
+              <InputField
+                  label="강사 소개 (선택)"
+                  placeholder="강사 소개를 작성해주세요"
+                  isTextArea
+                  height={100}
+                  value={instructorInfo}
+                  onChange={(e) => setInstructorInfo(e.target.value)}
+              />
+
+              <InputField
+                  label="강의에 필요한 사전 지식 및 준비 안내 (선택)"
+                  placeholder="사전 지식 및 준비 안내를 작성해주세요"
+                  isTextArea
+                  height={100}
+                  value={prerequisite}
+                  onChange={(e) => setPrerequisite(e.target.value)}
+              />
+
+              <FileUpload />
+
+              <div className={styles.buttonContainer}>
+                <Button
+                    text="강의 개설하기"
+                    onClick={handleSubmit}
+                    disabled={!isFormValid}
+                />
+              </div>
+            </div>
+            </Container>
+        ) : (
+            // 데스크탑 UI
+            <Column align={"all"}>
+              <div className={styles.desktopContainer}>
+
+                <FileUpload />
+                <Space height={"20px"} />
+                <div className={styles.desktopBox}>
+                  <Column>
+
+
+
+
+
+                  </Column>
+                </div>
+
+                <div className={styles.inputField}>
+                  <label className={styles.label}>
+                    카테고리 <span className={styles.required}>*</span>
+                  </label>
+                  {categoryHelperText && <p className={styles.helperText}>{categoryHelperText}</p>}
+                  <CategorySelect
+                      categories={categories}
+                      selected={selectedCategory}
+                      onSelectCategory={handleCategoryChange}
+                      defaultVal=''
+                      defaultName='카테고리 선택'
+                  />
+                </div>
+
+                <InputField
+                    label="강의 제목"
+                    placeholder="강의 제목을 작성해주세요"
+                    isRequired
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    helperText={titleHelperText}
+                />
+
+                <InputField
+                    label="강의 목표"
+                    placeholder="강의 목표를 작성해주세요"
+                    isRequired
+                    value={objective}
+                    onChange={(e) => setObjective(e.target.value)}
+                    helperText={objectiveHelperText}
+                />
+
+                <InputField
+                    label="강의 소개"
+                    placeholder="강의 소개를 작성해주세요"
+                    isRequired
+                    isTextArea
+                    height={100}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    helperText={descriptionHelperText}
+                />
+
+                <InputField
+                    label="강사 소개 (선택)"
+                    placeholder="강사 소개를 작성해주세요"
+                    isTextArea
+                    height={100}
+                    value={instructorInfo}
+                    onChange={(e) => setInstructorInfo(e.target.value)}
+                />
+
+                <InputField
+                    label="강의에 필요한 사전 지식 및 준비 안내 (선택)"
+                    placeholder="사전 지식 및 준비 안내를 작성해주세요"
+                    isTextArea
+                    height={100}
+                    value={prerequisite}
+                    onChange={(e) => setPrerequisite(e.target.value)}
+                />
+
+
+                <div className={styles.buttonContainer}>
+                  <Button
+                      text="강의 개설하기"
+                      onClick={handleSubmit}
+                      disabled={!isFormValid}
+                  />
+                </div>
+              </div>
+            </Column>
+        )}
+
+        <Navigation />
       </div>
-
-      <InputField 
-        label="강의 제목" 
-        placeholder="강의 제목을 작성해주세요" 
-        isRequired 
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        helperText={titleHelperText}
-      />
-
-      <InputField 
-        label="강의 목표" 
-        placeholder="강의 목표를 작성해주세요" 
-        isRequired 
-        value={objective}
-        onChange={(e) => setObjective(e.target.value)}
-        helperText={objectiveHelperText}
-      />
-
-      <InputField 
-        label="강의 소개" 
-        placeholder="강의 소개를 작성해주세요" 
-        isRequired 
-        isTextArea 
-        height={100}
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        helperText={descriptionHelperText}
-      />
-
-      <InputField 
-        label="강사 소개 (선택)" 
-        placeholder="강사 소개를 작성해주세요" 
-        isTextArea 
-        height={100}
-        value={instructorInfo}
-        onChange={(e) => setInstructorInfo(e.target.value)}
-      />
-
-      <InputField 
-        label="강의에 필요한 사전 지식 및 준비 안내 (선택)" 
-        placeholder="사전 지식 및 준비 안내를 작성해주세요" 
-        isTextArea 
-        height={100}
-        value={prerequisite}
-        onChange={(e) => setPrerequisite(e.target.value)}
-      />
-
-      <FileUpload />
-
-      <div className={styles.buttonContainer}>
-        <Button 
-          text="강의 개설하기" 
-          onClick={handleSubmit} 
-          disabled={!isFormValid}
-        />
-      </div>
-
-      <Navigation />
-    </Container>
   );
 };
 

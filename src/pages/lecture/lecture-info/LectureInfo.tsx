@@ -110,8 +110,15 @@ const LectureInfo: React.FC = () => {
 
     return (
         <div>
+            <div className={styles.desktopNavigator}>
+                <a href="/">홈</a> &gt;
+                <a href="/mypage"> 내 강의실</a> &gt;
+                <span> 강의소개</span>
+            </div>
+            <hr />
+
             {isMobile ? (
-                // Mobile HTML
+                // 모바일 UI
                 <div className={styles.mobileContainer}>
                     <h1 className={styles.title}>{lecture.name}</h1>
                     <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || DefaultLecturebannerImage})` }}></div>
@@ -128,16 +135,11 @@ const LectureInfo: React.FC = () => {
                     <Navigation />
                 </div>
             ) : (
-                // Desktop HTML
+                // 데스크탑 UI
                 <Column align={"all"}>
                 <div className={styles.desktopContainer}>
 
-                    <div className={styles.desktopNavigator}>
-                        <a href="/">홈</a> &gt;
-                        <a href="/mypage"> 내 강의실</a> &gt;
-                        <span> 강의소개</span>
-                    </div>
-                    <hr />
+
 
                     <Space height={"40px"}/>
 
