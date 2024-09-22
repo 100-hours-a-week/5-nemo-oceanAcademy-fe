@@ -32,6 +32,10 @@ import micOff from '../../../assets/images/icon/no_mic.png';
 import audioOn from '../../../assets/images/icon/audio.png';
 import audioOff from '../../../assets/images/icon/no_audio.png';
 
+// icon
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
 interface Message {
   room: string;
   message: string;
@@ -72,6 +76,9 @@ const LiveTeacher: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [connected, setConnected] = useState(false);
   const [content, setContent] = useState("");
+
+  // Wide View 관련
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184);
 
   const setConnectedState = (connected: boolean) => {
     setConnected(connected);
@@ -481,7 +488,10 @@ const LiveTeacher: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <>
+      {isMobile ? (
+      // 모바일 UI
+      <div className={styles.container}>
       {showModal && (
         <Modal 
           title="강의를 종료하시겠습니까?"
@@ -579,7 +589,122 @@ const LiveTeacher: React.FC = () => {
           </button>
         </div>
       </div>
-    </div>
+      </div>
+      ) : (
+        // ******************************************** //
+        // 데스크톱 UI
+        <div className={styles.desktopContainer}>
+        {showModal && (
+          <Modal 
+            title="강의를 종료하시겠습니까?"
+            content="강의가 끝났나요?"
+            leftButtonText="종료"
+            rightButtonText="취소"
+            onLeftButtonClick={handleModalLeave}
+            onRightButtonClick={handleModalCancel}
+          />
+        )}  
+        <div className={styles.desktopControls}>
+          <button onClick={handleToggleWebcam} style={{ backgroundColor: isWebcamOn ? '#4A4B4D' : '#FFFFFF' }}>
+            <img src={isWebcamOn ? videoOn : videoOff} alt="캠" className={styles.icon} />
+          </button>
+          <button onClick={handleToggleScreenShare} style={{ backgroundColor: isScreenShareOn ? '#4A4B4D' : '#FFFFFF' }}>
+            <img src={shareScreen} alt="화면 공유" className={styles.icon} />
+          </button>
+          <button onClick={handleToggleMicrophone} style={{ backgroundColor: isMicrophoneOn ? '#4A4B4D' : '#FFFFFF' }}>
+            <img src={isMicrophoneOn ? micOn : micOff} alt="마이크" className={styles.icon} />
+          </button>
+          <button onClick={handleToggleSystemAudio} style={{ backgroundColor: isSystemAudioOn ? '#4A4B4D' : '#FFFFFF' }}>
+            <img src={isSystemAudioOn ? audioOn : audioOff} alt="오디오" className={styles.icon} />
+          </button>
+          <button 
+                onClick={handleLeaveClick}
+                className={styles.desktopLeave}
+              >
+                강의실 나가기
+              </button>
+        </div>
+        <div className={styles.desktopVideoSection}>
+          <div className={styles.desktopScreenShare}>
+            <video 
+              ref={screenShareVideoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              style={{ objectFit: isScreenClicked ? 'cover' : 'contain' }}
+            />
+          </div>
+          <div className={styles.desktopSmallVideo}>
+              <video 
+                ref={webcamVideoRef} 
+                autoPlay
+                playsInline
+                muted 
+              />
+          </div>
+        </div>
+  
+      
+  
+        <div className={styles.desktopInfo}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.instructor}>{instructor}</p>
+        </div>
+        
+        <div className={styles.desktopChatSection}>
+          <div className={styles.desktopChatWindow} ref={chatWindowRef}>
+            {messages.map((msg, index) => (
+              <div key={index} className={styles.desktopChat}>
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatUserInfo}>
+                  {
+                  <div className={styles.desktopProfContainer}>
+                    <img
+                      src={msg.profileImage}
+                      alt="프로필"
+                      className={styles.icon}
+                    />
+                  </div>
+                  }
+                  <div className={styles.deskChatInfo}>
+                    <h5>익명</h5>
+                    <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  </div>
+                  </div>
+                  <div className={styles.desktopChatBubble}>
+                    <p>{msg.message}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={styles.desktopChatBackground}>
+            <div className={styles.desktopChatInput}>
+              <textarea
+                placeholder="채팅을 입력하세요."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                rows={1} // 기본 행의 높이 설정
+                style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+              />
+              <button 
+                onClick={sendMessage}
+                disabled={!connected}
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+      )}
+    </>
   );
 };
 
