@@ -147,7 +147,6 @@ const Main: React.FC = () => {
             ))}
           </div>
         </section>
-        <Navigation />
       </div>
   );
 };

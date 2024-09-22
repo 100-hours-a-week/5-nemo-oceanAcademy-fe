@@ -10,6 +10,13 @@
   padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
 }
 
+/* min-width: 1184보다 작게 잡아도 될 것 같다는 생각이 */
+@media (min-width: 1000px) {
+  .container {
+    width: 1184px;
+  }
+}
+
 .adSection {
   width: 100%;
   display: flex;
