@@ -84,6 +84,7 @@
     flex-grow: 1;
     border:  #2D2D2D 1px solid;
     max-height: calc(100vh - 930px); 
+    padding-bottom: 120px;
   }
 
   .desktopChat {
