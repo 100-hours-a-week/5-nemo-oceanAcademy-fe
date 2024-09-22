@@ -7,10 +7,17 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
+import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
+
+// import images
 import profImage from '../../../assets/images/profile/profile_default.png';
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
-import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
+
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Message {
   room: string;

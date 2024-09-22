@@ -22,6 +22,9 @@ import {
 
 // import images
 import profImage from '../../../assets/images/profile/profile_default.png';
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
 import videoOn from '../../../assets/images/icon/video.png';
@@ -31,6 +34,8 @@ import micOn from '../../../assets/images/icon/mic.png';
 import micOff from '../../../assets/images/icon/no_mic.png';
 import audioOn from '../../../assets/images/icon/audio.png';
 import audioOff from '../../../assets/images/icon/no_audio.png';
+
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Message {
   room: string;
