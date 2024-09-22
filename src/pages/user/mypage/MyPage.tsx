@@ -72,7 +72,6 @@ const MyPage: React.FC = () => {
       hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
     }
     const index = Math.abs(hash % profileImages.length);
-    console.log('프사 번호: ', index);
     return profileImages[index];
   };
 
