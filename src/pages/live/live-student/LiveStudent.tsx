@@ -39,6 +39,15 @@ const LiveStudent: React.FC = () => {
   const [isScreenClicked, setIsScreenClicked] = useState(false);
   const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
 
+  const getProfileImage = (nickname: string): string => {
+    let hash = 0;
+    for (let i = 0; i < nickname.length; i++) {
+      hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
+  
   // Chat 관련
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [currentRoom, setCurrentRoom] = useState(classId);

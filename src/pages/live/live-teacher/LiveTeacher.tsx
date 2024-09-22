@@ -42,6 +42,7 @@ interface Message {
   message: string;
   nickname: string;
   profileImage: string;
+  time: string;
 }
 
 const LiveTeacher: React.FC = () => {
@@ -69,6 +70,15 @@ const LiveTeacher: React.FC = () => {
   const [screenShareProducer, setScreenShareProducer] = useState<Producer | null>(null);
   const [microphoneProducer, setMicrophoneProducer] = useState<Producer | null>(null);
   const [systemAudioProducer, setSystemAudioProducer] = useState<Producer | null>(null);
+
+  const getProfileImage = (nickname: string): string => {
+    let hash = 0;
+    for (let i = 0; i < nickname.length; i++) {
+      hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
 
   // Chat 관련
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -200,22 +210,25 @@ const LiveTeacher: React.FC = () => {
     }
   };
 
-  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
+  const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { room, message, nickname, profileImage }
+      { room, message, nickname, profileImage, time }
     ]);
   };  
   
   const loadChatHistory = (classId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
-          setMessages(response.data.map((msg:any) => ({
-            room: classId,
-            message: msg.content,
-            nickname: msg.writerId || '익명',
-            profileImage: msg.profileImage || profImage
-          })));
+        console.log('Server Response Data:', response.data);
+
+        setMessages(response.data.map((msg:any) => ({
+          room: msg.roomId,
+          message: msg.content,
+          nickname: msg.writer || '익명',
+          profileImage: msg.profile_image_path || getProfileImage(msg.writer),
+          time: msg.createdDate
+        })));
       })
       .catch(error => {
           console.error("Failed to load chat history:", error);
@@ -541,7 +554,6 @@ const LiveTeacher: React.FC = () => {
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.chat}>
-              {/*
               <div className={styles.profContainer}>
                 <img
                   src={msg.profileImage}
@@ -549,10 +561,9 @@ const LiveTeacher: React.FC = () => {
                   className={styles.icon}
                 />
               </div>
-              */}
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>익명</h5>
+                  <h5>{msg.nickname}</h5>
                   <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={styles.chatBubble}>
