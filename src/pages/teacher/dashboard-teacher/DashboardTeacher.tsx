@@ -183,16 +183,6 @@ const DashboardTeacher: React.FC = () => {
       <Container>
         {dashboard && (
             <>
-              <div className={styles.metaContainer}>
-                <p>{dashboard.instructor}</p>
-                <div className={styles.categoryBox}>
-                  <p className={styles.category}>
-                    {dashboard.category}
-                  </p>
-                </div>
-              </div>
-
-
               <LectureMeta
                 instructor={dashboard.instructor}
                 title={dashboard.name}

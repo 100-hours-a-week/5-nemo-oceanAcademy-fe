@@ -340,11 +340,21 @@
   }
 }
 
+.myChat {
+  justify-content: flex-end;
+}
+
 .chatBubble {
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: 12px;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 10px;
+  max-width: 280px;
+}
+
+.myChatBubble {
+  background-color: #dcf8c6;
+  text-align: right;
 }
 
 .chatInput {

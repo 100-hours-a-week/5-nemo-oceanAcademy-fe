@@ -7,16 +7,15 @@ import axios from 'axios';
 import endpoints from '../../api/endpoints';
 
 // image import
-import profileDefault from '../../assets/images/profile/profile_default.png';
-import profileDefault1 from '../../assets/images/profile/profile_color1.png';
-import profileDefault2 from '../../assets/images/profile/profile_color2.png';
-import profileDefault3 from '../../assets/images/profile/profile_color3.png';
+import profileDefault1 from '../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../assets/images/profile/whale.png';
+import profileDefault3 from '../../assets/images/profile/crab.png';
 import backIcon from '../../assets/images/icon/back.png';
 import settingIcon from '../../assets/images/icon/setting.png';
 import outIcon from '../../assets/images/icon/out.png';
 import closeIcon from '../../assets/images/icon/close.png';
 
-const profileImages = [profileDefault, profileDefault1, profileDefault2, profileDefault3];
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +33,6 @@ const Header: React.FC = () => {
       hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
     }
     const index = Math.abs(hash % profileImages.length);
-    console.log('프사 번호: ', index);
     return profileImages[index];
   };
 
@@ -216,8 +214,8 @@ const Header: React.FC = () => {
       );
     } else if (!isLoggedIn) {
       return (
-        <div className={styles.loginText} onClick={handleLogin}>
-          Login
+        <div className={styles.loginButton} onClick={handleLogin}>
+          로그인
         </div>
       );
     } else if (
@@ -238,7 +236,7 @@ const Header: React.FC = () => {
           onClick={handleProfileClick}
           onError={(e) => {
             // 이미지 로드에 실패하면 기본 이미지로 교체
-            (e.target as HTMLImageElement).src = profileDefault;
+            // (e.target as HTMLImageElement).src = getProfileImage(nickname);
           }}
         />
       );
@@ -252,7 +250,7 @@ const Header: React.FC = () => {
         {renderLeftButton()}
       </div>
       <div onClick={handleLogoClick} className={styles.logo}>
-        Ocean Academy
+        바다서원
       </div>
       <div className={styles.rightButton}>
         {renderRightButton()}

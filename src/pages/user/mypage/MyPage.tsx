@@ -10,7 +10,9 @@ import styles from './MyPage.module.css';
 import { Container, Empty } from '../.\./../styles/GlobalStyles';
 
 // import images
-import profImage from '../../../assets/images/profile/profile_default.png';
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
 import emptyImage from '../../../assets/images/utils/empty.png';
 import editImage from '../../../assets/images/icon/edit_w.png';
 import image1 from '../../../assets/images/banner/image1.png';
@@ -23,6 +25,8 @@ import image7 from '../../../assets/images/banner/image7.png';
 import image8 from '../../../assets/images/banner/image8.png';
 import image9 from '../../../assets/images/banner/image9.png';
 import image10 from '../../../assets/images/banner/image10.png';
+
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 // 기본 이미지 배열
 const defaultImages = [
@@ -51,7 +55,7 @@ const MyPage: React.FC = () => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
-  const [profilePic, setProfilePic] = useState('');
+  const [profileImage, setProfileImage] = useState('');
   const [initialNickname, setInitialNickname] = useState('');
   const [initialEmail, setInitialEmail] = useState('');
   const [initialProfilePic, setInitialProfilePic] = useState('');
@@ -61,6 +65,15 @@ const MyPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
   const token = localStorage.getItem('accessToken');
+
+  const getProfileImage = (nickname: string): string => {
+    let hash = 0;
+    for (let i = 0; i < nickname.length; i++) {
+      hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -75,7 +88,7 @@ const MyPage: React.FC = () => {
           const userData = response.data.data;
           setNickname(userData.nickname);
           setEmail(userData.email || '이메일 정보 없음');
-          setProfilePic(userData.profile_image_path ? userData.profile_image_path : profImage);
+          setProfileImage(userData.profile_image_path ? userData.profile_image_path : getProfileImage(nickname));
         }
       } catch (error) {
         const axiosError = error as AxiosError;
@@ -120,7 +133,7 @@ const MyPage: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
-      setProfilePic(URL.createObjectURL(e.target.files[0])); // preview
+      setProfileImage(URL.createObjectURL(e.target.files[0])); // preview
       setIsButtonActive(true);
     }
   };
@@ -191,8 +204,9 @@ const MyPage: React.FC = () => {
     }
   };
 
+  // 지워도 될 것 같다. main 올려보고 오류 없으면 지우기 
   const handleImageError = () => {
-    setProfilePic(profImage);
+    setProfileImage(getProfileImage(nickname));
   };
 
   return (
@@ -200,7 +214,7 @@ const MyPage: React.FC = () => {
       <div className={styles.profileContainer}>
         <div className={styles.profileImageContainer} onClick={handleImageClick}>
           <img 
-            src={profilePic} 
+            src={profileImage} 
             alt="Profile" 
             className={`${styles.profilePicture} ${isEditing ? styles.profilePictureEditing : ''}`} 
             onError={handleImageError}

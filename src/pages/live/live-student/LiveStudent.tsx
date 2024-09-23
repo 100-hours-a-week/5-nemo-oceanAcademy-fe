@@ -7,16 +7,23 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import profImage from '../../../assets/images/profile/profile_default.png';
+import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
+
+// import images
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
-import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
+
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Message {
   room: string;
   message: string;
   nickname: string;
   profileImage: string;
+  time: string;
 }
 
 const LiveStudent: React.FC = () => {
@@ -31,6 +38,16 @@ const LiveStudent: React.FC = () => {
   const [isSubscriptionDisabled, setIsSubscriptionDisabled] = useState(true);
   const [isScreenClicked, setIsScreenClicked] = useState(false);
   const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
+
+  const getProfileImage = (nickname: string | null): string => {
+    const safeNickname = nickname || '익명';
+    let hash = 0;
+    for (let i = 0; i < safeNickname.length; i++) {
+      hash = safeNickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
 
   // Chat 관련
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -125,7 +142,7 @@ const LiveStudent: React.FC = () => {
 
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage, messageContent.time);
       });
 
       setSubscription(newSubscription);
@@ -138,13 +155,12 @@ const LiveStudent: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: currentRoom, 
+        roomId: currentRoom,
         content: content,
-        writer: userInfo ? userInfo.nickname : 'Anonymous',
+        writer: userInfo ? userInfo.nickname : null,
+        profile_image_path: userInfo?.profileImage,
         createdDate: new Date().toISOString()
       };
-
-      console.log("Student: chat message = " + JSON.stringify(chatMessage));
 
       // 메시지를 서버로 전송
       stompClient.publish({
@@ -152,30 +168,40 @@ const LiveStudent: React.FC = () => {
         body: JSON.stringify(chatMessage),
       });
 
-      // 입력 필드를 초기화하고 메시지를 UI에 추가
-      // showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
+      // 채팅 기록 다시 로드
+      if (currentRoom) {
+        loadChatHistory(currentRoom);
+      }
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
 
-  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
+  const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { room, message, nickname, profileImage }
+      { 
+        room, 
+        message, 
+        nickname: nickname || '익명',
+        profileImage: profileImage || getProfileImage(nickname),
+        time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
     ]);
   };  
   
   const loadChatHistory = (classId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
+          console.log('Student-Server Response Data:', response.data);
+
           setMessages(response.data.map((msg:any) => ({
-            room: classId,
+            room: msg.roomId,
             message: msg.content,
-            // nickname: msg.writerId || '익명',
-            nickname: '익명',
-            profileImage: msg.profileImage || profImage
+            nickname: msg.writer || '익명',
+            profileImage: msg.profile_image_path || getProfileImage(msg.writer),
+            time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           })));
       })
       .catch(error => {
@@ -319,7 +345,6 @@ const LiveStudent: React.FC = () => {
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.chat}>
-              {/*
               <div className={styles.profContainer}>
                 <img
                   src={msg.profileImage}
@@ -327,11 +352,10 @@ const LiveStudent: React.FC = () => {
                   className={styles.icon}
                 />
               </div>  
-              */}
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>익명</h5>
-                  <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  <h5>{msg.nickname}</h5>
+                  <p>{msg.time}</p>
                 </div>
                 <div className={styles.chatBubble}>
                   <p>{msg.message}</p>
