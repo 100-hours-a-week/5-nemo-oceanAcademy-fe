@@ -142,7 +142,7 @@ const LiveStudent: React.FC = () => {
 
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage, messageContent.time);
       });
 
       setSubscription(newSubscription);

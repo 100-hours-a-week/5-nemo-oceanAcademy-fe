@@ -170,10 +170,12 @@ const LiveTeacher: React.FC = () => {
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
         console.log('Raw message received:', greeting.body); // raw data
-        // 여기서 이 코드가 필요 없을 것 같은데... 
+
         const messageContent = JSON.parse(greeting.body);
+        const pf = messageContent.profile_image_path || getProfileImage(messageContent.writer);
+        const tm = new Date(messageContent.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+        showGreeting(messageContent.roomId, messageContent.content, messageContent.writer, pf, tm);
       });
 
       setSubscription(newSubscription);
@@ -216,9 +218,9 @@ const LiveTeacher: React.FC = () => {
       { 
         room, 
         message, 
-        nickname: nickname || '익명',
-        profileImage: profileImage || getProfileImage(nickname),
-        time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        nickname,
+        profileImage,
+        time
       }
     ]);
   };  
@@ -558,27 +560,34 @@ const LiveTeacher: React.FC = () => {
       
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={styles.chat}>
-              <div className={styles.profContainer}>
-                <img
-                  src={msg.profileImage}
-                  alt="프로필"
-                  className={styles.icon}
-                />
-              </div>
-              <div className={styles.chatContainer}>
-                <div className={styles.chatInfo}>
-                  <h5>{msg.nickname}</h5>
-                  <p>{msg.time}</p>
+          {messages.map((msg, index) => {
+              // 현재 사용자가 보낸 메시지인지 확인
+              const isMyMessage = msg.nickname === userInfo?.nickname;
+              
+              return (
+                <div
+                  key={index}
+                  className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
+                >
+                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
+                  {!isMyMessage && (
+                    <div className={styles.profContainer}>
+                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                    </div>
+                  )}
+                  <div className={styles.chatContainer}>
+                    <div className={styles.chatInfo}>
+                      {!isMyMessage && <h5>{msg.nickname}</h5>}
+                      <p>{msg.time}</p>
+                    </div>
+                    <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
+                      <p>{msg.message}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.chatBubble}>
-                  <p>{msg.message}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
         <div className={styles.chatInput}>
           <textarea
             placeholder="채팅을 입력하세요."
