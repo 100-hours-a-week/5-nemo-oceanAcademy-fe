@@ -2,6 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LectureCard.module.css';
 
+// import image
+import banner from '../../assets/images/banner/image9.png';
+
 interface LectureCardProps {
   classId: number;
   name: string;
@@ -22,13 +25,13 @@ const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, i
     }
   };
 
-    const displayImage = bannerImage ?? 'path/to/default/image.png'; // bannerImage가 null일 경우 기본 이미지 사용
+    const displayImage = bannerImage ?? banner;
 
     return (
         <div className={styles.container} onClick={handleClick}>
             <div
                 className={styles.banner}
-                style={{ backgroundImage: `url(${displayImage})` }} // null 처리 후 기본 이미지 사용
+                style={{ backgroundImage: `url(${displayImage})` }}
             ></div>
             <h2 className={styles.title}>{name}</h2>
             <p className={styles.details}>

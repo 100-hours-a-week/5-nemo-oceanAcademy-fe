@@ -16,7 +16,7 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 
 // import image
-import bn from '../../../assets/images/banner/banner_ex.png';
+import bn from '../../../assets/images/banner/banner_ex.jpeg';
 
 interface Schedule {
   schedule_id: number;

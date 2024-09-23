@@ -1,3 +1,12 @@
+:root {
+    --primary-color: #727CB8;
+    --hover-color: #7984C7;
+    
+    --border-color: #5D5D5D;
+    --blue-color: #2A62F2;
+    --red-color: #FF3333;
+}
+
 @font-face {
     font-family: 'Pretendard';
     src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
@@ -35,17 +44,6 @@ strong, h1, h2, h3 {
   
 p {
     font-weight: 400; /* Regular 스타일 */
-}
-  
-.container {
-    width: 390px;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
 }
 
 /* 기본 버튼 스타일 */

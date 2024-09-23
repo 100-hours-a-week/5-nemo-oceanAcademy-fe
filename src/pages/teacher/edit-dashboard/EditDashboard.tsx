@@ -117,39 +117,6 @@ const EditDashboard: React.FC = () => {
     navigate(`dashboard/teacher/${classId}`);
   };
 
-/*
-  const handleSave = () => {
-    // 수정 완료 버튼을 누르면 API 요청을 보내고, 요청이 성공하면 DashboardTeacher로 이동
-    try {
-      const response = await fetch('/api/update-lecture', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          category,
-          title,
-          objective,
-          description,
-          instructorInfo,
-          precourse,
-          announcement,
-          bannerImage,
-        }),
-      });
-
-      if (response.ok) {
-        alert('수정이 완료되었습니다.');
-        navigate('/teacher/dashboard');
-      } else {
-        alert('수정에 실패하였습니다. 다시 시도해주세요.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('오류가 발생하였습니다. 다시 시도해주세요.');
-    }
-  };
-*/
   return (
     <Container>
         <LectureMeta

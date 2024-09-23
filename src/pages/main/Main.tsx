@@ -11,6 +11,7 @@ import { Empty } from '../../styles/GlobalStyles';
 
 // import images
 import emptyImage from '../../assets/images/utils/empty.png';
+import feedbackImage from '../../assets/images/ad/feedback.png';
 import image1 from '../../assets/images/banner/image1.png';
 import image2 from '../../assets/images/banner/image2.png';
 import image3 from '../../assets/images/banner/image3.png';
@@ -95,10 +96,16 @@ const Main: React.FC = () => {
       });
   }, []);
 
+  const handleFeedbackClick = () => {
+    window.open('https://forms.gle/vN3RDGNmM1okqRfq7', '_blank');
+  }
+
   return (
       <div className={styles.container}>
         <section className={styles.adSection}>
-          <Advertisement />
+          <div className={styles.feedback} onClick={handleFeedbackClick}>
+            <img src={feedbackImage} alt="move to google form" />
+          </div>
         </section>
 
         <section className={styles.liveSection}>
@@ -124,6 +131,8 @@ const Main: React.FC = () => {
             ))}
           </div>
         </section>
+
+        <Empty />
 
         <section className={styles.toptenSection}>
           <div className={styles.titleSection}>

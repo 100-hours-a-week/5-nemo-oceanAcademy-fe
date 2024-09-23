@@ -8,7 +8,7 @@ import endpoints from '../../../api/endpoints';
 import styles from './LectureInfo.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 
-interface LectureData {
+interface Lecture {
     id: number; // class ID
     user_id: number;
     category_id: number;
@@ -27,7 +27,7 @@ interface LectureData {
 const LectureInfo: React.FC = () => {
     const navigate = useNavigate();
     const { classId } = useParams<{ classId: string }>();
-    const [lectureData, setLectureData] = useState<LectureData | null>(null);
+    const [lecture, setLecture] = useState<Lecture | null>(null);
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
     const token = localStorage.getItem('accessToken');
 
@@ -39,7 +39,7 @@ const LectureInfo: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setLectureData(response.data.data);
+                setLecture(response.data.data);
             } catch (error) {
                 console.error('Failed to fetch lecture data:', error);
             }
@@ -105,35 +105,35 @@ const LectureInfo: React.FC = () => {
         }
     };
 
-    if (!lectureData) {
+    if (!lecture) {
         return <Container>Loading...</Container>; // 데이터를 불러오기 전 로딩 표시
     }
 
     return (
         <div className={styles.container}>
-            <p className={styles.instructor}>{lectureData.instructor}</p>
-            <h1 className={styles.title}>{lectureData.name}</h1>
-            <div className={styles.banner} style={{ backgroundImage: `url(${lectureData.banner_image_path || '/default-image.png'})` }}></div>
-            <div className={styles.category}>{lectureData.category}</div>
+            <p className={styles.instructor}>{lecture.instructor}</p>
+            <h1 className={styles.title}>{lecture.name}</h1>
+            <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || '/default-image.png'})` }}></div>
+            <div className={styles.category}>{lecture.category}</div>
 
             <div className={styles.infoSection}>
                 <h3 className={styles.infoTitle}>강의 목표</h3>
-                <p className={styles.infoContent}>{lectureData.object || '강의 목표 정보 없음'}</p>
+                <p className={styles.infoContent}>{lecture.object || '강의 목표 정보 없음'}</p>
             </div>
 
             <div className={styles.infoSection}>
                 <h3 className={styles.infoTitle}>강의 소개</h3>
-                <p className={styles.infoContent}>{lectureData.description || '강의 소개 정보 없음'}</p>
+                <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
             </div>
 
             <div className={styles.infoSection}>
                 <h3 className={styles.infoTitle}>강사 소개</h3>
-                <p className={styles.infoContent}>{lectureData.instructor_info || '강사 소개 정보 없음'}</p>
+                <p className={styles.infoContent}>{lecture.instructor_info || '강사 소개 정보 없음'}</p>
             </div>
 
             <div className={styles.infoSection}>
                 <h3 className={styles.infoTitle}>사전 준비 사항</h3>
-                <p className={styles.infoContent}>{lectureData.prerequisite || '사전 준비 사항 정보 없음'}</p>
+                <p className={styles.infoContent}>{lecture.prerequisite || '사전 준비 사항 정보 없음'}</p>
             </div>
 
             <div className={styles.buttonContainer}>

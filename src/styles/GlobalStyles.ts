@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 // 공통적인 컨테이너 스타일
 export const Container = styled.div`
-  width: 390px;
+  width: 400px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -38,10 +38,10 @@ export const Title = styled.h1`
 
 // 여백
 interface EmptyProps {
-  height?: '30px' | '10px'; 
+  height?: string;
 }
 
 export const Empty = styled.div<EmptyProps>`
   width: 100%;
-  height: ${({ height }) => height || '30px'};
+  height: ${({ height = '10px' }) => height};
 `;

@@ -22,7 +22,6 @@ import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import PrivateRoute from 'components/PrivateRoute';
-import { Container } from './styles/GlobalStyles'
 
 const App: React.FC = () => {  
   return (
