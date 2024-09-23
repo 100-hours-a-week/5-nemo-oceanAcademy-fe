@@ -21,7 +21,9 @@ import {
 } from '../../../components/web-rtc/utils/teacher/teacherClient';
 
 // import images
-import profImage from '../../../assets/images/profile/profile_default.png';
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
 import videoOn from '../../../assets/images/icon/video.png';
@@ -32,11 +34,14 @@ import micOff from '../../../assets/images/icon/no_mic.png';
 import audioOn from '../../../assets/images/icon/audio.png';
 import audioOff from '../../../assets/images/icon/no_audio.png';
 
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
+
 interface Message {
   room: string;
   message: string;
   nickname: string;
   profileImage: string;
+  time: string;
 }
 
 const LiveTeacher: React.FC = () => {
@@ -64,6 +69,16 @@ const LiveTeacher: React.FC = () => {
   const [screenShareProducer, setScreenShareProducer] = useState<Producer | null>(null);
   const [microphoneProducer, setMicrophoneProducer] = useState<Producer | null>(null);
   const [systemAudioProducer, setSystemAudioProducer] = useState<Producer | null>(null);
+
+  const getProfileImage = (nickname: string | null): string => {
+    const safeNickname = nickname || '익명';
+    let hash = 0;
+    for (let i = 0; i < safeNickname.length; i++) {
+      hash = safeNickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
 
   // Chat 관련
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -155,10 +170,12 @@ const LiveTeacher: React.FC = () => {
     try {
       const newSubscription = stompClient.subscribe(`/topic/greetings/${classId}`, (greeting) => {
         console.log('Raw message received:', greeting.body); // raw data
-        // 여기서 이 코드가 필요 없을 것 같은데... 
+
         const messageContent = JSON.parse(greeting.body);
+        const pf = messageContent.profile_image_path || getProfileImage(messageContent.writer);
+        const tm = new Date(messageContent.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+        showGreeting(messageContent.roomId, messageContent.content, messageContent.writer, pf, tm);
       });
 
       setSubscription(newSubscription);
@@ -171,13 +188,12 @@ const LiveTeacher: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: currentRoom, 
+        roomId: currentRoom,
         content: content,
-        writer: userInfo ? userInfo.nickname : '누구세요',
+        writer: userInfo ? userInfo.nickname : null,
+        profile_image_path: userInfo?.profileImage,
         createdDate: new Date().toISOString()
       };
-
-      console.log("Teacher: chat message = " + JSON.stringify(chatMessage));
 
       // 메시지를 서버로 전송
       stompClient.publish({
@@ -185,31 +201,42 @@ const LiveTeacher: React.FC = () => {
         body: JSON.stringify(chatMessage),
       });
 
-      // 입력 필드를 초기화하고 메시지를 UI에 추가
-      // showGreeting(currentRoom!, content, chatMessage.writer, userInfo?.profileImage || profImage);
-      // 여기서 미아야 (닉네임 유) 채팅을 보내고 있었스빈다
       setContent('');
+
+      // 채팅 기록 다시 로드
+      if (currentRoom) {
+        loadChatHistory(currentRoom);
+      }
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
 
-  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
+  const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { room, message, nickname, profileImage }
+      { 
+        room, 
+        message, 
+        nickname,
+        profileImage,
+        time
+      }
     ]);
   };  
   
   const loadChatHistory = (classId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
-          setMessages(response.data.map((msg:any) => ({
-            room: classId,
-            message: msg.content,
-            nickname: msg.writerId || '익명',
-            profileImage: msg.profileImage || profImage
-          })));
+        console.log('Teacher-Server Response Data:', response.data);
+
+        setMessages(response.data.map((msg:any) => ({
+          room: msg.roomId,
+          message: msg.content,
+          nickname: msg.writer || '익명',
+          profileImage: msg.profile_image_path || getProfileImage(msg.writer),
+          time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })));
       })
       .catch(error => {
           console.error("Failed to load chat history:", error);
@@ -533,29 +560,34 @@ const LiveTeacher: React.FC = () => {
       
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={styles.chat}>
-              {/*
-              <div className={styles.profContainer}>
-                <img
-                  src={msg.profileImage}
-                  alt="프로필"
-                  className={styles.icon}
-                />
-              </div>
-              */}
-              <div className={styles.chatContainer}>
-                <div className={styles.chatInfo}>
-                  <h5>익명</h5>
-                  <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+          {messages.map((msg, index) => {
+              // 현재 사용자가 보낸 메시지인지 확인
+              const isMyMessage = msg.nickname === userInfo?.nickname;
+              
+              return (
+                <div
+                  key={index}
+                  className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
+                >
+                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
+                  {!isMyMessage && (
+                    <div className={styles.profContainer}>
+                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                    </div>
+                  )}
+                  <div className={styles.chatContainer}>
+                    <div className={styles.chatInfo}>
+                      {!isMyMessage && <h5>{msg.nickname}</h5>}
+                      <p>{msg.time}</p>
+                    </div>
+                    <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
+                      <p>{msg.message}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.chatBubble}>
-                  <p>{msg.message}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
         <div className={styles.chatInput}>
           <textarea
             placeholder="채팅을 입력하세요."

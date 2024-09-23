@@ -38,10 +38,10 @@ export const Title = styled.h1`
 
 // 여백
 interface EmptyProps {
-  height?: '30px' | '10px'; 
+  height?: string;
 }
 
 export const Empty = styled.div<EmptyProps>`
   width: 100%;
-  height: ${({ height }) => height || '30px'};
+  height: ${({ height = '10px' }) => height};
 `;
