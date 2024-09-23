@@ -12,12 +12,12 @@
 .profileContainer {
   width: 370px;
   height: 80px;
-  background-color: var(--primary-color);
   padding: 0 20px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   margin-bottom: 30px;
+  border: 1px solid #949494;
 }
 
 .profileImageContainer {
@@ -79,13 +79,11 @@
   margin: 0;
   font-size: 15px;
   font-weight: bold;
-  color: white;
 }
 
 .email {
   margin-top: 3px;
   font-size: 12px;
-  color: white;
   font-weight: normal;
 }
   
