@@ -683,30 +683,33 @@ const LiveTeacher: React.FC = () => {
         
         <div className={styles.desktopChatSection}>
           <div className={styles.desktopChatWindow} ref={chatWindowRef}>
-            {messages.map((msg, index) => (
-              <div key={index} className={styles.desktopChat}>
+            {messages.map((msg, index) => {
+              const isMyMessage = msg.nickname === userInfo?.nickname;
+              
+              return (
+                <div
+                key={index}
+                className={`${styles.desktopChat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
+                >
                 <div className={styles.chatContainer}>
                   <div className={styles.chatUserInfo}>
-                  {
-                  <div className={styles.desktopProfContainer}>
-                    <img
-                      src={msg.profileImage}
-                      alt="프로필"
-                      className={styles.icon}
-                    />
+                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
+                  {!isMyMessage && (
+                    <div className={styles.desktopProfContainer}>
+                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                    </div>
+                  )}
+                  <div className={styles.desktopChatInfo}>
+                      {!isMyMessage && <h5>{msg.nickname}</h5>}
+                      <p>{msg.time}</p>
+                    </div>
                   </div>
-                  }
-                  <div className={styles.deskChatInfo}>
-                    <h5>익명</h5>
-                    <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                  </div>
-                  </div>
-                  <div className={styles.desktopChatBubble}>
-                    <p>{msg.message}</p>
-                  </div>
+                  <div className={`${styles.desktopChatBubble} ${isMyMessage ? styles.desktopMyChatBubble : ''}`}>
+                      <p>{msg.message}</p>
+                    </div>
                 </div>
-              </div>
-            ))}
+              </div>);
+            })}
           </div>
           <div className={styles.desktopChatBackground}>
             <div className={styles.desktopChatInput}>

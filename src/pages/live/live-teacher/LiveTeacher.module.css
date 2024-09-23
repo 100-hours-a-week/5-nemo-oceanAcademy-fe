@@ -107,7 +107,7 @@
     flex-direction: row;
   }
 
-  .deskChatInfo {
+  .desktopChatInfo {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -195,6 +195,13 @@
     padding: 6px 24px 8px 24px;
     border: none;
     border-radius: 4px;
+  }
+
+  .desktopMyChatBubble{
+    background-color: #FAFBFD;
+    color: black;
+    font-size: 14px;
+    margin-left: 0px;
   }
 }
 
