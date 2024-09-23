@@ -7,16 +7,27 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveStudent.module.css';
 import { Container } from '../../../styles/GlobalStyles';
-import profImage from '../../../assets/images/profile/profile_default.png';
+import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
+
+// import images
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
-import { connectToServerAsStudent } from '../../../components/web-rtc/utils/student/studentClient';
+
+// icon
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Message {
   room: string;
   message: string;
   nickname: string;
   profileImage: string;
+  time: string;
 }
 
 const LiveStudent: React.FC = () => {
@@ -32,6 +43,16 @@ const LiveStudent: React.FC = () => {
   const [isScreenClicked, setIsScreenClicked] = useState(false);
   const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
 
+  const getProfileImage = (nickname: string | null): string => {
+    const safeNickname = nickname || '익명';
+    let hash = 0;
+    for (let i = 0; i < safeNickname.length; i++) {
+      hash = safeNickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
+
   // Chat 관련
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [currentRoom, setCurrentRoom] = useState(classId);
@@ -39,6 +60,9 @@ const LiveStudent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [connected, setConnected] = useState(false);
   const [content, setContent] = useState("");
+
+   // Wide View 관련
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184);
 
   const setConnectedState = (connected: boolean) => {
     setConnected(connected);
@@ -125,7 +149,7 @@ const LiveStudent: React.FC = () => {
 
         const messageContent = JSON.parse(greeting.body);
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage);
+        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage, messageContent.time);
       });
 
       setSubscription(newSubscription);
@@ -138,13 +162,12 @@ const LiveStudent: React.FC = () => {
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const chatMessage = {
-        roomId: currentRoom, 
+        roomId: currentRoom,
         content: content,
-        writer: userInfo ? userInfo.nickname : 'Anonymous',
+        writer: userInfo ? userInfo.nickname : null,
+        profile_image_path: userInfo?.profileImage,
         createdDate: new Date().toISOString()
       };
-
-      console.log("Student: chat message = " + JSON.stringify(chatMessage));
 
       // 메시지를 서버로 전송
       stompClient.publish({
@@ -152,30 +175,40 @@ const LiveStudent: React.FC = () => {
         body: JSON.stringify(chatMessage),
       });
 
-      // 입력 필드를 초기화하고 메시지를 UI에 추가
-      // showGreeting(currentRoom!, content, userInfo?.nickname || 'Anonymous', userInfo?.profileImage || profImage);
       setContent('');
+      // 채팅 기록 다시 로드
+      if (currentRoom) {
+        loadChatHistory(currentRoom);
+      }
     } else {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
 
-  const showGreeting = (room: string, message: string, nickname: string, profileImage: string) => {
+  const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { room, message, nickname, profileImage }
+      { 
+        room, 
+        message, 
+        nickname: nickname || '익명',
+        profileImage: profileImage || getProfileImage(nickname),
+        time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
     ]);
   };  
   
   const loadChatHistory = (classId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
+          console.log('Student-Server Response Data:', response.data);
+
           setMessages(response.data.map((msg:any) => ({
-            room: classId,
+            room: msg.roomId,
             message: msg.content,
-            // nickname: msg.writerId || '익명',
-            nickname: '익명',
-            profileImage: msg.profileImage || profImage
+            nickname: msg.writer || '익명',
+            profileImage: msg.profile_image_path || getProfileImage(msg.writer),
+            time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           })));
       })
       .catch(error => {
@@ -279,6 +312,9 @@ const LiveStudent: React.FC = () => {
   };
 
   return (
+    <>
+      {isMobile ? (
+      // 모바일 UI
     <Container>
       {showModal && (
         <Modal 
@@ -319,7 +355,6 @@ const LiveStudent: React.FC = () => {
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => (
             <div key={index} className={styles.chat}>
-              {/*
               <div className={styles.profContainer}>
                 <img
                   src={msg.profileImage}
@@ -327,11 +362,10 @@ const LiveStudent: React.FC = () => {
                   className={styles.icon}
                 />
               </div>  
-              */}
               <div className={styles.chatContainer}>
                 <div className={styles.chatInfo}>
-                  <h5>익명</h5>
-                  <p>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  <h5>{msg.nickname}</h5>
+                  <p>{msg.time}</p>
                 </div>
                 <div className={styles.chatBubble}>
                   <p>{msg.message}</p>
@@ -363,6 +397,102 @@ const LiveStudent: React.FC = () => {
         </div>
       </div>
     </Container>
+    ) : (
+      // ******************************************** //
+      // 데스크톱 UI
+      <div className={styles.desktopContainer}>
+        {showModal && (
+          <Modal 
+            title="강의를 나가시겠습니까?"
+            content="아직 강의 중이에요!"
+            leftButtonText="나가기"
+            rightButtonText="취소"
+            onLeftButtonClick={handleModalLeave}
+            onRightButtonClick={handleModalCancel}
+          />
+        )}
+        <div className={styles.desktopVideoSection}>
+          <div className={styles.desktopScreenShare}>
+            <video 
+              ref={screenShareVideoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              style={{ objectFit: isScreenClicked ? 'cover' : 'contain' }}
+            />
+          </div>
+          <div className={styles.desktopSmallVideo}>
+            <video 
+              ref={webcamVideoRef} 
+              autoPlay
+              playsInline
+              muted 
+            />
+          </div>
+        </div>
+
+        <div className={styles.desktopInfo}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.instructor}>{instructor}</p>
+        </div>
+
+        <div className={styles.desktopChatSection}>
+          <div className={styles.desktopChatWindow} ref={chatWindowRef}>
+          {messages.map((msg, index) => {
+              const isMyMessage = msg.nickname === userInfo?.nickname;
+              
+              return (
+                <div
+                key={index}
+                className={`${styles.desktopChat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
+                >
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatUserInfo}>
+                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
+                  {!isMyMessage && (
+                    <div className={styles.desktopProfContainer}>
+                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                    </div>
+                  )}
+                  <div className={styles.desktopChatInfo}>
+                      {!isMyMessage && <h5>{msg.nickname}</h5>}
+                      <p>{msg.time}</p>
+                    </div>
+                  </div>
+                  <div className={`${styles.desktopChatBubble} ${isMyMessage ? styles.desktopMyChatBubble : ''}`}>
+                      <p>{msg.message}</p>
+                    </div>
+                </div>
+              </div>);
+            })}
+          </div>
+          <div className={styles.desktopChatBackground}>
+            <div className={styles.desktopChatInput}>
+              <textarea
+                placeholder="채팅을 입력하세요."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                rows={1} // 기본 행의 높이 설정
+                style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+              />
+              <button 
+                onClick={sendMessage}
+                disabled={!connected}
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

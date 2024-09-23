@@ -1,11 +1,12 @@
 .header {
-  width: 400px;
-  height: 60px;
+  width: 100%;
+  height: 65px;
   background-color: black;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  border-bottom: 1px solid var(--border-color);
 }
 
 @media (min-width: 1184px) {
@@ -15,11 +16,19 @@
 }
 
 .logo {
-  font-family: 'Kavoon', cursive;
   font-size: 20px;
+  margin-bottom: 5px;
+  font-weight: bold;
   text-align: center;
   color: white;
   cursor: pointer;
+}
+
+@media (min-width: 1000px) {
+  .logo {
+    font-size: 20px;
+  }
+
 }
 
 .icon {
@@ -28,10 +37,18 @@
   cursor: pointer;
 }
 
-.loginText {
+.loginButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 67px;
+  height: 35px;
+  border-radius: 4px;
   color: white;
+  background-color: var(--blue-color);
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: bold;
   margin-right: 10px;
 }
 
