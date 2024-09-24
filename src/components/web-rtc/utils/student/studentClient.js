@@ -105,6 +105,7 @@ export const connectToServerAsStudent = async (
 
         //강사에 의한 강의종료시
         socket.on('teacherLeft', async () => {
+            console.log('bye');
             socket.disconnect();
             if (window.confirm('강의가 종료되었습니다.')) {
                 window.location.href = `/dashboard/student/${roomId}`;

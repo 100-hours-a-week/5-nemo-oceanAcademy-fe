@@ -82,6 +82,21 @@ export const connectToServerAsTeacher = async (
     };
 
 /*
+서버와 연결해제
+*/
+export const DisconnectToServer = async () => {
+    try {
+        console.log("끝");
+        if (socket) {
+            socket.disconnect();  // 연결 해제
+            console.log("진짜끝");
+          }
+    } catch (error) {
+        console.error('Error disconnecting to server:', error);
+    }
+};
+
+/*
 4. getUserMedia(transport, isWebcam)
 기능: 사용자의 웹캠 또는 화면에서 비디오 스트림을 가져옵니다.
 */
