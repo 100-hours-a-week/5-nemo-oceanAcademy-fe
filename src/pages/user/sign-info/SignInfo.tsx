@@ -4,15 +4,18 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './SignInfo.module.css';
 import { Container, Empty } from '../../../styles/GlobalStyles';
+import profile from '../../../assets/images/profile/profile_default.png';
 import profImage1 from '../../../assets/images/profile/crab.png';
 import profImage2 from '../../../assets/images/profile/jellyfish.png';
 import profImage3 from '../../../assets/images/profile/whale.png';
 import WideButton from '../../../components/wide-button/WideButton';
 
+/*
 interface LocationState {
   token: string;
   refreshToken: string;
 }
+*/
 
 const SignInfo: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
@@ -22,8 +25,9 @@ const SignInfo: React.FC = () => {
   const [helperText, setHelperText] = useState<string>('');
   const navigate = useNavigate();
   const location = useLocation();
-  const { token, refreshToken } = location.state as LocationState;
+  // const { token, refreshToken } = location.state as LocationState;
 
+  /*
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
@@ -88,6 +92,7 @@ const SignInfo: React.FC = () => {
       }
     }
   };
+  */
 
   return (
       <div className={styles.container}>
@@ -99,11 +104,11 @@ const SignInfo: React.FC = () => {
               type="file"
               id="fileInput"
               style={{ display: 'none' }}
-              onChange={handleFileChange}
+              // onChange={handleFileChange}
           />
           <button
               className={styles.uploadButton}
-              onClick={() => document.getElementById('fileInput')?.click()}
+              // onClick={() => document.getElementById('fileInput')?.click()}
           >
             {preview ? (
                 <img src={preview} alt="Preview" className={styles.previewImage} />
@@ -149,7 +154,7 @@ const SignInfo: React.FC = () => {
 
         <WideButton 
           text="회원 가입 완료" 
-          onClick={handleSignupComplete}
+          // onClick={handleSignupComplete}
           fixed
         />
       </div>
