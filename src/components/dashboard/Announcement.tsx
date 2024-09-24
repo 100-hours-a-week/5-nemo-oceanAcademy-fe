@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './Announcement.module.css';
 
 interface AnnouncementProps {
@@ -10,10 +10,15 @@ const Announcement: React.FC<AnnouncementProps> = ({ className, content }) => {
     // editSection : edit dashboard, editSection 클래스 추가
     const containerClass = className === 'editSection' ? `${styles.container} ${styles.editSection}` : styles.container;
     const contentClass = className === 'editSection' ? `${styles.content} ${styles.editContent}` : styles.content;
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184); // 모바일 상태 추가
 
     return (
         <div className={containerClass}>
-            <h4 className={styles.title}>강의 공지</h4>
+            {isMobile ? (
+                <h4 className={styles.title}>강의 공지</h4> ):(
+                <h4 className={styles.title}>강의 공지 (선택)</h4> )
+            }
+
             <div className={contentClass}>
                 {typeof content === 'string'
                     ? content.split('\n').map((line, index: number) => (

@@ -14,6 +14,7 @@ import { isValidTextInput, getTitleHelperText } from '../../../utils/validation'
 import Row from '../../../components/Row';
 import Column from '../../../components/Column';
 import Space from '../../../components/Space';
+import Announcement from "../../../components/dashboard/Announcement";
 
 interface Category {
   id: number;
@@ -166,6 +167,28 @@ const LectureOpen: React.FC = () => {
 
   useEffect(validateForm, [selectedCategory, title, objective, description]);
 
+  // 강의공지
+
+  const [dashboard, setDashboard] = useState({
+    instructor: '',
+    category_id: 0,
+    name: '',
+    object: '',
+    description: '',
+    instructor_info: '',
+    prerequisite: '',
+    announcement: '',
+    banner_image_path: '',
+    is_active: false,
+  });
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setDashboard(prevData => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
   return (
       <div>
         <div className={styles.desktopNavigator}>
@@ -280,7 +303,6 @@ const LectureOpen: React.FC = () => {
                       />
 
                       {/* 카테고리 선택 */}
-                      {/* 카테고리 선택 */}
                       <div className={styles.inputField}>
                         <label className={styles.label}>
                           카테고리 <span className={styles.required}>*</span>
@@ -319,6 +341,17 @@ const LectureOpen: React.FC = () => {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         helperText={descriptionHelperText}
+                    />
+
+                    {/* 강의 공지, API 수정 필요 */}
+                    <Announcement
+                        className="editSection"
+                        content={
+                          <textarea
+                              className={styles.textarea}
+                              onChange={(e) => handleInputChange('announcement', e.target.value)}
+                          />
+                        }
                     />
 
                     {/* 강사 소개 */}
