@@ -4,10 +4,9 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './SignInfo.module.css';
 import { Container, Empty } from '../../../styles/GlobalStyles';
-import profImage1 from '../../../assets/images/profile/profile_default.png';
-import profImage2 from '../../../assets/images/profile/profile_default1.png';
-import profImage3 from '../../../assets/images/profile/profile_default2.png';
-import profImage4 from '../../../assets/images/profile/profile_default3.png';
+import profImage1 from '../../../assets/images/profile/crab.png';
+import profImage2 from '../../../assets/images/profile/jellyfish.png';
+import profImage3 from '../../../assets/images/profile/whale.png';
 import WideButton from '../../../components/wide-button/WideButton';
 
 interface LocationState {

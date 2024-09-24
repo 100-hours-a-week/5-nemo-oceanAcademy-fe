@@ -26,3 +26,5 @@ yarn-error.log*
 .env
 .env_dev
 .env_prod
+# Sentry Config File
+.sentryclirc

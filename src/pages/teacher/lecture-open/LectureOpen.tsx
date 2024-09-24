@@ -122,7 +122,7 @@ const LectureOpen: React.FC = () => {
     setSelectedCategory(category);
   };
 
-  const handleBannerImageUpload = (file: File) => {
+  const handleBannerImageUpload = (file: File | null) => {
     setBannerImage(file);
   };
 

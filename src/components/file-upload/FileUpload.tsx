@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import styles from './FileUpload.module.css';
 
-const FileUpload: React.FC = () => {
+interface FileUploadProps {
+  onFileSelect: (file: File | null) => void;  // Accept a function to handle file selection
+}
+
+const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -10,8 +14,12 @@ const FileUpload: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
+
+      // parent function에 selected file을 저장함
+      onFileSelect(file);
     } else {
       alert('Invalid file. Please select a .jpg or .png file under 5MB.');
+      onFileSelect(null);
     }
   };
 
