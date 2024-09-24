@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import ReactGA from "react-ga4";
+import * as Sentry from '@sentry/react';
 import './App.css';
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
@@ -43,141 +44,143 @@ const Analytics = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Analytics />
-      <Header />
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
-        <Route path="/sign-info" element={<SignInfo />} />
-        <Route path="/list" element={<LectureList />} />
-        <Route path="/live-list" element={<LiveList />} />
+    <Sentry.ErrorBoundary fallback={<p>앱에서 오류가 발생했습니다.</p>}>
+      <Router>
+        <Analytics />
+        <Header />
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
+          <Route path="/sign-info" element={<SignInfo />} />
+          <Route path="/list" element={<LectureList />} />
+          <Route path="/live-list" element={<LiveList />} />
 
-        {/* 이하 로그인 후 접근 가능 */}
-        <Route
-          path="/enrollment"
-          element={
-            <PrivateRoute>
-              <Enrollment />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/enrollment/:classId"
-          element={
-            <PrivateRoute>
-              <Enrollment />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/lecture/info/:classId"
-          element={
-            <PrivateRoute>
-              <LectureInfo />
-            </PrivateRoute>
-          }
-        />
+          {/* 이하 로그인 후 접근 가능 */}
+          <Route
+            path="/enrollment"
+            element={
+              <PrivateRoute>
+                <Enrollment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/enrollment/:classId"
+            element={
+              <PrivateRoute>
+                <Enrollment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lecture/info/:classId"
+            element={
+              <PrivateRoute>
+                <LectureInfo />
+              </PrivateRoute>
+            }
+          />
 
-        {/* Live Routes */}
-        <Route
-          path="/live/student/:classId"
-          element={
-            <PrivateRoute>
-              <LiveStudent />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/live/teacher/:classId"
-          element={
-            <PrivateRoute>
-              <LiveTeacher />
-            </PrivateRoute>
-          }
-        />
-        
-        {/* Student Routes */}
-        <Route
-          path="/classroom"
-          element={
-            <PrivateRoute>
-              <Classroom />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dashboard/student/:classId"
-          element={
-            <PrivateRoute>
-              <DashboardStudent />
-            </PrivateRoute>
-          }
-        />
+          {/* Live Routes */}
+          <Route
+            path="/live/student/:classId"
+            element={
+              <PrivateRoute>
+                <LiveStudent />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/live/teacher/:classId"
+            element={
+              <PrivateRoute>
+                <LiveTeacher />
+              </PrivateRoute>
+            }
+          />
+          
+          {/* Student Routes */}
+          <Route
+            path="/classroom"
+            element={
+              <PrivateRoute>
+                <Classroom />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/student/:classId"
+            element={
+              <PrivateRoute>
+                <DashboardStudent />
+              </PrivateRoute>
+            }
+          />
 
-        {/* Teacher Routes */}
-        <Route
-          path="/dashboard/teacher/:classId"
-          element={
-            <PrivateRoute>
-              <DashboardTeacher />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dashboard/edit/:classId"
-          element={
-            <PrivateRoute>
-              <EditDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/lecture/created"
-          element={
-            <PrivateRoute>
-              <LectureCreated />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/lecture/created/:classId"
-          element={
-            <PrivateRoute>
-              <LectureCreated />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/lecture/open"
-          element={
-            <PrivateRoute>
-              <LectureOpen />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/lecture/students/:classId"
-          element={
-            <PrivateRoute>
-              <StudentList />
-            </PrivateRoute>
-          }
-        />
-        
-        {/* User Routes */}
-        <Route
-          path="/mypage"
-          element={
-            <PrivateRoute>
-              <MyPage />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </Router>
+          {/* Teacher Routes */}
+          <Route
+            path="/dashboard/teacher/:classId"
+            element={
+              <PrivateRoute>
+                <DashboardTeacher />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/edit/:classId"
+            element={
+              <PrivateRoute>
+                <EditDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lecture/created"
+            element={
+              <PrivateRoute>
+                <LectureCreated />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lecture/created/:classId"
+            element={
+              <PrivateRoute>
+                <LectureCreated />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lecture/open"
+            element={
+              <PrivateRoute>
+                <LectureOpen />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lecture/students/:classId"
+            element={
+              <PrivateRoute>
+                <StudentList />
+              </PrivateRoute>
+            }
+          />
+          
+          {/* User Routes */}
+          <Route
+            path="/mypage"
+            element={
+              <PrivateRoute>
+                <MyPage />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </Sentry.ErrorBoundary>
   );
 }
 
