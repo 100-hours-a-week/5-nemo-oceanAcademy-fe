@@ -9,6 +9,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/material": "^5.16.7",
     "@sentry/browser": "^8.31.0",
+    "@sentry/cli": "^2.36.2",
     "@sentry/react": "^8.31.0",
     "@sentry/tracing": "^7.114.0",
     "@stomp/stompjs": "^7.0.0",
