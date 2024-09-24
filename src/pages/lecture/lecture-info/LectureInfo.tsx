@@ -169,16 +169,16 @@ const LectureInfo: React.FC = () => {
             ) : (
                 // 데스크탑 UI
                 <Column align={"all"}>
-                <div className={styles.desktopContainer}>
-                    <Row align={"left"}>
-                        <div className={styles.desktopNavigator}>
-                            <a href="/">홈</a> &gt;
-                            <a href="/mypage"> 내 강의실</a> &gt;
-                            <span> 강의소개</span>
-                        </div>
-                    </Row>
-                    <hr />
+                <Row align={"left"}>
+                    <div className={styles.desktopNavigator}>
+                        <a href="/">홈</a> &gt;
+                        <a href="/mypage"> 내 강의실</a> &gt;
+                        <span> 강의소개</span>
+                    </div>
+                </Row>
+                <hr />
 
+                <div className={styles.desktopContainer}>
                     <Space height={"40px"}/>
 
                     {/* 강의 배너이미지 */}
