@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
+import Breadcrumb from './components/breadcrumb/Breadcrumb';
 import Main from './pages/main/Main';
 import Enrollment from './pages/lecture/enrollment/Enrollment';
 import LectureInfo from './pages/lecture/lecture-info/LectureInfo';
@@ -22,19 +23,20 @@ import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import PrivateRoute from 'components/PrivateRoute';
+import Layout from './components/Layout';
 
-const App: React.FC = () => {  
+const App: React.FC = () => {
   return (
     <Router>
       <Header />
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={ <Main /> }/>
+        <Route path="/login" element={ <Login /> } />
         <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
-        <Route path="/sign-info" element={<SignInfo />} />
-        <Route path="/list" element={<LectureList />} />
-        <Route path="/live-list" element={<LiveList />} />
+        <Route path="/sign-info" element={ <SignInfo /> }/>
+        <Route path="/list" element={ <LectureList /> } />
+        <Route path="/live-list" element={ <LiveList /> } />
 
         {/* 이하 로그인 후 접근 가능 */}
         <Route
@@ -57,7 +59,9 @@ const App: React.FC = () => {
           path="/lecture/info/:classId"
           element={
             <PrivateRoute>
-              <LectureInfo />
+              <Layout>
+                <LectureInfo />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -79,13 +83,15 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
-        
+
         {/* Student Routes */}
         <Route
           path="/classroom"
           element={
             <PrivateRoute>
-              <Classroom />
+              <Layout>
+                <Classroom />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -93,7 +99,9 @@ const App: React.FC = () => {
           path="/dashboard/student/:classId"
           element={
             <PrivateRoute>
-              <DashboardStudent />
+              <Layout>
+                <DashboardStudent />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -103,7 +111,9 @@ const App: React.FC = () => {
           path="/dashboard/teacher/:classId"
           element={
             <PrivateRoute>
-              <DashboardTeacher />
+              <Layout>
+                <DashboardTeacher />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -111,7 +121,9 @@ const App: React.FC = () => {
           path="/dashboard/edit/:classId"
           element={
             <PrivateRoute>
-              <EditDashboard />
+              <Layout>
+                <EditDashboard />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -119,7 +131,9 @@ const App: React.FC = () => {
           path="/lecture/created"
           element={
             <PrivateRoute>
-              <LectureCreated />
+              <Layout>
+                <LectureCreated />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -127,7 +141,9 @@ const App: React.FC = () => {
           path="/lecture/created/:classId"
           element={
             <PrivateRoute>
-              <LectureCreated />
+              <Layout>
+                <LectureCreated />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -135,7 +151,9 @@ const App: React.FC = () => {
           path="/lecture/open"
           element={
             <PrivateRoute>
-              <LectureOpen />
+              <Layout>
+                <LectureOpen />
+              </Layout>
             </PrivateRoute>
           }
         />
@@ -143,17 +161,21 @@ const App: React.FC = () => {
           path="/lecture/students/:classId"
           element={
             <PrivateRoute>
-              <StudentList />
+              <Layout>
+                <StudentList />
+              </Layout>
             </PrivateRoute>
           }
         />
-        
+
         {/* User Routes */}
         <Route
           path="/mypage"
           element={
             <PrivateRoute>
-              <MyPage />
+              <Layout>
+                <MyPage />
+              </Layout>
             </PrivateRoute>
           }
         />

@@ -1,0 +1,23 @@
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    padding: 5px 10px;
+    padding-bottom: 0;
+  }
+  
+  .breadcrumbItem {
+    text-decoration: none;
+    color: #0073e6;
+    margin-right: 8px;
+  }
+  
+  .breadcrumbItem:hover {
+    text-decoration: underline;
+  }
+  
+  .separator {
+    margin-right: 8px;
+    color: #aaa;
+  }
