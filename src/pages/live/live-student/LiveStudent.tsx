@@ -278,14 +278,7 @@ const LiveStudent: React.FC = () => {
     if (classId) {
       handleConnect();
     }
-  },
-  [classId]);
-
-  // useEffect(() => {
-  //   return () => {
-  //     //언마운트 로직
-  //   };
-  // }, []);
+  },[classId]);
 
   useEffect(() => {
     if (chatWindowRef.current) {

@@ -73,7 +73,6 @@ export const connectToServerAsTeacher = async (
             });
 
             socket.on('newProducer', (producer) => {
-                console.log('New producer:', producer);
             });
         } catch (error) {
             console.error('Error connecting to server:', error);
@@ -86,10 +85,8 @@ export const connectToServerAsTeacher = async (
 */
 export const DisconnectToServer = async () => {
     try {
-        console.log("끝");
         if (socket) {
             socket.disconnect();  // 연결 해제
-            console.log("진짜끝");
           }
     } catch (error) {
         console.error('Error disconnecting to server:', error);
