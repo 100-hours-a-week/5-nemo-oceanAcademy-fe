@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LectureMeta from '../../../components/dashboard/LectureMeta';
 import Banner from '../../../components/dashboard/Banner';
@@ -25,6 +25,7 @@ const EditDashboard: React.FC = () => {
     is_active: false,
   });
   const token = localStorage.getItem('accessToken');
+  const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
 
   // 기존 강의 정보 불러오기
   useEffect(() => {
@@ -78,6 +79,14 @@ const EditDashboard: React.FC = () => {
       alert('Invalid file. Please select a .jpg or .png file under 5MB.');
     }
   };
+
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      console.log('fileInputRef exists');  // 참조 확인
+      fileInputRef.current.click();
+    }
+  };
+
 
   // 저장 핸들러 (API 요청)
   const handleSave = async () => {
@@ -222,32 +231,33 @@ const EditDashboard: React.FC = () => {
         <div className={styles.imagetitle}>
             <h4>강의 배너 사진 업로드</h4>
         </div>
-        <Banner image={dashboard.banner_image_path}>
+        <Banner image={dashboard.banner_image_path}></Banner>
+        <div>
+          <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ visibility: 'hidden', position: 'absolute' }} 
+          />
 
-            <input
-                type="file"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-                id="bannerImageInput"
-            />
-            <button
-                className={styles.uploadButton}
-                onClick={() => document.getElementById('bannerImageInput')?.click()}
-            >
-                {dashboard.banner_image_path ? '이미지 변경' : '이미지 등록'}
-            </button>
-        </Banner>
-
-        <div className={styles.warningtext}>
+          <div className={styles.warningtext}>
             <li>사진은 1개만 업로드할 수 있습니다.</li>
             <li>파일 사이즈는 350*100을 권장합니다.</li>
             <li>파일 확장자는 .jpg, .png만 가능합니다</li>
             <li>5MB이하의 파일만 업로드할 수 있습니다.</li>
+          </div>
+
+          <button
+              className={styles.uploadButton}
+              onClick={handleImageClick}
+          >
+            {dashboard.banner_image_path ? '이미지 변경' : '이미지 등록'}
+          </button>
         </div>
 
       <div className={styles.buttonContainer}>
         <button className={styles.cancelButton} onClick={handleCancel}>취소</button>
-        <button className={styles.saveButton}>수정 완료</button>
+        <button className={styles.saveButton} onClick={handleSave}>수정 완료</button>
       </div>
 
 
