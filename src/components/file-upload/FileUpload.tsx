@@ -37,7 +37,6 @@ const FileUpload: React.FC = () => {
       </div>
       <p className={styles.instructions}>
         사진은 1개만 업로드할 수 있습니다.<br />
-        파일 사이즈는 1184px*373px을 권장합니다.<br />
         파일 확장자는 .jpg, .png만 가능합니다.<br />
         5MB 이하의 파일만 업로드할 수 있습니다.
       </p>
