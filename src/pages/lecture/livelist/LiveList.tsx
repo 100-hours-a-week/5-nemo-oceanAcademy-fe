@@ -11,15 +11,15 @@ import { Container } from '../../../styles/GlobalStyles';
 // import images
 import emptyImage from '../../../assets/images/utils/empty.png';
 import image1 from '../../../assets/images/banner/image1.png';
-import image2 from '../../../assets/images/banner/image2.png';
+import image2 from '../../../assets/images/banner/image2.jpeg';
 import image3 from '../../../assets/images/banner/image3.png';
 import image4 from '../../../assets/images/banner/image4.png';
-import image5 from '../../../assets/images/banner/image5.png';
+import image5 from '../../../assets/images/banner/image5.jpeg';
 import image6 from '../../../assets/images/banner/image6.png';
 import image7 from '../../../assets/images/banner/image7.png';
-import image8 from '../../../assets/images/banner/image8.png';
+import image8 from '../../../assets/images/banner/image8.jpeg';
 import image9 from '../../../assets/images/banner/image9.png';
-import image10 from '../../../assets/images/banner/image10.png';
+import image10 from '../../../assets/images/banner/image10.jpeg';
 
 // 기본 이미지 배열
 const defaultImages = [
