@@ -1,53 +1,86 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './CategorySelect.module.css';
 
 interface Category {
-    id: number; // 'category_id' 대신 'id'로 설정
+    id: number;
     name: string;
 }
 
-// 강의 개설 페이지를 위해 defaultVal, defaultName이라는 optional 매개변수 추가
 interface CategorySelectProps {
-    categories: Category[]; // Category 타입 사용
+    categories: Category[];
     selected: string;
     onSelectCategory: (category: string) => void;
-    defaultVal?: string;  
+    defaultVal?: string;
     defaultName?: string;
 }
 
-const CategorySelect: React.FC<CategorySelectProps> = ({ 
-    categories = [], 
-    selected, 
-    onSelectCategory, 
-    defaultVal = "전체 카테고리", 
-    defaultName = "전체 카테고리" 
-}) => {
-    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        onSelectCategory(event.target.value);
+const CategorySelect: React.FC<CategorySelectProps> = ({
+                                                           categories = [],
+                                                           selected,
+                                                           onSelectCategory,
+                                                           defaultVal = '',
+                                                           defaultName = '카테고리 선택'
+                                                       }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // 외부 클릭 시 드롭다운 닫기
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
+    const handleSelect = (category: string) => {
+        onSelectCategory(category);
+        setIsOpen(false);
     };
 
     return (
-        <div className={styles.categoryContainer}>
-            <select 
-                className={styles.categoryDropdown} 
-                value={selected || defaultVal} 
-                onChange={handleChange}
-            >
-                {defaultVal === '' ? (
-                    <option value={defaultVal} disabled hidden>{defaultName}</option> // 빈 문자열일 때는 선택 불가능한 placeholder로 설정
-                ) : (
-                    <option value={defaultVal}>{defaultName}</option> // 빈 문자열이 아닐 때는 일반 옵션으로 설정
-                )}
-                {categories.length > 0 ? (
-                    categories.map((category) => (
-                        <option key={category.id} value={category.name}>
-                            {category.name}
-                        </option>
-                    ))
-                ) : (
-                    <option value="">카테고리 없음</option>
-                )}
-            </select>
+        <div className={styles.categoryContainer} ref={dropdownRef}>
+            <div className={styles.dropdownHeader} onClick={toggleDropdown}>
+                {selected || defaultName}
+                <span className={styles.arrow}>
+                    {isOpen ? (
+                        <span className="material-symbols-outlined">keyboard_arrow_up</span>
+                    ) : (
+                        <span className="material-symbols-outlined">keyboard_arrow_down</span>
+                    )}
+                </span>
+            </div>
+            {isOpen && (
+                <ul className={styles.dropdownList}>
+                    {defaultVal && (
+                        <li
+                            className={styles.dropdownItem}
+                            onClick={() => handleSelect(defaultVal)}
+                        >
+                            {defaultName}
+                        </li>
+                    )}
+                    {categories.length > 0 ? (
+                        categories.map((category) => (
+                            <li
+                                key={category.id}
+                                className={styles.dropdownItem}
+                                onClick={() => handleSelect(category.name)}
+                            >
+                                {category.name}
+                            </li>
+                        ))
+                    ) : (
+                        <li className={styles.dropdownItem}>카테고리 없음</li>
+                    )}
+                </ul>
+            )}
         </div>
     );
 };
