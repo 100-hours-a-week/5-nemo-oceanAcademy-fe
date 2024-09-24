@@ -278,7 +278,7 @@ const LiveStudent: React.FC = () => {
     if (classId) {
       handleConnect();
     }
-  }, [classId]);
+  },[classId]);
 
   useEffect(() => {
     if (chatWindowRef.current) {
