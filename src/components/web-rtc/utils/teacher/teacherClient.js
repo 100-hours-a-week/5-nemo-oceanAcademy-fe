@@ -73,13 +73,25 @@ export const connectToServerAsTeacher = async (
             });
 
             socket.on('newProducer', (producer) => {
-                console.log('New producer:', producer);
             });
         } catch (error) {
             console.error('Error connecting to server:', error);
             setConnectionStatus('Connection failed');
         }
     };
+
+/*
+서버와 연결해제
+*/
+export const DisconnectToServer = async () => {
+    try {
+        if (socket) {
+            socket.disconnect();  // 연결 해제
+          }
+    } catch (error) {
+        console.error('Error disconnecting to server:', error);
+    }
+};
 
 /*
 4. getUserMedia(transport, isWebcam)
