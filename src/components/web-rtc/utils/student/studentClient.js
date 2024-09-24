@@ -2,6 +2,7 @@ import * as mediasoup from 'mediasoup-client';
 import * as socketClient from 'socket.io-client';
 import { promise as socketPromise } from '../../utils/promise';
 import { getServerUrl } from '../../serverUrl';
+import { useNavigate } from 'react-router-dom';
 
 let socket;
 let device;
@@ -48,7 +49,6 @@ export const connectToServerAsStudent = async (
             await loadDevice(data);
 
             const mediaProducers = await socket.request('getProducers', roomId);
-            console.log("mediaProducer 출력 : ", mediaProducers);
 
             // 각 프로듀서에 대해 존재 여부를 확인하고 작업 수행
             Object.values(Producers).forEach( async (producerKind) => {
@@ -56,7 +56,6 @@ export const connectToServerAsStudent = async (
                 
                 if (producer) {
                     // [x] 프로듀서가 존재하는 경우, consumer를 만들어서 재생할 수 있어야 함
-                    console.log(`Producer ${producerKind} is present.`);
 
                     const transport = await createConsumerTransport(roomId, producerKind); 
 
@@ -102,6 +101,13 @@ export const connectToServerAsStudent = async (
             });
         });
 
+        //강사에 의한 강의종료시
+        socket.on('teacherLeft', async () => {
+            socket.disconnect();
+            alert("강의가 종료되었습니다.");
+            window.location.href = `/dashboard/student/${roomId}`;
+        });
+
         socket.on('disconnect', () => {
             setConnectionStatus('Disconnected');
             setIsSubscriptionDisabled(true);
@@ -114,13 +120,10 @@ export const connectToServerAsStudent = async (
 
 
         socket.on('newProducer', async ({ roomId, producerKind }) => {
-            console.log('Received Room ID:', roomId); // 로그 추가
-            console.log('Received Producer Kind:', producerKind); // 로그 추가
         
             const transport = await createConsumerTransport(roomId, producerKind); 
 
             transport.on('connect', ({ dtlsParameters }, callback, errback) => {
-            console.log("transport connect!!!");
             socket.request('connectConsumerTransport', {
                 roomId, // 방 ID 전달
                 //  [x] 서버 코드 수정 필요
@@ -241,7 +244,6 @@ const createConsumer = async (transport, roomId, producerKind) => {
         }
 
         let codecOptions = {};
-        console.log(111);
         const consumer = await transport.consume({
             id,
             producerId,
@@ -249,7 +251,6 @@ const createConsumer = async (transport, roomId, producerKind) => {
             rtpParameters,
             codecOptions
         });
-        console.log("consumer는", consumer);
 
         return consumer;
     } catch (error) {

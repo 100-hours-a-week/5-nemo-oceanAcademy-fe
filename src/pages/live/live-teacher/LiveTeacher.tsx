@@ -10,6 +10,7 @@ import { Container } from '../../../styles/GlobalStyles';
 import {
   Producer,
   connectToServerAsTeacher,
+  DisconnectToServer,
   startWebcamStream,
   stopWebcamStream,
   startScreenShareStream,
@@ -323,6 +324,71 @@ const LiveTeacher: React.FC = () => {
         });
     }
   }, [classId]);
+
+  //언마운트 시점에서 isWebcamOn과 webcamProducer의 상태를 정확히 반영할 수있도록 상태 등록
+  const webcamOnRef = useRef(isWebcamOn);
+  const screenShareOnRef = useRef(isScreenShareOn);
+  const microphoneOnRef = useRef(isMicrophoneOn);
+  const systemAudioOnRef = useRef(isSystemAudioOn);
+  
+  const webcamProducerRef = useRef(webcamProducer);
+  const screenShareProducerRef = useRef(screenShareProducer);
+  const microphoneProducerRef = useRef(microphoneProducer);
+  const systemAudioProducerRef = useRef(systemAudioProducer);
+  
+  // isWebcamOn과 webcamProducer 상태가 변경될 때마다 Ref를 업데이트
+  useEffect(() => {
+    webcamOnRef.current = isWebcamOn;
+    webcamProducerRef.current = webcamProducer;
+
+    screenShareOnRef.current = isScreenShareOn;
+    screenShareProducerRef.current = screenShareProducer;
+
+    microphoneOnRef.current = isMicrophoneOn;
+    microphoneProducerRef.current = microphoneProducer;
+
+    systemAudioOnRef.current = isSystemAudioOn;
+    systemAudioProducerRef.current = systemAudioProducer;
+}, [
+    isWebcamOn, webcamProducer,
+    isScreenShareOn, screenShareProducer,
+    isMicrophoneOn, microphoneProducer,
+    isSystemAudioOn, systemAudioProducer
+]);
+  
+//언마운트 로직 추가
+  useEffect(() => {
+      return () => {
+        //각 스트림 종료 처리
+        if (webcamOnRef.current && webcamProducerRef.current) {
+          stopWebcamStream(webcamProducerRef.current, () => {});
+          setWebcamProducer(null);
+          setIsWebcamOn(false);
+        }
+
+        if (screenShareOnRef.current && screenShareProducerRef.current) {
+            stopScreenShareStream(screenShareProducerRef.current, () => {});
+            setScreenShareProducer(null);
+            setIsScreenShareOn(false);
+        }
+
+        if (microphoneOnRef.current && microphoneProducerRef.current) {
+            stopMicrophoneStream(microphoneProducerRef.current, () => {});
+            setMicrophoneProducer(null);
+            setIsMicrophoneOn(false);
+        }
+
+        if (systemAudioOnRef.current && systemAudioProducerRef.current) {
+            stopSystemAudioStream(systemAudioProducerRef.current, () => {});
+            setSystemAudioProducer(null);
+            setIsSystemAudioOn(false);
+        }
+
+          //웹소캣 연결 종료
+          DisconnectToServer();
+      };
+  }, []);
+
 
   // 웹캠 스트림 시작/중지 핸들러
   const handleStartWebcam = async () => {
