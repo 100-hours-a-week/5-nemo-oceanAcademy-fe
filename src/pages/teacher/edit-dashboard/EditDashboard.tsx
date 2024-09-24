@@ -12,6 +12,8 @@ import endpoints from '../../../api/endpoints';
 const EditDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { classId } = useParams<{ classId: string }>();
+  const [selectedFile, setSelectedFile] = useState<File | null | undefined>(null);
+  
   const [dashboard, setDashboard] = useState({
     instructor: '',
     category_id: 0,
@@ -73,6 +75,7 @@ const EditDashboard: React.FC = () => {
   // 파일 변경 핸들러 (이미지)
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    setSelectedFile(file);
     if (file && (file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
       const reader = new FileReader();
       reader.onloadend = () => handleInputChange('banner_image_path', reader.result as string);
@@ -93,22 +96,29 @@ const EditDashboard: React.FC = () => {
   // 저장 핸들러 (API 요청)
   const handleSave = async () => {
     const formData = new FormData();
+    // 카테고리는 수정 x
+    const classroomUpdateDto = {
+      name: dashboard.name,
+      object: dashboard.object,
+      description: dashboard.description,
+      instructorInfo: dashboard.instructor_info,
+      prerequisite: dashboard.prerequisite || null,
+      announcement: dashboard.announcement || null,
+    };
 
-    formData.append('categoryId', String(dashboard.category_id));
-    formData.append('name', dashboard.name);
-    formData.append('object', dashboard.object);
-    formData.append('description', dashboard.description);
-    formData.append('instructorInfo', dashboard.instructor_info);
-    formData.append('prerequisite', dashboard.prerequisite);
-    formData.append('announcement', dashboard.announcement);
-    if (dashboard.banner_image_path) formData.append('bannerImagefile', dashboard.banner_image_path);
-    formData.append('isActive', String(dashboard.is_active));
+    formData.append('classroomUpdateDto', new Blob([JSON.stringify(classroomUpdateDto)], { type: 'application/json' }));
+
+    // 이미지 파일 추가
+    if (selectedFile) {
+      formData.append('imagefile', selectedFile || null); // key를 'imagefile'로 설정
+    }
+
+
 
     try {
       const response = await axios.patch(endpoints.getLectureInfo.replace('{classId}', classId || ''), formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
         },
       });
 
@@ -157,7 +167,7 @@ const EditDashboard: React.FC = () => {
                     }}
                     className={styles.input}
                     value={dashboard.name}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                 />
 
             }
@@ -183,7 +193,7 @@ const EditDashboard: React.FC = () => {
           <textarea
             className={styles.textarea}
             value={dashboard.object}
-            onChange={(e) => handleInputChange('objective', e.target.value)}
+            onChange={(e) => handleInputChange('object', e.target.value)}
           />
         }
       />
@@ -211,7 +221,7 @@ const EditDashboard: React.FC = () => {
           <textarea
             className={styles.textarea}
             value={dashboard.instructor_info}
-            onChange={(e) => handleInputChange('instructorInfo', e.target.value)}
+            onChange={(e) => handleInputChange('instructor_info', e.target.value)}
           />
         }
       />
