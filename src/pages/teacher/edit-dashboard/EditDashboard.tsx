@@ -15,6 +15,7 @@ const EditDashboard: React.FC = () => {
   const [dashboard, setDashboard] = useState({
     instructor: '',
     category_id: 0,
+    category: '',
     name: '',
     object: '',
     description: '',
@@ -40,6 +41,7 @@ const EditDashboard: React.FC = () => {
         setDashboard({
           instructor: lecture.instructor,
           category_id: lecture.category_id,
+          category: lecture.category,
           name: lecture.name,
           object: lecture.object,
           description: lecture.description,
@@ -131,9 +133,9 @@ const EditDashboard: React.FC = () => {
         <LectureMeta
             className="editSection"
             instructor={dashboard.instructor}
-            category={
-                <div />
-            }
+            category=
+              {dashboard.category}
+            
         />
         <div style={{"width" : "100%", "height" : "10px"}}/>
 
