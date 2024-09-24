@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import ReactGA from "react-ga4";
 import './App.css';
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
@@ -23,9 +24,27 @@ import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import PrivateRoute from 'components/PrivateRoute';
 
-const App: React.FC = () => {  
+// 페이지뷰를 추적하는 컴포넌트
+const Analytics = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const trackingId = process.env.REACT_APP_GA_TRACKING_ID;
+    if (trackingId) {
+      ReactGA.initialize(trackingId);
+      ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+    } else {
+      console.error('구글 애널리틱스 추적 ID가 설정되지 않았습니다.');
+    }
+  }, [location]);
+
+  return null;
+};
+
+const App: React.FC = () => {
   return (
     <Router>
+      <Analytics />
       <Header />
       <ScrollToTop />
       <Routes>
