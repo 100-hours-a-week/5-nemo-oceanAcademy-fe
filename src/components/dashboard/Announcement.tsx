@@ -14,10 +14,14 @@ const Announcement: React.FC<AnnouncementProps> = ({ className, content }) => {
 
     return (
         <div className={containerClass}>
-            {isMobile ? (
-                <h4 className={styles.title}>강의 공지</h4> ):(
-                <h4 className={styles.title}>강의 공지 (선택)</h4> )
+            {
+                window.location.pathname === '/lecture/open' ? (
+                    <h4 className={styles.title}>강의 공지 (선택)</h4>
+                ) : (
+                    <h4 className={styles.title}>강의 공지</h4>
+                )
             }
+
 
             <div className={contentClass}>
                 {typeof content === 'string'
