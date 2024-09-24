@@ -124,7 +124,7 @@ const EditDashboard: React.FC = () => {
 
       if (response.status === 200) {
         alert('수정이 완료되었습니다.');
-        navigate(`/teacher/dashboard/${classId}`);
+        navigate(`/dashboard/teacher/${classId}`);
       } else {
         alert('수정에 실패했습니다. 다시 시도해주세요.');
       }
