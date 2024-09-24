@@ -25,7 +25,6 @@ import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import PrivateRoute from 'components/PrivateRoute';
 
-// 페이지뷰를 추적하는 컴포넌트
 const Analytics = () => {
   const location = useLocation();
 
@@ -44,7 +43,12 @@ const Analytics = () => {
 
 const App: React.FC = () => {
   return (
-    <Sentry.ErrorBoundary fallback={<p>앱에서 오류가 발생했습니다.</p>}>
+    <Sentry.ErrorBoundary 
+      fallback={<p>앱에서 오류가 발생했습니다.</p>}
+      onError={(error, componentStack) => {
+        console.error("Sentry에 의해 잡힌 오류:", error);
+      }}
+    >
       <Router>
         <Analytics />
         <Header />
@@ -56,6 +60,7 @@ const App: React.FC = () => {
           <Route path="/sign-info" element={<SignInfo />} />
           <Route path="/list" element={<LectureList />} />
           <Route path="/live-list" element={<LiveList />} />
+          <Route path="/test-sign" element={<SignInfo />} />
 
           {/* 이하 로그인 후 접근 가능 */}
           <Route
