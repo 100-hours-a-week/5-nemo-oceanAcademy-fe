@@ -13,7 +13,7 @@ import DefaultInstructorImage from './InstructorImage.png';
 import DefaultLecturebannerImage from './LecturebannerImage.png';
 
 interface Lecture {
-    id: number;
+    id: number; // class ID
     user_id: number;
     category_id: number;
     instructor: string;
@@ -65,7 +65,7 @@ const LectureInfo: React.FC = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch user role:', error);
-                setIsEnrolled(false);
+                setIsEnrolled(false); // 오류 시 수강 신청 버튼을 표시
             }
         };
 
@@ -85,6 +85,7 @@ const LectureInfo: React.FC = () => {
 
     const handleButtonClick = async () => {
         if (isEnrolled) {
+            console.log('수강신청 되어 있나요?: ', isEnrolled);
             navigate(`/dashboard/student/${classId}`);
         } else {
             try {
@@ -100,8 +101,18 @@ const LectureInfo: React.FC = () => {
                     navigate(`/enrollment/${classId}`);
                 }
             } catch (error) {
-                console.error('Enrollment request failed:', error);
-                alert('수강신청을 실패했습니다.');
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 401) {
+                        alert('권한이 없습니다. 로그인 후 다시 시도해주세요.');
+                    } else if (error.response?.status === 400) {
+                        alert(error.response.data.message || '수강신청을 실패했습니다.');
+                    } else {
+                        alert('알 수 없는 오류가 발생했습니다.');
+                    }
+                } else {
+                    console.error('Enrollment request failed:', error);
+                    alert('수강신청을 실패했습니다.');
+                }
             }
         }
     };
@@ -112,22 +123,41 @@ const LectureInfo: React.FC = () => {
 
     return (
         <div>
-            <div className={styles.desktopNavigator}>
-                <a href="/">홈</a> &gt;
-                <a href="/mypage"> 내 강의실</a> &gt;
-                <span> 강의소개</span>
-            </div>
-            <hr />
-
             {isMobile ? (
                 // 모바일 UI
                 <div className={styles.mobileContainer}>
+
+                    {/* 강의 제목 */}
                     <h1 className={styles.title}>{lecture.name}</h1>
+
+                    {/* 강의 배너 이미지 */}
                     <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || DefaultLecturebannerImage})` }}></div>
+
+                    {/* 강의 카테고리 */}
                     <div className={styles.category}>{lecture.category}</div>
 
+                    {/* 강의 목표 정보 */}
                     <div className={styles.infoSection}>
-                        <p className={styles.infoContent}>{lecture.description || '등록된 강의 소개가 없습니다.'}</p>
+                        <h3 className={styles.infoTitle}>강의 목표</h3>
+                        <p className={styles.infoContent}>{lecture.object || '강의 목표 정보 없음'}</p>
+                    </div>
+
+                    {/* 강의 소개 */}
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>강의 소개</h3>
+                        <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
+                    </div>
+
+                    {/* 강사 소개 */}
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>강사 소개</h3>
+                        <p className={styles.infoContent}>{lecture.instructor_info || '강사 소개 정보 없음'}</p>
+                    </div>
+
+                    {/* 사전 준비 사항 */}
+                    <div className={styles.infoSection}>
+                        <h3 className={styles.infoTitle}>사전 준비 사항</h3>
+                        <p className={styles.infoContent}>{lecture.prerequisite || '사전 준비 사항 정보 없음'}</p>
                     </div>
 
                     <div className={styles.buttonContainer}>
@@ -140,8 +170,14 @@ const LectureInfo: React.FC = () => {
                 // 데스크탑 UI
                 <Column align={"all"}>
                 <div className={styles.desktopContainer}>
-
-
+                    <Row align={"left"}>
+                        <div className={styles.desktopNavigator}>
+                            <a href="/">홈</a> &gt;
+                            <a href="/mypage"> 내 강의실</a> &gt;
+                            <span> 강의소개</span>
+                        </div>
+                    </Row>
+                    <hr />
 
                     <Space height={"40px"}/>
 
