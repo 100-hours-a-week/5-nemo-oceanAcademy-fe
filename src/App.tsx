@@ -24,6 +24,7 @@ import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import PrivateRoute from 'components/PrivateRoute';
+import NotFound from 'components/NotFound';
 
 const Analytics = () => {
   const location = useLocation();
@@ -183,6 +184,9 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           />
+
+          <Route path="*" element={<NotFound />} />
+        
         </Routes>
       </Router>
     </Sentry.ErrorBoundary>
