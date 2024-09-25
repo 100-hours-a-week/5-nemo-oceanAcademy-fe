@@ -258,8 +258,8 @@ const MyPage: React.FC = () => {
             완료
           </button>
         ) : (
-          <button className={styles.editButton} onClick={handleEditClick}>
-            <img src={editImage} alt="Edit" className={styles.editButtonImage} />
+          <button className={styles.saveButton} onClick={handleEditClick}>
+            수정
           </button>
         )}
       </div>
