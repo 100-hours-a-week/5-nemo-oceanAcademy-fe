@@ -19,7 +19,7 @@ import endpoints from '../../../api/endpoints';
 import bn from '../../../assets/images/banner/banner_ex.jpeg';
 
 interface Schedule {
-  schedule_id: number;
+  id: number;
   class_id: number;
   content: string;
   date: string;
@@ -158,9 +158,7 @@ const DashboardTeacher: React.FC = () => {
 
   const handleScheduleDelete = async (schedule_id: number) => {
     try {
-      const response = await axios({
-        method: 'delete',
-        url: endpoints.lectureSchedule.replace('{classId}', classId || ''),
+      const response = await axios.delete(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -168,7 +166,7 @@ const DashboardTeacher: React.FC = () => {
       });
   
       if (response.status === 200) {
-        const updatedSchedules = schedules.filter(schedule => schedule.schedule_id !== schedule_id);
+        const updatedSchedules = schedules.filter(schedule => schedule.id !== schedule_id);
         setSchedules(updatedSchedules);
       } else {
         alert('일정 삭제에 실패했습니다. 다시 시도해 주세요.');
