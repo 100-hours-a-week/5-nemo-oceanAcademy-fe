@@ -61,7 +61,7 @@ const Main: React.FC = () => {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[Math.floor(Math.random() * defaultImages.length)],
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
           instructor: item.instructor,
           category: item.category
         }));
@@ -112,7 +112,7 @@ const Main: React.FC = () => {
           <Empty height="10px" />
           <div className={styles.titleSection}>
             <h1 className={styles.sectionTitle}>
-              인기를 끌고 있는 라이브 강의!<br/> 지금 바로 수강 레쯔ㅋ고
+              🔴 Live: 모두가 주목하는 실시간 라이브 강의
             </h1>
             <span className={styles.link} onClick={() => navigate('/live-list')}>
               라이브 중인 강의 보러 가기 &gt;

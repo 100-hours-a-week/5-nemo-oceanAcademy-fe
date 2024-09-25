@@ -17,6 +17,10 @@ import endpoints from '../../../api/endpoints';
 
 // import image
 import bn from '../../../assets/images/banner/banner_ex.jpeg';
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Schedule {
   schedule_id: number;
@@ -39,6 +43,7 @@ interface Dashboard {
   instructor_info: string;
   prerequisite: string;
   announcement: string;
+  student_count: number;
   banner_image_path: string;
   is_active: boolean; // 라이브 중인가요? 
 }
@@ -49,8 +54,18 @@ const DashboardTeacher: React.FC = () => {
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
   const [studentCount, setStudentCount] = useState<number>(0);
   const token = localStorage.getItem('accessToken');
+
+  const getProfileImage = (nickname: string): string => {
+    let hash = 0;
+    for (let i = 0; i < nickname.length; i++) {
+      hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash % profileImages.length);
+    return profileImages[index];
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -61,7 +76,8 @@ const DashboardTeacher: React.FC = () => {
           },
         });
         setDashboard(response.data.data);
-        
+        console.log(response.data.data);
+        setProfileImage(getProfileImage(response.data.data.instructor));
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
         alert('강의 정보를 불러오는 데 실패했습니다.');
@@ -180,39 +196,85 @@ const DashboardTeacher: React.FC = () => {
   };
 
   return (
-      <Container>
+      <div className={styles.container}>
         {dashboard && (
-            <>
-              <LectureMeta
-                instructor={dashboard.instructor}
-                title={dashboard.name}
-                category={dashboard.category}
-              />
-              <Empty height="10px" />
-              <div className={styles.buttonContainer}>
-                <button className={styles.primaryButton} onClick={() => navigate(`/lecture/info/${classId}`)}>
-                  강의 소개 보러가기
-                </button>
+          <>
+            <div
+              className={styles.banner}
+              style={{ backgroundImage: `url(${dashboard.banner_image_path || bn})` }}
+            />
+            
+            <section className={styles.basicInfo}>
+              <p className={styles.category}>
+                {dashboard.category}
+              </p>
+              <div className={styles.row}>
+                <div className={styles.title}>
+                  {dashboard.name}
+                </div>
+                <div className={styles.button}>
+                  수강신청
+                </div>
               </div>
-              <Empty height="10px" />
-              <Banner image={dashboard.banner_image_path || bn} />
-              <Empty height="10px" />
-              <Announcement content={dashboard.announcement} />
-              <Empty height="10px" />
-              <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
-              <Empty height="10px" />
-              <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
-              <Empty height="10px" />
-              <StudentCount count={studentCount} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
-              <Empty height="10px" />
-              <InfoSection title="강의 목표" content={dashboard.object} />
-              <Empty height="10px" />
-              <InfoSection title="강의 소개" content={dashboard.description} />
-              <Empty height="10px" />
-              <InfoSection title="강사 소개" content={dashboard.instructor_info} />
-              <Empty height="10px" />
-              <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
-            </>
+            </section>
+
+            <section className={styles.instructorSection}>
+              <img src={profileImage} alt="instructor profile image" />
+              <div className={styles.column}>
+                <h5>{dashboard.instructor}</h5>
+                <p>{dashboard.instructor_info}</p>
+              </div>
+            </section>
+
+            <section className={styles.info}>
+              <h5>강의 소개</h5>
+              <div className={styles.divider} />
+              <p>{dashboard.description}</p>
+            </section>
+
+            <section className={styles.info}>
+              <h5>강의 목표</h5>
+              <p>{dashboard.object}</p>  
+            </section>
+
+            <div className={styles.divider} />
+
+            <section className={styles.info}>
+              <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
+              <p>{dashboard.prerequisite}</p>
+            </section>
+          </>
+        )}
+      </div>
+
+      /*
+      <Container>
+
+
+            <div className={styles.buttonContainer}>
+              <button className={styles.primaryButton} onClick={() => navigate(`/lecture/info/${classId}`)}>
+                강의 소개 보러가기
+              </button>
+            </div>
+
+            <Banner image={dashboard.banner_image_path || bn} />
+
+            <Announcement content={dashboard.announcement} />
+
+            <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
+
+            <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
+
+            <StudentCount count={studentCount} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
+
+            <InfoSection title="강의 목표" content={dashboard.object} />
+
+            <InfoSection title="강의 소개" content={dashboard.description} />
+
+            <InfoSection title="강사 소개" content={dashboard.instructor_info} />
+
+            <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
+          </>
         )}
         <div className={styles.bottomButtons}>
           <button className={styles.editButton} onClick={() => navigate(`/dashboard/edit/${classId}`)}>정보 수정하기</button>
@@ -234,6 +296,7 @@ const DashboardTeacher: React.FC = () => {
             />
         )}
       </Container>
+    */
   );
 };
 

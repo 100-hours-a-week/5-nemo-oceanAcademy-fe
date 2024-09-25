@@ -52,6 +52,7 @@ p {
 
 /* 기본 버튼 스타일 */
 button {
+    border: none;
     cursor: pointer;
 }
   
