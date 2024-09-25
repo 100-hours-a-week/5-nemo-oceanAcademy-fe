@@ -4,7 +4,11 @@
     
     --border-color: #5D5D5D;
     --blue-color: #2A62F2;
+    --blue-bgr-color: #EBF1FF;
     --red-color: #FF3333;
+    --red-txt-color: #F22A2A;
+    --red-bgr-color: #FFEBEB;
+    --blue-container: #FAFBFD;
 }
 
 @font-face {
