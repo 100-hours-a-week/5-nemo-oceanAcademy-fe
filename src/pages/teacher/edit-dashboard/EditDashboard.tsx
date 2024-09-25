@@ -235,7 +235,7 @@ const EditDashboard: React.FC = () => {
           <textarea
             className={styles.textarea}
             value={dashboard.prerequisite}
-            onChange={(e) => handleInputChange('precourse', e.target.value)}
+            onChange={(e) => handleInputChange('prerequisite', e.target.value)}
           />
         }
       />
