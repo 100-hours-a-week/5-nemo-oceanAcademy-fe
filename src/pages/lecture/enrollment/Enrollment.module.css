@@ -1,32 +1,36 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
-    text-align: center;
-    background-color: white;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 100vh;
+  padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
+  text-align: center;
+  background-color: white;
+}
   
-  .message {
-    font-size: 25px;
-    font-weight: bold;
-    line-height: 1.5;
-    margin-top: -120px;
-  }
+.message {
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 1.5;
+  margin-top: -120px;
+  margin-bottom: 10px;
+}
+
+.navButton {
+  margin-top: 60px;
+  width: 200px;
+  height: 44px;
+  border-radius: 4px;
+  background-color: var(--blue-color);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
   
-  .buttonContainer {
-    margin-top: 60px;
-  }
-  
-  .button {
-    width: 210px;
-    height: 40px;
-  }
-  
-  .navigation {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
+.navigation {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

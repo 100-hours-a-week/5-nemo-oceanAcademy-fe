@@ -10,11 +10,6 @@
   word-break: keep-all;
   overflow-wrap: break-word;
 }
-  
-.buttonContainer {
-  margin-top: 20px;
-  margin-bottom: 60px; /* 네비게이션 바와의 간격 */
-}
 
 .banner {
   width: 380px;
@@ -77,6 +72,8 @@
   }
   p {
       font-size: 14px;
+      word-break: break-word; /* 단어가 길 때 줄바꿈 */
+      white-space: normal; /* 텍스트가 화면 너비를 넘지 않도록 줄바꿈 */
   }
 }
 .column {
