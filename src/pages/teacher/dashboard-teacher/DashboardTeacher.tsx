@@ -158,9 +158,7 @@ const DashboardTeacher: React.FC = () => {
 
   const handleScheduleDelete = async (schedule_id: number) => {
     try {
-      const response = await axios({
-        method: 'delete',
-        url: endpoints.lectureSchedule.replace('{classId}', classId || ''),
+      const response = await axios.delete(endpoints.lectureSchedule.replace('{classId}', classId || ''), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
