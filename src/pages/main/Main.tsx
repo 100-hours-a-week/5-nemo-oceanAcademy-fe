@@ -136,7 +136,9 @@ const Main: React.FC = () => {
 
         <section className={styles.toptenSection}>
           <div className={styles.titleSection}>
-            <h1 className={styles.sectionTitle}>수강생이 많은 강의 Top10</h1>
+            <h1 className={styles.sectionTitle}>
+              📌 수강생이 많은 강의 Top10
+            </h1>
             <span className={styles.link} onClick={() => navigate('/list')}>
               전체 강의 보러 가기 &gt;
             </span>
