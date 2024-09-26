@@ -20,7 +20,8 @@ const SignInfo = () => {
   const [nickname, setNickname] = useState('');
   const [helperText, setHelperText] = useState('');
   const navigate = useNavigate();
-  const location = useLocation<LocationState | undefined>(); // 수정: state가 없을 수 있음을 명시적으로 처리
+  const location = useLocation();
+  const state = location.state as LocationState | undefined;
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1184);
 
   // 오류 수정: location.state가 없을 때 기본값 처리 및 경고 메시지
@@ -35,13 +36,38 @@ const SignInfo = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') && file.size <= 5 * 1024 * 1024) {
-      setSelectedFile(file); // 파일 객체 저장
+
+    // 파일이 선택되지 않았을 때 즉시 리턴
+    if (!file) {
+      return;
+    }
+
+    // 유효한 파일 타입 및 크기인지 확인
+    if (
+      (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') &&
+      file.size <= 5 * 1024 * 1024
+    ) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
+
+      // 파일을 선택한 후에는 선택창이 다시 나오지 않도록 input 값을 리셋
+      event.target.value = ''; 
     } else {
       alert('유효하지 않은 파일입니다. 5MB 이하의 .jpg/jpeg 또는 .png 파일만 가능합니다.');
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setSelectedFile(null);
+    setPreview(null);
+  };
+
+  const handleFileClick = () => {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click(); // Only open file dialog when necessary
     }
   };
 
@@ -121,19 +147,23 @@ const SignInfo = () => {
                 <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
 
                 {/* 사진변경버튼 */}
-                <button
-                  className={styles.uploadButton}
-                  onClick={() => document.getElementById('fileInput').click()}
-                >
-                
-                {/* 미리보기 */}
-                {preview ? (
-                  <img src={preview} alt="Preview" className={styles.previewImage} />
-                ) : (
-                  '+'
-                )}
-                </button>
+                <button className={styles.uploadButton} onClick={handleFileClick}>
+  {preview ? (
+    <img src={preview} alt="Preview" className={styles.previewImage} />
+  ) : (
+    '+'
+  )}
+</button>
               </Row>
+
+              <div className={styles.buttonContainer}>  
+              <button className={styles.uploadButton2} onClick={handleFileClick}>
+  사진 변경
+</button>
+<button className={styles.deleteButton} onClick={handleRemovePhoto}>
+  삭제
+</button>
+              </div>
               <Row>
                 <div className={styles.bulletList}>  
                   <p>
@@ -206,7 +236,7 @@ const SignInfo = () => {
                 {/* 사진변경버튼 */}
                 <button
                   className={styles.uploadButton}
-                  onClick={() => document.getElementById('fileInput').click()}
+                  onClick={handleFileClick}
                 >
                 
                 {/* 미리보기 */}
@@ -217,6 +247,20 @@ const SignInfo = () => {
                 )}
                 </button>
               </Row>
+
+              <div className={styles.buttonContainer}>  
+              <button className={styles.uploadButton2} 
+                onClick={handleFileClick}
+              >
+                사진 변경
+              </button>
+              <button className={styles.deleteButton} 
+                onClick={handleRemovePhoto}
+              >
+                삭제
+              </button>
+              </div>
+              
               <Row>
                 <div className={styles.bulletList}>  
                   <p>
