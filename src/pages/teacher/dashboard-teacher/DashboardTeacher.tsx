@@ -1,21 +1,17 @@
 // #J-1: DashboardTeacher (`/dashboard/teacher/${classId}`) - 강의 대시보드 강사용 페이지
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import LectureMeta from '../../../components/dashboard/LectureMeta';
-import Banner from '../../../components/dashboard/Banner';
-import Announcement from '../../../components/dashboard/Announcement';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ScheduleList from '../../../components/dashboard/ScheduleList';
 import StudentCount from '../../../components/dashboard/StudentCount';
-import InfoSection from '../../../components/dashboard/InfoSection';
 import Modal from '../../../components/modal/Modal';
 import WideButton from '../../../components/wide-button/WideButton';
 import styles from './DashboardTeacher.module.css';
-import { Container, Empty } from '../../../styles/GlobalStyles';
 import ScheduleForm from 'components/dashboard/ScheduleForm';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 
 // import image
+import arrowIcon from '../../../assets/images/icon/arrow.svg';
 import bn from '../../../assets/images/banner/banner_ex.jpeg';
 import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
 import profileDefault2 from '../../../assets/images/profile/whale.png';
@@ -216,6 +212,12 @@ const DashboardTeacher: React.FC = () => {
                   수강신청
                 </div>
               </div>
+              <div className="linkContainer">
+                <Link to={`/lecture/info/${classId}`} className={styles.link}>
+                  강의 소개 보러 가기
+                  <img src={arrowIcon} alt="arrow icon" className={styles.linkIcon} />
+                </Link>
+              </div>
             </section>
 
             <section className={styles.instructorSection}>
@@ -227,8 +229,12 @@ const DashboardTeacher: React.FC = () => {
             </section>
 
             <section className={styles.info}>
+              <h5>강의 공지</h5>
+              <p>{dashboard.announcement}</p>
+            </section>
+
+            <section className={styles.info}>
               <h5>강의 소개</h5>
-              <div className={styles.divider} />
               <p>{dashboard.description}</p>
             </section>
 
@@ -243,37 +249,6 @@ const DashboardTeacher: React.FC = () => {
               <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
               <p>{dashboard.prerequisite}</p>
             </section>
-          </>
-        )}
-      </div>
-
-      /*
-      <Container>
-
-
-            <div className={styles.buttonContainer}>
-              <button className={styles.primaryButton} onClick={() => navigate(`/lecture/info/${classId}`)}>
-                강의 소개 보러가기
-              </button>
-            </div>
-
-            <Banner image={dashboard.banner_image_path || bn} />
-
-            <Announcement content={dashboard.announcement} />
-
-            <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
-
-            <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
-
-            <StudentCount count={studentCount} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
-
-            <InfoSection title="강의 목표" content={dashboard.object} />
-
-            <InfoSection title="강의 소개" content={dashboard.description} />
-
-            <InfoSection title="강사 소개" content={dashboard.instructor_info} />
-
-            <InfoSection title="사전 준비 사항" content={dashboard.prerequisite} />
           </>
         )}
         <div className={styles.bottomButtons}>
@@ -295,6 +270,13 @@ const DashboardTeacher: React.FC = () => {
               onRightButtonClick={handleModalDelete}
             />
         )}
+      </div>
+
+      /*
+      <Container>
+        <ScheduleList schedules={schedules} isTeacher onDeleteSchedule={handleScheduleDelete} />
+        <ScheduleForm classId={classId || ''} onScheduleAdded={handleScheduleAdded} />
+        <StudentCount count={studentCount} onViewStudents={() => navigate(`/lecture/students/${classId}`)} />
       </Container>
     */
   );

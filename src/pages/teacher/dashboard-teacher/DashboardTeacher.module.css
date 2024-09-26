@@ -55,6 +55,22 @@
         align-items: center;
         justify-content: center;
     }
+    .link {
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--blue-color);
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .linkIcon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor; /* 텍스트 색상을 아이콘에도 적용 */
+    }
 
 .instructorSection {
     width: 100%;
@@ -125,13 +141,13 @@
 }
 
 .bottomButtons {
+    width: 350px;
+    height: 40px;
     display: flex;
     justify-content: space-between;
-    width: 344px;
-    margin-top: 12px;
 }
 .editButton {
-    color: #00A0E9;
+    color: var(--blue-color);
     background: none;
     border: none;
     cursor: pointer;
@@ -139,7 +155,7 @@
 }
 
 .deleteButton {
-    color: red;
+    color: var(--red-color);
     background: none;
     border: none;
     cursor: pointer;
