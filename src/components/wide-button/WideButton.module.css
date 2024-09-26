@@ -12,7 +12,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .wideButton:disabled {
@@ -26,7 +25,6 @@
 
 .wideButton:hover {
   background-color: #0847e4;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .fixed {

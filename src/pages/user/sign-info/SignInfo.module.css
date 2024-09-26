@@ -101,9 +101,9 @@ hr {
   width: 88px;
   height: 36px;
   font-size: 14px;
-  background-color: white; /* White background */
-  color: #2A62F2; /* Blue text */
-  border: 1px solid #2A62F2; /* Blue border */
+  background-color: white;
+  color: #2A62F2;
+  border: 1px solid #2A62F2;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
@@ -115,14 +115,14 @@ hr {
   height: 36px;
   font-size: 15px;
   font-weight: bold;
-  background-color: white; /* White background */
-  color: black; /* Black text */
-  border: 1px solid black; /* Black border */
+  background-color: white;
+  color: black;
+  border: 1px solid black;
   border-radius: 5px;
   cursor: pointer;
+  margin-left: 10px;
 }
 
-/* Ensure the buttons are on the same line */
 .buttonContainer {
   display: flex;
   align-items: center;
@@ -133,52 +133,4 @@ hr {
   .container {
     width: 560px;
   }
-
-
 }
-
-/* 모바일 환경에서만 적용되는 스타일 */
-@media (max-width: 768px) {
-  .container {
-    padding: 16.5px;
-    align-items: center;
-    width: 100%; /* 화면 너비에 맞게 조정 */
-    box-sizing: border-box; /* 패딩 포함 너비 조정 */
-  }
-
-  .deleteButton {
-    background-color: white; /* 배경 색상 */
-    color: black; /* 텍스트 색상 */
-    border: 1px solid #000; /* 테두리 */
-    width: 58px; /* 버튼 너비 */
-    height: 36px; /* 버튼 높이 */
-    margin-left: 12px; /* 왼쪽 버튼과의 간격 */}
-
-    .inputField {
-    width: 100%; /* 모바일에서는 입력 필드를 전체 너비로 조정 /
-    margin-bottom: 10px; / 입력 필드 간 간격 */
-    }
-    
-    .buttonContainer {
-    display: flex;
-    justify-content: space-between; /* 버튼들을 좌우로 정렬 */
-    }
-    
-    .title {
-    font-size: 18px; /* 모바일 환경에서 제목 폰트 크기 조정 */
-    }
-    
-    .label, .helperText {
-    text-align: center; /* 텍스트 중앙 정렬 */
-    }
-    
-    .helperText {
-    color: red; /* 오류 메시지 색상 */
-    }
-    
-    .hr {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    width: 100%; /* 구분선 전체 너비 */
-    }
-    }
