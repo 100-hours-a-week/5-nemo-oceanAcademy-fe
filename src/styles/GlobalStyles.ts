@@ -10,7 +10,7 @@ export const Container = styled.div`
   text-align: left;
   align-items: center;
   background-color: white;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
 `;
 
 // 공통적인 버튼 스타일

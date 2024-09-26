@@ -158,7 +158,11 @@ const Header: React.FC = () => {
 
   // 페이지에 따라 헤더의 버튼 요소 다르게 띄우는 코드 
   const renderLeftButton = () => {
-    if (location.pathname.includes('/live/student') || location.pathname.includes('/live/teacher')) {
+    if (
+      location.pathname === '*'
+    ) return null;
+
+    if (location.pathname.includes(`/live/student`) || location.pathname.includes('/live/teacher')) {
       return (
         <img
           src={location.pathname.includes('/live/student') ? outIcon : closeIcon}
@@ -168,8 +172,8 @@ const Header: React.FC = () => {
         />
       );
     } else if (
-      location.pathname.includes('/mypage') ||
-      location.pathname.includes('/lecture/open') ||
+      location.pathname === '/mypage' ||
+      location.pathname === '/lecture/open' ||
       location.pathname.includes('/lecture/info') ||
       location.pathname.includes('/dashboard/teacher') ||
       location.pathname.includes('/dashboard/student') ||
@@ -191,11 +195,13 @@ const Header: React.FC = () => {
   const renderRightButton = () => {
     if (
         location.pathname === '/login' ||
-        location.pathname === '/sign-info'
+        location.pathname === '/sign-info' ||
+        location.pathname === '/oauth/kakao/callback' ||
+        location.pathname === '*'
     ) {
       return null;
     }
-    if (location.pathname.includes('/mypage')) {
+    if (location.pathname === '/mypage') {
       return (
         <>
           <img
@@ -222,7 +228,7 @@ const Header: React.FC = () => {
       location.pathname === '/' ||
       location.pathname === '/list' ||
       location.pathname === '/live-list' ||
-      location.pathname.includes('/classroom') ||
+      location.pathname === '/classroom' ||
       location.pathname.includes('/lecture/open') ||
       location.pathname.includes('/lecture/info') ||
       location.pathname.includes('/dashboard') ||

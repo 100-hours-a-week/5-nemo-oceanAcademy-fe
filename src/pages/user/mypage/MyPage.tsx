@@ -1,5 +1,5 @@
 // #C-1: MyPage(/mypage) - 사용자 페이지 (프로필 수정, 내가 개설한 강의 조회, 강의 개설 페이지로 이동)
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
@@ -16,15 +16,15 @@ import profileDefault3 from '../../../assets/images/profile/crab.png';
 import emptyImage from '../../../assets/images/utils/empty.png';
 import editImage from '../../../assets/images/icon/edit_w.png';
 import image1 from '../../../assets/images/banner/image1.png';
-import image2 from '../../../assets/images/banner/image2.png';
+import image2 from '../../../assets/images/banner/image2.jpeg';
 import image3 from '../../../assets/images/banner/image3.png';
 import image4 from '../../../assets/images/banner/image4.png';
-import image5 from '../../../assets/images/banner/image5.png';
+import image5 from '../../../assets/images/banner/image5.jpeg';
 import image6 from '../../../assets/images/banner/image6.png';
 import image7 from '../../../assets/images/banner/image7.png';
-import image8 from '../../../assets/images/banner/image8.png';
+import image8 from '../../../assets/images/banner/image8.jpeg';
 import image9 from '../../../assets/images/banner/image9.png';
-import image10 from '../../../assets/images/banner/image10.png';
+import image10 from '../../../assets/images/banner/image10.jpeg';
 
 const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
@@ -60,11 +60,16 @@ const MyPage: React.FC = () => {
   const [initialEmail, setInitialEmail] = useState('');
   const [initialProfilePic, setInitialProfilePic] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
   const token = localStorage.getItem('accessToken');
+
+  // 무한 스크롤 구현
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const getProfileImage = (nickname: string): string => {
     let hash = 0;
@@ -105,30 +110,67 @@ const MyPage: React.FC = () => {
     fetchUserInfo();
   }, [navigate, token]);
 
-  useEffect(() => {
-    axios.get(`${endpoints.classes}?page=${0}&target=created`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(response => {
-      const classes = response.data.data.map((item: any) => ({
-        classId: item.id,
-        name: item.name,
-        bannerImage: item.banner_image_path || defaultImages[item.id % 10],
-        instructor: item.instructor,
-        category: item.category
-      }));
-      setLectures(classes);
-    })
-    .catch(error => {
-      if (error.response && error.response.status === 400) {
-        alert(error.response.data.message_kor);
+  // 강의 목록 가져오기 API 요청 (페이지와 카테고리, 필터 적용)
+  const fetchLectures = useCallback(async ( page: number = 0) => {
+    setIsFetching(true);
+    setIsLoading(true);
+
+    try {
+      const response = await axios.get(`${endpoints.classes}?page=${page}&target=created`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const lecturesData = response.data.data;
+
+      if (lecturesData && lecturesData.length > 0) {
+        const classes = response.data.data.map((item: any) => ({
+          classId: item.id,
+          name: item.name,
+          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          instructor: item.instructor,
+          category: item.category
+        }));
+
+        setLectures((prevLectures) => [...prevLectures, ...classes]);
+        setHasMore(classes.length > 0);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Failed to fetch lectures:', error.message);
       } else {
         console.error('Failed to fetch created classes:', error);
       }
-    });
+    } finally {
+      setIsLoading(false);
+      setIsFetching(false);
+    }
   }, []);
+
+  // 스크롤이 끝에 도달했는지 확인하는 함수
+  const handleScroll = useCallback(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isFetching && hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [isFetching, hasMore]);
+
+  // 페이지가 변경되면 새 강의 목록을 불러옴
+  useEffect(() => {
+    if (page === 0) {
+      setLectures([]);
+    }
+
+    fetchLectures(page);
+  }, [page, fetchLectures]);
+
+  // 스크롤 이벤트 등록
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -258,8 +300,8 @@ const MyPage: React.FC = () => {
             완료
           </button>
         ) : (
-          <button className={styles.editButton} onClick={handleEditClick}>
-            <img src={editImage} alt="Edit" className={styles.editButtonImage} />
+          <button className={styles.saveButton} onClick={handleEditClick}>
+            수정
           </button>
         )}
       </div>
@@ -268,7 +310,7 @@ const MyPage: React.FC = () => {
         <h3>내가 개설한 강의</h3>
         <button className={styles.addLectureButton} onClick={handleAddLectureClick}>+</button>
       </div>
-
+      <section>
       {lectures.length === 0 ? (
         <div className={styles.emptyContainer}>
           <p>아직 강의를 개설하지 않았어요.</p>
@@ -290,6 +332,8 @@ const MyPage: React.FC = () => {
           ))}
         </div>
       )}
+      </section>
+      {isLoading && <p>Loading more lectures...</p>}
       <Navigation />
     </div>
   );
