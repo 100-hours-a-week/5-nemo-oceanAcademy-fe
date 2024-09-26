@@ -4,9 +4,9 @@
   flex-direction: column;
   text-align: left;
   align-items: center;
-  justify-content: flex-start; /* TO DO: center -> flex-start로 수정, 강의 카드 불러왔을 때 괜찮은가 보기. */
+  justify-content: flex-start;
   background-color: white;
-  padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
+  padding-bottom: 80px;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
@@ -27,30 +27,30 @@
   width: 100%;
 }
   .category {
-      font-size: 12px;
-      color: var(--blue-color);
+    font-size: 12px;
+    color: var(--blue-color);
   }
   .row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .title {
-      font-size: 18px;
-      font-weight: bold;
+    font-size: 18px;
+    font-weight: bold;
   }
   .button {
-      width: 120px;
-      height: 34px;
-      color: white;
-      background-color: var(--blue-color);
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    width: 120px;
+    height: 34px;
+    color: white;
+    background-color: var(--blue-color);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
 .instructorSection {
@@ -72,8 +72,8 @@
   }
   p {
       font-size: 14px;
-      word-break: break-word; /* 단어가 길 때 줄바꿈 */
-      white-space: normal; /* 텍스트가 화면 너비를 넘지 않도록 줄바꿈 */
+      word-break: break-word;
+      white-space: normal;
   }
 }
 .column {
