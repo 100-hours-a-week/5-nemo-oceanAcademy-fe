@@ -19,6 +19,7 @@ const endpoints = {
     connectWebSocket: `${SERVER_URL}/ws`,
     getChatHistory: `${SERVER_URL}/find/chat/list/{classId}`,
     sendMessage: `${SERVER_URL}/app/hello`,
+    isActive: `${SERVER_URL}/api/classes/{classId}/isActive`, // 강의 라이브 여부 조회 (GET) / 강의 라이브 여부 변경 (POST)
   };
   
 export default endpoints;

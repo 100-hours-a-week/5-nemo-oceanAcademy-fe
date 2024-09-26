@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Client, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../../../components/modal/Modal';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
@@ -55,7 +55,6 @@ const LiveTeacher: React.FC = () => {
   const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
 
   // webRTC 관련
-  // roomId 대신 classId 사용, string이라 문제될 경우 int로 바꿔주기 
   const roomId = classId ? parseInt(classId, 10) : null;
   const [connectionStatus, setConnectionStatus] = useState('');
   const [webcamStatus, setWebcamStatus] = useState('');
@@ -71,6 +70,14 @@ const LiveTeacher: React.FC = () => {
   const [microphoneProducer, setMicrophoneProducer] = useState<Producer | null>(null);
   const [systemAudioProducer, setSystemAudioProducer] = useState<Producer | null>(null);
 
+  // Chat 관련
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [currentRoom, setCurrentRoom] = useState(classId);
+  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [connected, setConnected] = useState(false);
+  const [content, setContent] = useState("");
+
   const getProfileImage = (nickname: string | null): string => {
     const safeNickname = nickname || '익명';
     let hash = 0;
@@ -81,13 +88,69 @@ const LiveTeacher: React.FC = () => {
     return profileImages[index];
   };
 
-  // Chat 관련
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [currentRoom, setCurrentRoom] = useState(classId);
-  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [connected, setConnected] = useState(false);
-  const [content, setContent] = useState("");
+  // 라이브 상태 업데이트 함수
+  const updateLiveStatus = async () => {
+    try {
+      const response = await axios.patch(endpoints.isActive.replace('{classId}', classId || ''), 
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log('라이브 상태 변경 성공!!!!!:', response.data.data);
+      console.log('시간체크: ', response.data.timestamp);
+    } catch (error) {
+      console.error('라이브 상태 변경 중 오류 발생:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 401) {
+          alert('권한이 없습니다. 다시 로그인해 주세요.');
+          navigate('/login');
+        } else if (error.response.status === 404) {
+          alert('해당하는 강의를 찾을 수 없습니다.');
+          navigate('/mypage');
+        } else if (error.response.status === 418) {
+          alert('강의 접근 권한이 없습니다.');
+          navigate('/');
+        }
+      } else {
+        alert('알 수 없는 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  // 페이지 진입 시 is_active 상태 확인 및 true로 변경
+  useEffect(() => {
+    // 강의가 활성화되어 있는지 확인하고, 활성화되어 있지 않다면 활성화
+    const initializeLiveStatus = async () => {
+      try {
+        const response = await axios.get(endpoints.isActive.replace('{classId}', classId || ''), {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const isActive = response.data.data.active; 
+        console.log("현재 라이브 상태 체크 (false여야 할걸?): ", isActive);
+        if (!isActive) {
+          // 활성화되어 있지 않다면 활성화
+          await updateLiveStatus();
+        } else {
+          console.warn('이미 활성화된 강의입니다.');
+        }
+      } catch (error) {
+        console.error('강의 활성화 상태 확인 중 오류 발생:', error);
+      }
+    };
+
+    initializeLiveStatus();
+
+    /* 언마운트 시점에서 is_active 상태를 false로 변경
+    return () => {
+      updateLiveStatus(); // 강의 종료 시 is_active=false로 변경
+    };
+    */
+  }, [classId, token]);
+
 
   const setConnectedState = (connected: boolean) => {
     setConnected(connected);
@@ -310,7 +373,7 @@ const LiveTeacher: React.FC = () => {
     }
   }, [classId]);
 
-  // RTC Connection
+  // WebRTC Connection
   useEffect(() => {
     if (classId) {
       // LiveTeacher 컴포넌트가 로드될 때 서버에 연결
@@ -349,14 +412,14 @@ const LiveTeacher: React.FC = () => {
 
     systemAudioOnRef.current = isSystemAudioOn;
     systemAudioProducerRef.current = systemAudioProducer;
-}, [
-    isWebcamOn, webcamProducer,
-    isScreenShareOn, screenShareProducer,
-    isMicrophoneOn, microphoneProducer,
-    isSystemAudioOn, systemAudioProducer
-]);
+    }, [
+        isWebcamOn, webcamProducer,
+        isScreenShareOn, screenShareProducer,
+        isMicrophoneOn, microphoneProducer,
+        isSystemAudioOn, systemAudioProducer
+    ]);
   
-//언마운트 로직 추가
+  //언마운트 로직 추가
   useEffect(() => {
       return () => {
         //각 스트림 종료 처리
@@ -384,8 +447,9 @@ const LiveTeacher: React.FC = () => {
             setIsSystemAudioOn(false);
         }
 
-          //웹소캣 연결 종료
-          DisconnectToServer();
+        //웹소캣 연결 종료
+        DisconnectToServer();
+        updateLiveStatus();
       };
   }, []);
 
@@ -573,7 +637,7 @@ const LiveTeacher: React.FC = () => {
   };
 
   return (
-    <Container>
+    <div className={styles.container}>
       {showModal && (
         <Modal 
           title="강의를 종료하시겠습니까?"
@@ -627,33 +691,32 @@ const LiveTeacher: React.FC = () => {
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => {
-              // 현재 사용자가 보낸 메시지인지 확인
-              const isMyMessage = msg.nickname === userInfo?.nickname;
-              
-              return (
-                <div
-                  key={index}
-                  className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
-                >
-                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
-                  {!isMyMessage && (
-                    <div className={styles.profContainer}>
-                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
-                    </div>
-                  )}
-                  <div className={styles.chatContainer}>
-                    <div className={styles.chatInfo}>
-                      {!isMyMessage && <h5>{msg.nickname}</h5>}
-                      <p>{msg.time}</p>
-                    </div>
-                    <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
-                      <p>{msg.message}</p>
-                    </div>
+            // 현재 사용자가 보낸 메시지인지 확인
+            const isMyMessage = msg.nickname === userInfo?.nickname;
+            
+            return (
+              <div
+                key={index}
+                className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`}
+              >
+                {!isMyMessage && (
+                  <div className={styles.profContainer}>
+                    <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                  </div>
+                )}
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatInfo}>
+                    {!isMyMessage && <h5>{msg.nickname}</h5>}
+                    <p className={isMyMessage ? styles.myTime : styles.time}>{msg.time}</p>
+                  </div>
+                  <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
+                    <p>{msg.message}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
+        </div>
         <div className={styles.chatInput}>
           <textarea
             placeholder="채팅을 입력하세요."
@@ -665,8 +728,8 @@ const LiveTeacher: React.FC = () => {
                 sendMessage();
               }
             }}
-            rows={1} // 기본 행의 높이 설정
-            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+            rows={1}
+            style={{ resize: 'none', overflow: 'hidden' }}
           />
           <button 
             onClick={sendMessage}
@@ -676,7 +739,7 @@ const LiveTeacher: React.FC = () => {
           </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

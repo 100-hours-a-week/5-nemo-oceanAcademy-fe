@@ -11,14 +11,7 @@ import adImageSmall5 from '../../assets/images/ad/ad_small1.png';
 import adImageSmall6 from '../../assets/images/ad/ad_small2.png';
 import adImageSmall7 from '../../assets/images/ad/ad_small3.png';
 import adImageSmall8 from '../../assets/images/ad/ad_small4.png';
-import adImageLarge1 from '../../assets/images/ad/ad_big0.png';
-import adImageLarge2 from '../../assets/images/ad/ad_big1.png';
-import adImageLarge3 from '../../assets/images/ad/ad_big2.png';
-import adImageLarge4 from '../../assets/images/ad/ad_big3.png';
-import adImageLarge5 from '../../assets/images/ad/ad_big4.png';
-import adImageLarge6 from '../../assets/images/ad/ad_big5.png';
-import adImageLarge7 from '../../assets/images/ad/ad_big6.png';
-import adImageLarge8 from '../../assets/images/ad/ad_big7.png';
+import adImageTmt from '../../assets/images/ad/ad_tmt.png';
 
 interface AdvertisementProps {
   size?: 'small' | 'large';
@@ -27,14 +20,18 @@ interface AdvertisementProps {
 const Advertisement: React.FC<AdvertisementProps> = ({ size = 'small' }) => {
   // TO DO : 백오피스 개발 후 광고 랜덤 이미지 출력 삭제 
   const adImagesSmall = [adImageSmall1, adImageSmall2, adImageSmall3, adImageSmall4, adImageSmall5, adImageSmall6, adImageSmall7, adImageSmall8];
-  const adImagesLarge = [adImageLarge1, adImageLarge2, adImageLarge3, adImageLarge4, adImageLarge5, adImageLarge6, adImageLarge7, adImageLarge8];
+  const adImagesLarge = [adImageTmt];
 
   // 랜덤 이미지 선택
   const randomIndex = Math.floor(Math.random() * adImagesSmall.length);
-  const adImage = size === 'large' ? adImagesLarge[randomIndex] : adImagesSmall[randomIndex];
+  const adImage = size === 'large' ? adImageTmt : adImagesSmall[randomIndex];
 
   const handleAdClick = () => {
-    window.location.href = 'https://github.com/100-hours-a-week/5-nemo-oceanAcademy-fe';
+    if (adImage === adImageTmt) {
+      window.open('https://youtu.be/qDvZ14qCRCU?si=xGtG-kfe9HEFUMAM', '_blank');
+    } else {
+      window.open('https://github.com/100-hours-a-week/5-nemo-oceanAcademy-fe', '_blank');
+    }
   };
 
   return (

@@ -1,12 +1,18 @@
 // #H-1: LectureInfo (/lecture/info) - 강의 소개 페이지
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureInfo.module.css';
 import { Container } from '../../../styles/GlobalStyles';
+
+// import image
+import bn from '../../../assets/images/banner/banner_ex.jpeg';
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Lecture {
     id: number; // class ID
@@ -20,6 +26,7 @@ interface Lecture {
     instructor_info: string;
     prerequisite: string;
     announcement: string;
+    student_count: number;
     banner_image_path: string | null;
     is_active: boolean;
 }
@@ -28,8 +35,18 @@ const LectureInfo: React.FC = () => {
     const navigate = useNavigate();
     const { classId } = useParams<{ classId: string }>();
     const [lecture, setLecture] = useState<Lecture | null>(null);
-    const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+    const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
+    const [userRole, setUserRole] = useState<string | null>(null);
     const token = localStorage.getItem('accessToken');
+
+    const getProfileImage = (nickname: string): string => {
+        let hash = 0;
+        for (let i = 0; i < nickname.length; i++) {
+            hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash % profileImages.length);
+        return profileImages[index];
+    };
 
     useEffect(() => {
         const fetchLectureInfo = async () => {
@@ -40,8 +57,10 @@ const LectureInfo: React.FC = () => {
                     },
                 });
                 setLecture(response.data.data);
+                setProfileImage(getProfileImage(response.data.data.instructor));
             } catch (error) {
                 console.error('Failed to fetch lecture data:', error);
+                alert('강의 정보를 불러오는 데 실패했습니다.');
             }
         };
 
@@ -53,14 +72,10 @@ const LectureInfo: React.FC = () => {
                     },
                 });
 
-                if (response.data.data === '강사' || response.data.data === '수강생') {
-                    setIsEnrolled(true);
-                } else {
-                    setIsEnrolled(false);
-                }
+                setUserRole(response.data.data);
             } catch (error) {
                 console.error('Failed to fetch user role:', error);
-                setIsEnrolled(false); // 오류 시 수강 신청 버튼을 표시
+                setUserRole(null); 
             }
         };
 
@@ -71,12 +86,12 @@ const LectureInfo: React.FC = () => {
     }, [classId, token]);
 
     const handleButtonClick = async () => {
-        if (isEnrolled) {
-            console.log('수강신청 되어 있나요?: ', isEnrolled);
+        if (userRole === '강사') {
+            navigate(`/dashboard/teacher/${classId}`);
+        } else if (userRole === '수강생') {
             navigate(`/dashboard/student/${classId}`);
         } else {
             try {
-                console.log('수강신청 요청 드갑니다');
                 const response = await axios.post(endpoints.enrollment.replace('{classId}', classId || ''), {}, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -111,34 +126,53 @@ const LectureInfo: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <p className={styles.instructor}>{lecture.instructor}</p>
-            <h1 className={styles.title}>{lecture.name}</h1>
-            <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || '/default-image.png'})` }}></div>
-            <div className={styles.category}>{lecture.category}</div>
+            <div
+              className={styles.banner}
+              style={{ backgroundImage: `url(${lecture.banner_image_path || bn})` }}
+            />
+            
+            <section className={styles.basicInfo}>
+              <p className={styles.category}>
+                {lecture.category}
+              </p>
+              <div className={styles.row}>
+                <div className={styles.title}>
+                  {lecture.name}
+                </div>
+                <button 
+                    className={styles.button}
+                    onClick={handleButtonClick}
+                    >
+                    {userRole === '강사' ? "대시보드 가기" : userRole === '수강생' ? "대시보드 가기" : "수강신청"}
+                </button>
+              </div>
+            </section>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>강의 목표</h3>
-                <p className={styles.infoContent}>{lecture.object || '강의 목표 정보 없음'}</p>
-            </div>
+            <section className={styles.instructorSection}>
+              <img src={profileImage} alt="instructor profile image" />
+              <div className={styles.column}>
+                <h5>{lecture.instructor}</h5>
+                <p>{lecture.instructor_info}</p>
+              </div>
+            </section>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>강의 소개</h3>
-                <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
-            </div>
+            <section className={styles.info}>
+              <h5>강의 소개</h5>
+              <div className={styles.divider} />
+              <p>{lecture.description}</p>
+            </section>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>강사 소개</h3>
-                <p className={styles.infoContent}>{lecture.instructor_info || '강사 소개 정보 없음'}</p>
-            </div>
+            <section className={styles.info}>
+              <h5>강의 목표</h5>
+              <p>{lecture.object}</p>  
+            </section>
 
-            <div className={styles.infoSection}>
-                <h3 className={styles.infoTitle}>사전 준비 사항</h3>
-                <p className={styles.infoContent}>{lecture.prerequisite || '사전 준비 사항 정보 없음'}</p>
-            </div>
+            <div className={styles.divider} />
 
-            <div className={styles.buttonContainer}>
-                <Button text={isEnrolled ? "대시보드 가기" : "수강신청"} onClick={handleButtonClick} />
-            </div>
+            <section className={styles.info}>
+              <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
+              <p>{lecture.prerequisite}</p>
+            </section>
 
             <Navigation />
         </div>

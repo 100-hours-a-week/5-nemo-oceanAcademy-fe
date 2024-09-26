@@ -40,10 +40,9 @@ const Enrollment: React.FC = () => {
             <p className={styles.countdownMessage}>
                 {countdown}초 후에 강의실로 이동합니다.
             </p>
-            <div className={styles.buttonContainer}>
-                <Button text="강의실 바로가기" 
-                onClick={handleButtonClick} />
-            </div>
+            <button className={styles.navButton} onClick={handleButtonClick}>
+                강의실 바로 가기
+            </button>
             <Navigation />
         </div>
     );
