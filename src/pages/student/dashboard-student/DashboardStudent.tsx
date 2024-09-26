@@ -104,8 +104,15 @@ const DashboardStudent: React.FC = () => {
               <div className={styles.title}>
                 {dashboard.name}
               </div>
-              <div className={styles.button}>
-                수강신청
+              <div 
+                className={`${styles.button} ${!dashboard.is_active ? styles.disabledButton : ''}`} 
+                onClick={() => {
+                  if (dashboard.is_active) {
+                    navigate(`/live/student/${classId}`);
+                  }
+                }}
+              >
+                라이브 강의 입장
               </div>
             </div>
             <div className="linkContainer">
@@ -147,21 +154,6 @@ const DashboardStudent: React.FC = () => {
             </section>
           </>
         )}
-
-      <WideButton 
-        text="라이브 강의 입장" 
-        onClick={() => navigate(`/live/student/${classId}`)}
-        fixed
-      />
-      {/*
-      <WideButton 
-        text="라이브 강의 입장" 
-        onClick={() => navigate(`/live/student/${classId}`)}
-        fixed
-        disabled={!dashboard.is_active} // 버튼 비활성화
-        style={{ backgroundColor: !dashboard.is_active ? 'grey' : undefined }}
-      />
-      */}
     </div>
   );
 };

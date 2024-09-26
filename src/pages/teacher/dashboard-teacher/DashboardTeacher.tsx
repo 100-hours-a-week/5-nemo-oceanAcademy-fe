@@ -208,9 +208,12 @@ const DashboardTeacher: React.FC = () => {
                 <div className={styles.title}>
                   {dashboard.name}
                 </div>
-                <div className={styles.button}>
-                  수강신청
-                </div>
+                <button
+                  className={styles.button}
+                  onClick={() => navigate(`/live/teacher/${classId}`)}
+                >
+                  라이브 강의 시작
+                </button>
               </div>
               <div className="linkContainer">
                 <Link to={`/lecture/info/${classId}`} className={styles.link}>
@@ -255,11 +258,6 @@ const DashboardTeacher: React.FC = () => {
           <button className={styles.editButton} onClick={() => navigate(`/dashboard/edit/${classId}`)}>정보 수정하기</button>
           <button className={styles.deleteButton} onClick={handleDeleteClick}>강의 삭제하기</button>
         </div>
-        <WideButton 
-          text="라이브 강의 시작" 
-          onClick={() => navigate(`/live/teacher/${classId}`)}
-          fixed
-        />
         {isModalOpen && (
             <Modal
               title="강의를 삭제하시겠습니까?"
