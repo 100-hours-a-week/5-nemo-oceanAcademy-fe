@@ -196,6 +196,7 @@ const Header: React.FC = () => {
     if (
         location.pathname === '/login' ||
         location.pathname === '/sign-info' ||
+        location.pathname === '/oauth/kakao/callback' ||
         location.pathname === '*'
     ) {
       return null;
