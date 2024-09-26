@@ -1,3 +1,13 @@
+.container {
+  width: 400px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  align-items: center;
+  background-color: white;
+}
+
 .videoSection {
   margin-top: 20px;
   position: relative;
@@ -99,13 +109,18 @@
 
 .chatSection {
   margin-top: 10px;
+  flex: 1; /* 남은 공간을 모두 차지 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* 하단에 정렬 */
+  overflow: hidden; /* 불필요한 스크롤 제거 */
 }
   
 .chatWindow {
-  width: 350px;
-  height: 350px;
+  width: 100%;
+  height: 250px;
   background-color: #f0f0f0;
-  border-radius: 8px;
   overflow-y: scroll;
   padding: 10px;
 }
@@ -127,7 +142,7 @@
 
 .chatInfo {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
   h5 {
@@ -144,42 +159,54 @@
   justify-content: flex-end;
 }
 
+.myTime {
+  display: flex;
+  align-self: flex-end;
+  text-align: right;
+  margin-left: auto;
+}
+
 .chatBubble {
   padding: 8px 12px;
   font-size: 12px;
   background-color: white;
   border-radius: 10px;
   max-width: 280px;
+  align-self: flex-start;
 }
 
 .myChatBubble {
-  background-color: #dcf8c6;
-  text-align: right;
+  background-color: black;
+  color: white;
+  align-self: flex-end;
 }
 
 .chatInput {
-  width: 350px;
-  height: 35px;
+  background-color: black;
+  width: 400px;
+  height: 70px;
   display: flex;
-  position: fixed;
-  bottom: 20px;
-  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  bottom: 0px;
 }
   
 .chatInput textarea {
   flex: 1;
   padding: 10px;
+  margin-left: 10px;
+  height: 37px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  font-family: Pretendard;
 }
   
 .chatInput button {
-  margin-left: 10px;
-  padding: 5px 15px;
+  margin: 0 10px;
+  width: 65px;
+  height: 37px;
   border-radius: 5px;
-  background-color: var(--primary-color);
+  background-color: var(--blue-color);
   color: white;
   font-weight: bold;
-  border: none;
-  cursor: pointer;
 }

@@ -177,32 +177,31 @@ const LiveStudent: React.FC = () => {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
-
   const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       { 
         room, 
         message, 
-        nickname: nickname || '익명',
-        profileImage: profileImage || getProfileImage(nickname),
-        time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        nickname,
+        profileImage,
+        time
       }
     ]);
-  };  
-  
+  };
+
   const loadChatHistory = (classId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
-          console.log('Student-Server Response Data:', response.data);
+        console.log('Teacher-Server Response Data:', response.data);
 
-          setMessages(response.data.map((msg:any) => ({
-            room: msg.roomId,
-            message: msg.content,
-            nickname: msg.writer || '익명',
-            profileImage: msg.profile_image_path || getProfileImage(msg.writer),
-            time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          })));
+        setMessages(response.data.map((msg:any) => ({
+          room: msg.roomId,
+          message: msg.content,
+          nickname: msg.writer || '익명',
+          profileImage: msg.profile_image_path || getProfileImage(msg.writer),
+          time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })));
       })
       .catch(error => {
           console.error("Failed to load chat history:", error);
@@ -251,7 +250,6 @@ const LiveStudent: React.FC = () => {
           const lectureData = response.data.data;
           setTitle(lectureData.name);
           setInstructor(lectureData.instructor);
-          console.log(response.data.message_eng, response.data.timestamp);
         } catch (error) {
           console.error('LiveStudent: 강의 정보를 불러오는 데 실패했습니다 > ', error);
         }
@@ -305,7 +303,7 @@ const LiveStudent: React.FC = () => {
   };
 
   return (
-    <Container>
+    <div className={styles.container}>
       {showModal && (
         <Modal 
           title="강의를 나가시겠습니까?"
@@ -343,26 +341,32 @@ const LiveStudent: React.FC = () => {
 
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={styles.chat}>
-              <div className={styles.profContainer}>
-                <img
-                  src={msg.profileImage}
-                  alt="프로필"
-                  className={styles.icon}
-                />
-              </div>  
-              <div className={styles.chatContainer}>
-                <div className={styles.chatInfo}>
-                  <h5>{msg.nickname}</h5>
-                  <p>{msg.time}</p>
-                </div>
-                <div className={styles.chatBubble}>
-                  <p>{msg.message}</p>
+          {messages.map((msg, index) => {
+            // 현재 사용자가 보낸 메시지인지 확인
+            const isMyMessage = msg.nickname === userInfo?.nickname;
+            
+            return (
+              <div
+                key={index}
+                className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`}
+              >
+                {!isMyMessage && (
+                  <div className={styles.profContainer}>
+                    <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                  </div>
+                )}
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatInfo}>
+                    {!isMyMessage && <h5>{msg.nickname}</h5>}
+                    <p className={isMyMessage ? styles.myTime : styles.time}>{msg.time}</p>
+                  </div>
+                  <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
+                    <p>{msg.message}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className={styles.chatInput}>
           <textarea
@@ -375,8 +379,8 @@ const LiveStudent: React.FC = () => {
                 sendMessage();
               }
             }}
-            rows={1} // 기본 행의 높이 설정
-            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+            rows={1}
+            style={{ resize: 'none', overflow: 'hidden' }}
           />
           <button 
             onClick={sendMessage}
@@ -386,7 +390,7 @@ const LiveStudent: React.FC = () => {
           </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

@@ -104,9 +104,8 @@ const LiveTeacher: React.FC = () => {
       console.error('라이브 상태 변경 중 오류 발생:', error);
       if (axios.isAxiosError(error) && error.response) {
         if (error.response.status === 401) {
-          // alert('토큰이 만료되었거나 권한이 없습니다. 다시 로그인해 주세요.');
-          // navigate('/login');
-          console.log('왜 오류가 뜨죠?');
+          alert('권한이 없습니다. 다시 로그인해 주세요.');
+          navigate('/login');
         } else if (error.response.status === 404) {
           alert('해당하는 강의를 찾을 수 없습니다.');
           navigate('/mypage');
@@ -374,7 +373,7 @@ const LiveTeacher: React.FC = () => {
     }
   }, [classId]);
 
-  // RTC Connection
+  // WebRTC Connection
   useEffect(() => {
     if (classId) {
       // LiveTeacher 컴포넌트가 로드될 때 서버에 연결
@@ -638,7 +637,7 @@ const LiveTeacher: React.FC = () => {
   };
 
   return (
-    <Container>
+    <div className={styles.container}>
       {showModal && (
         <Modal 
           title="강의를 종료하시겠습니까?"
@@ -692,33 +691,32 @@ const LiveTeacher: React.FC = () => {
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
           {messages.map((msg, index) => {
-              // 현재 사용자가 보낸 메시지인지 확인
-              const isMyMessage = msg.nickname === userInfo?.nickname;
-              
-              return (
-                <div
-                  key={index}
-                  className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
-                >
-                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
-                  {!isMyMessage && (
-                    <div className={styles.profContainer}>
-                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
-                    </div>
-                  )}
-                  <div className={styles.chatContainer}>
-                    <div className={styles.chatInfo}>
-                      {!isMyMessage && <h5>{msg.nickname}</h5>}
-                      <p>{msg.time}</p>
-                    </div>
-                    <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
-                      <p>{msg.message}</p>
-                    </div>
+            // 현재 사용자가 보낸 메시지인지 확인
+            const isMyMessage = msg.nickname === userInfo?.nickname;
+            
+            return (
+              <div
+                key={index}
+                className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`}
+              >
+                {!isMyMessage && (
+                  <div className={styles.profContainer}>
+                    <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                  </div>
+                )}
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatInfo}>
+                    {!isMyMessage && <h5>{msg.nickname}</h5>}
+                    <p className={isMyMessage ? styles.myTime : styles.time}>{msg.time}</p>
+                  </div>
+                  <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
+                    <p>{msg.message}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
+        </div>
         <div className={styles.chatInput}>
           <textarea
             placeholder="채팅을 입력하세요."
@@ -730,8 +728,8 @@ const LiveTeacher: React.FC = () => {
                 sendMessage();
               }
             }}
-            rows={1} // 기본 행의 높이 설정
-            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+            rows={1}
+            style={{ resize: 'none', overflow: 'hidden' }}
           />
           <button 
             onClick={sendMessage}
@@ -741,7 +739,7 @@ const LiveTeacher: React.FC = () => {
           </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
