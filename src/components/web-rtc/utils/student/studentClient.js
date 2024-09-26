@@ -101,16 +101,18 @@ export const connectToServerAsStudent = async (
             });
         });
 
-        //강사에 의한 강의종료시
-        socket.on('teacherLeft', async () => {
+        //async없애서 disconnection에 대하여 한번의 동작을 보장
+        socket.on('teacherLeft', () => {
+            // 소켓 연결을 끊기
             socket.disconnect();
-            alert("강의가 종료되었습니다.");
-            window.location.href = `/dashboard/student/${roomId}`;
+            setTimeout(function(){alert("강의가 종료되었습니다.");window.location.href = `/dashboard/student/${roomId}`;},1000);
+            
         });
 
         socket.on('disconnect', () => {
             setConnectionStatus('Disconnected');
             setIsSubscriptionDisabled(true);
+
         });
 
         socket.on('connect_error', (error) => {
