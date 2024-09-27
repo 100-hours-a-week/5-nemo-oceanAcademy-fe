@@ -14,7 +14,6 @@ import { Empty, Container } from '../../../styles/GlobalStyles'
 
 // import image
 import arrowIcon from '../../../assets/images/icon/arrow.svg';
-import bn from '../../../assets/images/banner/banner_ex.jpeg';
 import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
 import profileDefault2 from '../../../assets/images/profile/whale.png';
 import profileDefault3 from '../../../assets/images/profile/crab.png';
@@ -91,10 +90,11 @@ const DashboardStudent: React.FC = () => {
     <div className={styles.container}>
       {dashboard && (
         <>
-          <div
-            className={styles.banner}
-            style={{ backgroundImage: `url(${dashboard.banner_image_path || bn})` }}
-          />
+          {dashboard.banner_image_path && (
+            <div
+              className={styles.banner}
+              style={{ backgroundImage: `url(${dashboard.banner_image_path})` }}
+            />)}
             
           <section className={styles.basicInfo}>
             <p className={styles.category}>
@@ -133,25 +133,27 @@ const DashboardStudent: React.FC = () => {
 
             <section className={styles.info}>
               <h5>강의 공지</h5>
-              <p>{dashboard.announcement}</p>
+              <p>{dashboard.announcement ? dashboard.announcement : '공지가 없습니다.'}</p>
             </section>
 
             <section className={styles.info}>
               <h5>강의 소개</h5>
-              <p>{dashboard.description}</p>
+              <p>{dashboard.description ? dashboard.description : '강의 소개가 없습니다.'}</p>
             </section>
 
             <section className={styles.info}>
               <h5>강의 목표</h5>
-              <p>{dashboard.object}</p>  
+              <p>{dashboard.object ? dashboard.object : '강의 목표가 없습니다.'}</p>  
             </section>
 
             <div className={styles.divider} />
 
-            <section className={styles.info}>
-              <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
-              <p>{dashboard.prerequisite}</p>
-            </section>
+            {dashboard.prerequisite && (
+              <section className={styles.info}>
+                <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
+                <p>{dashboard.prerequisite}</p>
+              </section>
+            )}
           </>
         )}
     </div>
