@@ -12,7 +12,6 @@ import endpoints from '../../../api/endpoints';
 
 // import image
 import arrowIcon from '../../../assets/images/icon/arrow.svg';
-import bn from '../../../assets/images/banner/banner_ex.jpeg';
 import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
 import profileDefault2 from '../../../assets/images/profile/whale.png';
 import profileDefault3 from '../../../assets/images/profile/crab.png';
@@ -63,6 +62,16 @@ const DashboardTeacher: React.FC = () => {
     return profileImages[index];
   };
 
+    // window.history 로그 출력
+    useEffect(() => {
+      console.log('History Length:', window.history.length); // 스택에 저장된 페이지 수
+      console.log('History State:', window.history.state); // 현재 state 정보
+      console.log('History Object:', window.history); // history 객체 전체 정보
+  
+      // window.history.back(), window.history.forward()는 뒤로/앞으로 이동
+      console.log('Can Go Back:', window.history.length > 1); // 이전 페이지가 있는지 확인
+    }, []);
+    
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -193,10 +202,12 @@ const DashboardTeacher: React.FC = () => {
       <div className={styles.container}>
         {dashboard && (
           <>
-            <div
-              className={styles.banner}
-              style={{ backgroundImage: `url(${dashboard.banner_image_path || bn})` }}
-            />
+            {dashboard.banner_image_path && (
+              <div
+                className={styles.banner}
+                style={{ backgroundImage: `url(${dashboard.banner_image_path})` }}
+              />)
+            }
             
             <section className={styles.basicInfo}>
               <p className={styles.category}>
@@ -231,25 +242,27 @@ const DashboardTeacher: React.FC = () => {
 
             <section className={styles.info}>
               <h5>강의 공지</h5>
-              <p>{dashboard.announcement}</p>
+              <p>{dashboard.announcement ? dashboard.announcement : '공지가 없습니다.'}</p>
             </section>
 
             <section className={styles.info}>
               <h5>강의 소개</h5>
-              <p>{dashboard.description}</p>
+              <p>{dashboard.description ? dashboard.description : '강의 소개가 없습니다.'}</p>
             </section>
 
             <section className={styles.info}>
               <h5>강의 목표</h5>
-              <p>{dashboard.object}</p>  
+              <p>{dashboard.object ? dashboard.object : '강의 목표가 없습니다.'}</p>  
             </section>
 
             <div className={styles.divider} />
 
-            <section className={styles.info}>
-              <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
-              <p>{dashboard.prerequisite}</p>
-            </section>
+            {dashboard.prerequisite && (
+              <section className={styles.info}>
+                <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
+                <p>{dashboard.prerequisite}</p>
+              </section>
+            )}
           </>
         )}
         <div className={styles.bottomButtons}>

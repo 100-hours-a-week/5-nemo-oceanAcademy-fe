@@ -1,13 +1,12 @@
 .container {
     width: 400px;
-    min-height: 100vh;
+    min-height: calc(100vh - 65px);
     display: flex;
     flex-direction: column;
     text-align: left;
     align-items: center;
     justify-content: flex-start; /* TO DO: center -> flex-start로 수정, 강의 카드 불러왔을 때 괜찮은가 보기. */
     background-color: white;
-    padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
     word-break: keep-all;
     overflow-wrap: break-word;
 }
@@ -145,6 +144,7 @@
     height: 40px;
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 .editButton {
     color: var(--blue-color);
@@ -160,28 +160,4 @@
     border: none;
     cursor: pointer;
     font-size: 15px;
-}
-
-
-.wideButton {
-    width: 390px;
-    height: 40px;
-    background-color: var(--primary-color); /* Primary color */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-    position: fixed; /* 화면에 고정 */
-    bottom: 6px; /* 화면의 맨 아래에서 20px 위에 위치 */
-    left: 50%; /* 수평 중앙에 위치 */
-    transform: translateX(-50%); /* 버튼의 중앙을 기준으로 정렬 */
-    z-index: 1000; /* 다른 요소들 위에 위치하도록 설정 */
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* 그림자 추가 */
-}
-
-.wideButton:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.1); /* Hover 시 더 진한 그림자 */
 }

@@ -8,7 +8,6 @@ import styles from './LectureInfo.module.css';
 import { Container } from '../../../styles/GlobalStyles';
 
 // import image
-import bn from '../../../assets/images/banner/banner_ex.jpeg';
 import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
 import profileDefault2 from '../../../assets/images/profile/whale.png';
 import profileDefault3 from '../../../assets/images/profile/crab.png';
@@ -126,11 +125,12 @@ const LectureInfo: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <div
-              className={styles.banner}
-              style={{ backgroundImage: `url(${lecture.banner_image_path || bn})` }}
-            />
-            
+            {lecture.banner_image_path && (
+              <div
+                className={styles.banner}
+                style={{ backgroundImage: `url(${lecture.banner_image_path})` }}
+              />)
+            }
             <section className={styles.basicInfo}>
               <p className={styles.category}>
                 {lecture.category}
@@ -158,21 +158,22 @@ const LectureInfo: React.FC = () => {
 
             <section className={styles.info}>
               <h5>강의 소개</h5>
-              <div className={styles.divider} />
-              <p>{lecture.description}</p>
+              <p>{lecture.description ? lecture.description : '강의 소개가 없습니다.'}</p>
             </section>
 
             <section className={styles.info}>
               <h5>강의 목표</h5>
-              <p>{lecture.object}</p>  
+              <p>{lecture.object ? lecture.object : '강의 목표가 없습니다.'}</p>  
             </section>
 
             <div className={styles.divider} />
 
-            <section className={styles.info}>
-              <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
-              <p>{lecture.prerequisite}</p>
-            </section>
+            {lecture.prerequisite && (
+              <section className={styles.info}>
+                <h5>강의에 필요한 사전 지식 및 준비 안내</h5>
+                <p>{lecture.prerequisite}</p>
+              </section>
+            )}
 
             <Navigation />
         </div>
