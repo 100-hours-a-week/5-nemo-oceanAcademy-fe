@@ -62,11 +62,11 @@ const Header: React.FC = () => {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           console.error('Unauthorized:', error.response);
-          // 유효하지 않은 토큰인 경우, 토큰을 지우고 로그인 상태를 false로 설정
+          
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           setIsLoggedIn(false);
-          // navigate('/login');
+          navigate('/login');
         } else {
           console.error('Failed to fetch user info:', error);
         }
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
   };
 
   const handleLeaveClick = () => {
-    setShowModal(true); // 모달 열기
+    setShowModal(true);
   };
 
   const handleModalLeave = () => {
@@ -102,7 +102,7 @@ const Header: React.FC = () => {
   };
 
   const handleModalCancel = () => {
-    setShowModal(false); // 모달 닫기
+    setShowModal(false);
   };
 
   const handleProfileClick = () => {
@@ -118,7 +118,7 @@ const Header: React.FC = () => {
   };
 
   const handleDeleteAccount = () => {
-    setShowDeleteModal(true); // 회원탈퇴 모달 열기
+    setShowDeleteModal(true);
   };
 
   const confirmDeleteAccount = () => {

@@ -1,5 +1,6 @@
 .container {
   width: 400px;
+  min-height: calc(100vh - 65px);
   display: flex;
   flex-direction: column;
   text-align: left;
