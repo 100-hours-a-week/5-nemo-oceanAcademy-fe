@@ -61,15 +61,13 @@ const MyPage: React.FC = () => {
   const [initialProfilePic, setInitialProfilePic] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
   const token = localStorage.getItem('accessToken');
-
-  // 무한 스크롤 구현
-  const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
   const getProfileImage = (nickname: string): string => {
     let hash = 0;
