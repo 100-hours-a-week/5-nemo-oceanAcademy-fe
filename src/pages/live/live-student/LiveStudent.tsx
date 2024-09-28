@@ -182,7 +182,7 @@ const LiveStudent: React.FC = () => {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
-  
+
   const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -308,6 +308,13 @@ const LiveStudent: React.FC = () => {
     setIsScreenClicked((prev) => !prev);
   };
 
+  // TO DO : 오디오 송출 동의 받기 
+  // 토글 상태 추가
+  const [isAudioOn, setIsAudioOn] = useState(false);
+
+  // 오디오 토글 핸들러
+  const handleToggleAudio = () => {};
+
   return (
     <div className={styles.container}>
       {showModal && (
@@ -341,8 +348,17 @@ const LiveStudent: React.FC = () => {
       </div>
 
       <div className={styles.info}>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.instructor}>{instructor}</p>
+        <div className={styles.column}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.instructor}>{instructor}</p>
+        </div>
+        <button
+          className={styles.audioButton} 
+          onClick={handleToggleAudio} // 버튼 클릭 시 호출될 핸들러
+          style={{ backgroundColor: isAudioOn ? '#4A4B4D' : '#FFFFFF' }} // 상태에 따라 색상 변경
+        >
+        <img src={isAudioOn ? audioOn : audioOff} alt="오디오" className={styles.icon} />
+        </button>
       </div>
 
       <div className={styles.chatSection}>
