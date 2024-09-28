@@ -15,6 +15,8 @@ import profileDefault2 from '../../../assets/images/profile/whale.png';
 import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
+import audioOn from '../../../assets/images/icon/audio.png';
+import audioOff from '../../../assets/images/icon/no_audio.png';
 
 const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
@@ -39,6 +41,14 @@ const LiveStudent: React.FC = () => {
   const [isScreenClicked, setIsScreenClicked] = useState(false);
   const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
 
+  // Chat 관련
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [currentRoom, setCurrentRoom] = useState(classId);
+  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [connected, setConnected] = useState(false);
+  const [content, setContent] = useState("");
+
   const getProfileImage = (nickname: string | null): string => {
     const safeNickname = nickname || '익명';
     let hash = 0;
@@ -48,14 +58,6 @@ const LiveStudent: React.FC = () => {
     const index = Math.abs(hash % profileImages.length);
     return profileImages[index];
   };
-
-  // Chat 관련
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [currentRoom, setCurrentRoom] = useState(classId);
-  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [connected, setConnected] = useState(false);
-  const [content, setContent] = useState("");
 
   const setConnectedState = (connected: boolean) => {
     setConnected(connected);
@@ -141,8 +143,10 @@ const LiveStudent: React.FC = () => {
         console.log('Raw message received:', greeting.body); // raw data
 
         const messageContent = JSON.parse(greeting.body);
+        const pf = messageContent.profile_image_path || getProfileImage(messageContent.writer);
+        const tm = new Date(messageContent.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage, messageContent.time);
+        showGreeting(messageContent.roomId, messageContent.content, messageContent.writer, pf, tm);
       });
 
       setSubscription(newSubscription);
@@ -169,6 +173,7 @@ const LiveStudent: React.FC = () => {
       });
 
       setContent('');
+
       // 채팅 기록 다시 로드
       if (currentRoom) {
         loadChatHistory(currentRoom);
@@ -177,6 +182,7 @@ const LiveStudent: React.FC = () => {
       console.error('STOMP client is not connected. Cannot send message.');
     }
   };
+  
   const showGreeting = (room: string, message: string, nickname: string, profileImage: string, time: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
