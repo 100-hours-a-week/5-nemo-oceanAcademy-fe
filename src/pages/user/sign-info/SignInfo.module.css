@@ -13,9 +13,10 @@
 .title {
   font-size: 20px;
   font-weight: bold;
-  color: var(--blue-color);
-  margin-top: -120px;
-  margin-bottom: 30px;
+}
+
+hr {
+  border: 1.5px solid black;
 }
 
 .label {
@@ -24,14 +25,13 @@
   color: black;
   margin-bottom: 5px;
   text-align: left;
-  width: 100%;
+  width: 150px;
 }
 
 .imageContainer {
-  width: 250px;
+  width: 150px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .uploadButton {
@@ -78,7 +78,7 @@
 }
 
 .inputField {
-  width: 240px;
+  width: 100%;
   padding: 8px;
   font-size: 12px;
   border: 1px solid #ccc;
@@ -86,7 +86,7 @@
 }
 
 .requiredMark {
-  color: red;
+  color: #2A62F2;
   margin-left: 2px;
 }
 
@@ -94,4 +94,43 @@
   margin-bottom: 5px;
   color: #D13939;
   font-size: 10px;
+}
+
+.uploadButton2 {
+  padding: 8px 16px;
+  width: 88px;
+  height: 36px;
+  font-size: 14px;
+  background-color: white;
+  color: #2A62F2;
+  border: 1px solid #2A62F2;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.deleteButton {
+  padding: 8px 10px;
+  width: 58px;
+  height: 36px;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+@media (min-width: 1184px) {
+  .container {
+    width: 560px;
+  }
 }
