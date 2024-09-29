@@ -65,7 +65,7 @@ const Main: React.FC = () => {
           instructor: item.instructor,
           category: item.category
         }));
-        
+        console.log(endpoints.classes);
         setLiveClasses(classes);
       })
       .catch(error => {

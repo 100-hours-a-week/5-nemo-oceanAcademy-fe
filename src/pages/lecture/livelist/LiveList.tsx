@@ -157,7 +157,7 @@ const LiveList: React.FC = () => {
 
   return (
       <Container>
-        <div className={styles.header}>
+        <div className={styles.pageTitle}>
           <h1 className={styles.title}>🔴 Live</h1>
           <CategorySelect
               selected={selectedCategory}

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 // 공통적인 컨테이너 스타일
 export const Container = styled.div`
   width: 400px;
-  min-height: 100vh;
+  min-height: calc(100vh - 65px);
   display: flex;
   flex-direction: column;
   text-align: left;
