@@ -62,11 +62,11 @@ const Header: React.FC = () => {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           console.error('Unauthorized:', error.response);
-          // 유효하지 않은 토큰인 경우, 토큰을 지우고 로그인 상태를 false로 설정
+          
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           setIsLoggedIn(false);
-          // navigate('/login');
+          navigate('/login');
         } else {
           console.error('Failed to fetch user info:', error);
         }
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
   };
 
   const handleLeaveClick = () => {
-    setShowModal(true); // 모달 열기
+    setShowModal(true);
   };
 
   const handleModalLeave = () => {
@@ -102,7 +102,7 @@ const Header: React.FC = () => {
   };
 
   const handleModalCancel = () => {
-    setShowModal(false); // 모달 닫기
+    setShowModal(false);
   };
 
   const handleProfileClick = () => {
@@ -118,7 +118,7 @@ const Header: React.FC = () => {
   };
 
   const handleDeleteAccount = () => {
-    setShowDeleteModal(true); // 회원탈퇴 모달 열기
+    setShowDeleteModal(true);
   };
 
   const confirmDeleteAccount = () => {
@@ -158,7 +158,11 @@ const Header: React.FC = () => {
 
   // 페이지에 따라 헤더의 버튼 요소 다르게 띄우는 코드 
   const renderLeftButton = () => {
-    if (location.pathname.includes('/live/student') || location.pathname.includes('/live/teacher')) {
+    if (
+      location.pathname === '*'
+    ) return null;
+
+    if (location.pathname.includes(`/live/student`) || location.pathname.includes('/live/teacher')) {
       return (
         <img
           src={location.pathname.includes('/live/student') ? outIcon : closeIcon}
@@ -168,8 +172,8 @@ const Header: React.FC = () => {
         />
       );
     } else if (
-      location.pathname.includes('/mypage') ||
-      location.pathname.includes('/lecture/open') ||
+      location.pathname === '/mypage' ||
+      location.pathname === '/lecture/open' ||
       location.pathname.includes('/lecture/info') ||
       location.pathname.includes('/dashboard/teacher') ||
       location.pathname.includes('/dashboard/student') ||
@@ -191,11 +195,13 @@ const Header: React.FC = () => {
   const renderRightButton = () => {
     if (
         location.pathname === '/login' ||
-        location.pathname === '/sign-info'
+        location.pathname === '/sign-info' ||
+        location.pathname === '/oauth/kakao/callback' ||
+        location.pathname === '*'
     ) {
       return null;
     }
-    if (location.pathname.includes('/mypage')) {
+    if (location.pathname === '/mypage') {
       return (
         <>
           <img
@@ -222,7 +228,7 @@ const Header: React.FC = () => {
       location.pathname === '/' ||
       location.pathname === '/list' ||
       location.pathname === '/live-list' ||
-      location.pathname.includes('/classroom') ||
+      location.pathname === '/classroom' ||
       location.pathname.includes('/lecture/open') ||
       location.pathname.includes('/lecture/info') ||
       location.pathname.includes('/dashboard') ||
@@ -232,7 +238,7 @@ const Header: React.FC = () => {
         <img
           src={profileImage}
           alt="프로필"
-          className={styles.icon}
+          className={styles.profileImage}
           onClick={handleProfileClick}
           onError={(e) => {
             // 이미지 로드에 실패하면 기본 이미지로 교체

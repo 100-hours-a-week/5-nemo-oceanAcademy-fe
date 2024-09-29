@@ -1,37 +1,123 @@
 .container {
-    width: 390px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     text-align: left;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: white;
-}
-
-.buttonContainer {
-    display: flex;
-    justify-content: flex-start; /* 왼쪽 정렬 */
-    margin-bottom: 8px; /* 아래 요소와의 간격 조절 */
-    width: 344px;
-}
-
-.primaryButton {
-    width: 150px;
-    height: 30px;
-    background-color:  var(--primary-color); /* Primary color */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .banner {
-    width: 170px;
-    height: 100px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
+    width: 380px;
+    height: 200px; 
+    margin-top: 15px;    
+    background-color: var(--blue-bgr-color);
+    border-radius: 16px;
     background-size: cover;
     background-position: center;
+}
+
+.basicInfo {
+    margin: 20px 0;
+    padding: 10px;
+    width: 100%;
+}
+    .category {
+        font-size: 12px;
+        color: var(--blue-color);
+    }
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .button {
+        width: 120px;
+        height: 34px;
+        color: white;
+        background-color: var(--blue-color);
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .disabledButton {
+        background-color: var(--border-color);
+        cursor: not-allowed;
+    }
+    .link {
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--blue-color);
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .linkIcon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor; /* 텍스트 색상을 아이콘에도 적용 */
+    }
+
+.instructorSection {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--blue-container);
+    img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+    h5{
+        font-size: 16px;
+        color: var(--blue-color);
+    }
+    p {
+        font-size: 14px;
+        word-break: break-word;
+        white-space: normal;
+    }
+}
+.column {
+    display: flex;
+    flex-direction: column;
+}
+.divider {
+    width: 100%;
+    height: 1px;
+    color: black;
+}
+
+.info {
+    margin: 10px;
+    padding: 15px 20px;
+    width: 380px;
+    background-color: var(--blue-bgr-color);
+    border-radius: 4px;
+    h5 {
+        font-size: 16px;
+        color: var(--blue-color);
+        margin-bottom: 12px;
+    }
+    p {
+        font-size: 14px;
+        font-weight: bold;
+    }
 }

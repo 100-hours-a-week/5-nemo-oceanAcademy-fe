@@ -15,6 +15,8 @@ import profileDefault2 from '../../../assets/images/profile/whale.png';
 import profileDefault3 from '../../../assets/images/profile/crab.png';
 import noCam from '../../../assets/images/icon/no_cam.png';
 import share from '../../../assets/images/icon/share.png';
+import audioOn from '../../../assets/images/icon/audio.png';
+import audioOff from '../../../assets/images/icon/no_audio.png';
 
 // icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -43,6 +45,14 @@ const LiveStudent: React.FC = () => {
   const [isScreenClicked, setIsScreenClicked] = useState(false);
   const [userInfo, setUserInfo] = useState<{ nickname: string; profileImage: string } | null>(null);
 
+  // Chat 관련
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [currentRoom, setCurrentRoom] = useState(classId);
+  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [connected, setConnected] = useState(false);
+  const [content, setContent] = useState("");
+
   const getProfileImage = (nickname: string | null): string => {
     const safeNickname = nickname || '익명';
     let hash = 0;
@@ -52,14 +62,6 @@ const LiveStudent: React.FC = () => {
     const index = Math.abs(hash % profileImages.length);
     return profileImages[index];
   };
-
-  // Chat 관련
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [currentRoom, setCurrentRoom] = useState(classId);
-  const [subscription, setSubscription] = useState<StompSubscription | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [connected, setConnected] = useState(false);
-  const [content, setContent] = useState("");
 
    // Wide View 관련
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184);
@@ -148,8 +150,10 @@ const LiveStudent: React.FC = () => {
         console.log('Raw message received:', greeting.body); // raw data
 
         const messageContent = JSON.parse(greeting.body);
+        const pf = messageContent.profile_image_path || getProfileImage(messageContent.writer);
+        const tm = new Date(messageContent.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         console.log(`Received message: ${messageContent.content}`);
-        showGreeting(classId, messageContent.content, messageContent.nickname, messageContent.profileImage, messageContent.time);
+        showGreeting(messageContent.roomId, messageContent.content, messageContent.writer, pf, tm);
       });
 
       setSubscription(newSubscription);
@@ -176,6 +180,7 @@ const LiveStudent: React.FC = () => {
       });
 
       setContent('');
+
       // 채팅 기록 다시 로드
       if (currentRoom) {
         loadChatHistory(currentRoom);
@@ -191,25 +196,25 @@ const LiveStudent: React.FC = () => {
       { 
         room, 
         message, 
-        nickname: nickname || '익명',
-        profileImage: profileImage || getProfileImage(nickname),
-        time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        nickname,
+        profileImage,
+        time
       }
     ]);
-  };  
-  
+  };
+
   const loadChatHistory = (classId: string) => {
     axios.get(endpoints.getChatHistory.replace('{classId}', classId))
       .then(response => {
-          console.log('Student-Server Response Data:', response.data);
+        console.log('Teacher-Server Response Data:', response.data);
 
-          setMessages(response.data.map((msg:any) => ({
-            room: msg.roomId,
-            message: msg.content,
-            nickname: msg.writer || '익명',
-            profileImage: msg.profile_image_path || getProfileImage(msg.writer),
-            time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          })));
+        setMessages(response.data.map((msg:any) => ({
+          room: msg.roomId,
+          message: msg.content,
+          nickname: msg.writer || '익명',
+          profileImage: msg.profile_image_path || getProfileImage(msg.writer),
+          time: new Date(msg.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })));
       })
       .catch(error => {
           console.error("Failed to load chat history:", error);
@@ -258,7 +263,6 @@ const LiveStudent: React.FC = () => {
           const lectureData = response.data.data;
           setTitle(lectureData.name);
           setInstructor(lectureData.instructor);
-          console.log(response.data.message_eng, response.data.timestamp);
         } catch (error) {
           console.error('LiveStudent: 강의 정보를 불러오는 데 실패했습니다 > ', error);
         }
@@ -311,6 +315,13 @@ const LiveStudent: React.FC = () => {
     setIsScreenClicked((prev) => !prev);
   };
 
+  // TO DO : 오디오 송출 동의 받기 
+  // 토글 상태 추가
+  const [isAudioOn, setIsAudioOn] = useState(false);
+
+  // 오디오 토글 핸들러
+  const handleToggleAudio = () => {};
+
   return (
     <>
       {isMobile ? (
@@ -347,32 +358,47 @@ const LiveStudent: React.FC = () => {
       </div>
 
       <div className={styles.info}>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.instructor}>{instructor}</p>
+        <div className={styles.column}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.instructor}>{instructor}</p>
+        </div>
+        <button
+          className={styles.audioButton} 
+          onClick={handleToggleAudio} // 버튼 클릭 시 호출될 핸들러
+          style={{ backgroundColor: isAudioOn ? '#4A4B4D' : '#FFFFFF' }} // 상태에 따라 색상 변경
+        >
+        <img src={isAudioOn ? audioOn : audioOff} alt="오디오" className={styles.icon} />
+        </button>
       </div>
 
       <div className={styles.chatSection}>
         <div className={styles.chatWindow} ref={chatWindowRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={styles.chat}>
-              <div className={styles.profContainer}>
-                <img
-                  src={msg.profileImage}
-                  alt="프로필"
-                  className={styles.icon}
-                />
-              </div>  
-              <div className={styles.chatContainer}>
-                <div className={styles.chatInfo}>
-                  <h5>{msg.nickname}</h5>
-                  <p>{msg.time}</p>
-                </div>
-                <div className={styles.chatBubble}>
-                  <p>{msg.message}</p>
+          {messages.map((msg, index) => {
+            // 현재 사용자가 보낸 메시지인지 확인
+            const isMyMessage = msg.nickname === userInfo?.nickname;
+            
+            return (
+              <div
+                key={index}
+                className={`${styles.chat} ${isMyMessage ? styles.myChat : ''}`}
+              >
+                {!isMyMessage && (
+                  <div className={styles.profContainer}>
+                    <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                  </div>
+                )}
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatInfo}>
+                    {!isMyMessage && <h5>{msg.nickname}</h5>}
+                    <p className={isMyMessage ? styles.myTime : styles.time}>{msg.time}</p>
+                  </div>
+                  <div className={`${styles.chatBubble} ${isMyMessage ? styles.myChatBubble : ''}`}>
+                    <p>{msg.message}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className={styles.chatInput}>
           <textarea
@@ -385,8 +411,8 @@ const LiveStudent: React.FC = () => {
                 sendMessage();
               }
             }}
-            rows={1} // 기본 행의 높이 설정
-            style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+            rows={1}
+            style={{ resize: 'none', overflow: 'hidden' }}
           />
           <button 
             onClick={sendMessage}

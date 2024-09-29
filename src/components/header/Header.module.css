@@ -24,12 +24,14 @@
   cursor: pointer;
 }
 
+/*
 @media (min-width: 1000px) {
   .logo {
     font-size: 20px;
   }
 
-}
+} 
+*/
 
 .icon {
   width: 30px;
@@ -37,12 +39,19 @@
   cursor: pointer;
 }
 
+.profileImage {
+  width: 30px;
+  height: 30px; 
+  cursor: pointer;
+  border-radius: 50%;
+}
+
 .loginButton {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 67px;
-  height: 35px;
+  height: 33px;
   border-radius: 4px;
   color: white;
   background-color: var(--blue-color);

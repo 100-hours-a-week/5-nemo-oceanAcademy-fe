@@ -19,7 +19,7 @@ Sentry.init({
     "localhost", // 로컬 개발 환경에서의 추적
     /^https:\/\/www\.nemooceanacademy\.com/ // 프로덕션 환경의 모든 요청 추적
   ],
-  debug: true,
+  // debug: true,
   release: "oceanacademy@1.0.0",
   // Session Replay 
   replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.

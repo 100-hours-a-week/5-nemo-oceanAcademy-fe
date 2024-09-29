@@ -1,4 +1,11 @@
-const SERVER_URL = 'https://www.nemooceanacademy.com:5000';
+const currentUrl = window.location.hostname;
+
+let SERVER_URL;
+if (currentUrl.includes("localhost")) {
+    SERVER_URL = "https://dev.nemooceanacademy.com:5000"; // 개발 환경
+} else {
+    SERVER_URL = "https://www.nemooceanacademy.com:5000"; // 배포 환경
+}
 
 const endpoints = {
     user: `${SERVER_URL}/api/auth/signup`, // 회원가입 여부 확인 (GET) / 회원가입 신청 (POST) / 회원 탈퇴 (DELETE)
@@ -19,6 +26,7 @@ const endpoints = {
     connectWebSocket: `${SERVER_URL}/ws`,
     getChatHistory: `${SERVER_URL}/find/chat/list/{classId}`,
     sendMessage: `${SERVER_URL}/app/hello`,
+    isActive: `${SERVER_URL}/api/classes/{classId}/isActive`, // 강의 라이브 여부 조회 (GET) / 강의 라이브 여부 변경 (POST)
   };
   
 export default endpoints;

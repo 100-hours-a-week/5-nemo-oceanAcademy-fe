@@ -4,13 +4,13 @@ import styled from 'styled-components';
 // 공통적인 컨테이너 스타일
 export const Container = styled.div`
   width: 400px;
-  min-height: 100vh;
+  min-height: calc(100vh - 65px);
   display: flex;
   flex-direction: column;
   text-align: left;
   align-items: center;
   background-color: white;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
 `;
 
 // 공통적인 버튼 스타일

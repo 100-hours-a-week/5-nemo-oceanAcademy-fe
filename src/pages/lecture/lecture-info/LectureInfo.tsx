@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Button from '../../../components/button/Button';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
@@ -9,8 +8,15 @@ import { Container } from '../../../styles/GlobalStyles';
 import Row from '../../../components/Row';
 import Column from '../../../components/Column';
 import Space from '../../../components/Space';
+import Button from '../../../components/button/Button';
 import DefaultInstructorImage from './InstructorImage.png';
 import DefaultLecturebannerImage from './LecturebannerImage.png';
+
+// import image
+import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
+import profileDefault2 from '../../../assets/images/profile/whale.png';
+import profileDefault3 from '../../../assets/images/profile/crab.png';
+const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Lecture {
     id: number; // class ID
@@ -24,6 +30,7 @@ interface Lecture {
     instructor_info: string;
     prerequisite: string;
     announcement: string;
+    student_count: number;
     banner_image_path: string | null;
     is_active: boolean;
 }
@@ -34,7 +41,18 @@ const LectureInfo: React.FC = () => {
     const [lecture, setLecture] = useState<Lecture | null>(null);
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184);
+    const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
+    const [userRole, setUserRole] = useState<string | null>(null);
     const token = localStorage.getItem('accessToken');
+
+    const getProfileImage = (nickname: string): string => {
+        let hash = 0;
+        for (let i = 0; i < nickname.length; i++) {
+            hash = nickname.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash % profileImages.length);
+        return profileImages[index];
+    };
 
     useEffect(() => {
         const fetchLectureInfo = async () => {
@@ -45,8 +63,10 @@ const LectureInfo: React.FC = () => {
                     },
                 });
                 setLecture(response.data.data);
+                setProfileImage(getProfileImage(response.data.data.instructor));
             } catch (error) {
                 console.error('Failed to fetch lecture data:', error);
+                alert('강의 정보를 불러오는 데 실패했습니다.');
             }
         };
 
@@ -58,14 +78,10 @@ const LectureInfo: React.FC = () => {
                     },
                 });
 
-                if (response.data.data === '강사' || response.data.data === '수강생') {
-                    setIsEnrolled(true);
-                } else {
-                    setIsEnrolled(false);
-                }
+                setUserRole(response.data.data);
             } catch (error) {
                 console.error('Failed to fetch user role:', error);
-                setIsEnrolled(false); // 오류 시 수강 신청 버튼을 표시
+                setUserRole(null); 
             }
         };
 
@@ -84,8 +100,9 @@ const LectureInfo: React.FC = () => {
     }, [classId, token]);
 
     const handleButtonClick = async () => {
-        if (isEnrolled) {
-            console.log('수강신청 되어 있나요?: ', isEnrolled);
+        if (userRole === '강사') {
+            navigate(`/dashboard/teacher/${classId}`);
+        } else if (userRole === '수강생') {
             navigate(`/dashboard/student/${classId}`);
         } else {
             try {

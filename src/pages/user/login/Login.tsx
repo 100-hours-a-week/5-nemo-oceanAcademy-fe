@@ -11,6 +11,17 @@ const Login: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
 
+    const currentUrl = window.location.hostname;
+
+    let redirectUrl;
+    if (currentUrl.includes("localhost")) {
+        redirectUrl = "http://localhost:3000/oauth/kakao/callback";
+    } else if (currentUrl.includes("dev.nemooceanacademy.com")) {
+        redirectUrl = "https://dev.nemooceanacademy.com/oauth/kakao/callback";
+    } else {
+        redirectUrl = "https://www.nemooceanacademy.com/oauth/kakao/callback";
+    }
+
     // Kakao SDK 로드 및 초기화
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -49,8 +60,7 @@ const Login: React.FC = () => {
         }
 
         window.Kakao.Auth.authorize({
-            redirectUri: 'http://localhost:3000/oauth/kakao/callback',
-            // redirectUri: 'https://www.nemooceanacademy.com/oauth/kakao/callback',
+            redirectUri: redirectUrl,
         });
     };
 

@@ -1,6 +1,6 @@
 .container {
   width: 400px;
-  min-height: 100vh;
+  min-height: calc(100vh - 65px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,6 +85,7 @@
   margin-top: 3px;
   font-size: 12px;
   font-weight: normal;
+  overflow-wrap: break-word;
 }
   
 .nicknameInput {
@@ -128,9 +129,9 @@
 
 .saveButton {
   margin-left: 20px;
-  width: 70px;
-  height: 40px;
-  font-size: 16px;
+  width: 65px;
+  height: 35px;
+  font-size: 14px;
   font-weight: bold;
   border: none;
   border-radius: 5px;
@@ -138,12 +139,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  color: white;
+  background-color: var(--blue-color);
   /* transition: background-color 0.3s; */
 }
 
 .saveButton:hover {
-  background-color: #F7F9E7;
+  background-color: var(--blue-hover-color);
 }
 
 /*
