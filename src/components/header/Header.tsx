@@ -238,7 +238,7 @@ const Header: React.FC = () => {
         <img
           src={profileImage}
           alt="프로필"
-          className={styles.icon}
+          className={styles.profileImage}
           onClick={handleProfileClick}
           onError={(e) => {
             // 이미지 로드에 실패하면 기본 이미지로 교체
