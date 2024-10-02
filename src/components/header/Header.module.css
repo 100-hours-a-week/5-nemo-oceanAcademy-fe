@@ -1,5 +1,4 @@
 .container {
-  width: 100%;
   background-color: black;
   display: flex;
   justify-content: center;
@@ -124,14 +123,4 @@
 
 .dropdown div:hover {
   background-color: #f0f0f0;
-}
-
-.leftButton {
-  position: absolute;
-  left: 15px;
-}
-
-.rightButton {
-  position: absolute;
-  right: 15px;
 }
