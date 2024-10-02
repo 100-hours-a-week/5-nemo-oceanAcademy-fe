@@ -220,9 +220,9 @@ const Header: React.FC = () => {
       );
     } else if (!isLoggedIn) {
       return (
-        <div className={styles.loginButton} onClick={handleLogin}>
+        <button className={styles.loginButton} onClick={handleLogin}>
           로그인
-        </div>
+        </button>
       );
     } else if (
       location.pathname === '/' ||
@@ -251,16 +251,19 @@ const Header: React.FC = () => {
   };
   
   return (
-    <header className={styles.header}>
-      <div className={styles.leftButton}>
-        {renderLeftButton()}
+    <div className={styles.container}>
+      <div className={styles.innerContainer}>
+        <div className={styles.leftButton}>
+          {renderLeftButton()}
+        </div>
+        <div onClick={handleLogoClick} className={styles.logo}>
+          바다서원
+        </div>
+        <div className={styles.rightButton}>
+          {renderRightButton()}
+        </div>
       </div>
-      <div onClick={handleLogoClick} className={styles.logo}>
-        바다서원
-      </div>
-      <div className={styles.rightButton}>
-        {renderRightButton()}
-      </div>
+      <div className={styles.divider} />
       {showModal && (
         <Modal
           title="강의를 나가시겠습니까?"
@@ -282,7 +285,7 @@ const Header: React.FC = () => {
           onRightButtonClick={cancelDeleteAccount}
         />
       )}
-    </header>
+    </div>
   );
 };
 

@@ -1,3 +1,12 @@
+:root {
+  --banner-bgr-color: #1D1D1E;
+  --divider-color: #2C2C2C;
+  --live-bgr-color: #141516;
+  --red-txt-color: #F22A2A;
+  --red-bgr-color: #FFEBEB;
+  --blue-color: #2A62F2;
+  --blue-bgr-color: #EBF1FF;
+}
 .container {
   width: 400px;
   min-height: 100vh;
@@ -10,18 +19,49 @@
   padding-bottom: 80px; /* 네비게이션 바 때문에 넣는 패딩 */
 }
 
-/* min-width: 1184보다 작게 잡아도 될 것 같다는 생각이 */
-@media (min-width: 1000px) {
-  .container {
-    width: 1184px;
-  }
-}
-
 .adSection {
   width: 100%;
   display: flex;
   justify-content: center;
   padding-top: 20px;
+}
+
+@media (min-width: 1184px) {
+  .container {
+    width: 1184px;
+    background-color: black;
+  }
+
+  .adSection {
+    border: 1px solid red;
+    height: 176px;
+  }
+    .adImage {
+      width: 1184px;
+      height: 96px;
+      border-radius: 8px;
+      margin-top: 32px;
+      background-color: var(--banner-bgr-color);
+    }
+
+  .top10Section {
+    height: 302px;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    color: #2c2c2c;
+  }
+
+  .liveSection {
+    width: 100%;
+    background-color: var(--live-bgr-color);
+  }
+    .sectionTitle {
+      font-size: 20px;
+      color: white;
+    }
 }
 
 .feedback {

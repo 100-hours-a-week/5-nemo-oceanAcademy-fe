@@ -10,7 +10,10 @@ export const Container = styled.div`
   text-align: left;
   align-items: center;
   background-color: white;
-  padding-bottom: 60px;
+
+  @media (min-width: 768px) {
+    width: 1184px;
+  }
 `;
 
 // 공통적인 버튼 스타일
@@ -44,4 +47,27 @@ interface EmptyProps {
 export const Empty = styled.div<EmptyProps>`
   width: 100%;
   height: ${({ height = '10px' }) => height};
+`;
+
+
+// 리팩토링 중입니다... 
+interface SpaceProps {
+  height?: string;
+}
+
+export const Space = styled.div<SpaceProps>`
+  width: 100%;
+  height: ${({ height = '10px' }) => height};
+`;
+
+export const Row = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+`;
+
+export const Column = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;

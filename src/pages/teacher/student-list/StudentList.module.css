@@ -8,6 +8,12 @@
   background-color: white;
 }
 
+@media (min-width: 1184px) {
+  .container {
+    width: 1184px;
+  }
+}
+
 .listContainer {
   width: 390px;
   background-color: white;

@@ -5,9 +5,14 @@
   justify-content: center;
   width: 400px;
   height: 100vh;
-  padding-bottom: 60px; /* NavigationBar 크기만큼의 패딩 */
   text-align: center;
   background-color: white;
+}
+
+@media (min-width: 1184px) {
+  .container {
+    width: 1184px;
+  }
 }
   
 .message {

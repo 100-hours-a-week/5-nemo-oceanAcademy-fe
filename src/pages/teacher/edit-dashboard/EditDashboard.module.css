@@ -1,119 +1,125 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .label {
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  
-  .select, .input, .textarea {
-    width: 100%;
-    min-height: 55px;
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .textarea {
-    margin-top: 0;
-    min-height: 100px;
-    width: 100%;
-    resize: none;
-    padding: 0;
-    border: none;
-    outline: none;
-    font-size: 13px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
 
-  .titletextarea {
-    margin-top: 0;
-    min-height: 20px;
-    width: 100%;
-    resize: none;
-    padding: 0;
-    border: none;
-    outline: none;
-    font-size: 13px;
-    height: 20px;
+@media (min-width: 1184px) {
+  .container {
+    width: 1184px;
   }
-  
-  .uploadButton {
-    margin-top: 20px;
-    width: 367px;
-    height: 55px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .uploadButton:hover {
-    background-color: #5a6599;
-  }
-  
-  .previewImage {
-    width: 350px;
-    height: 170px;
-    margin-top: 10px;
-    border-radius: 5px;
-  }
-  
-  .fileInput {
-    display: none;
-  }
+}
 
-  .imagetitle {
-    width: 344px;
-    margin: 0 0 10px 0;
-  }
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
-  .warningtext {
-    width: 344px;
-    padding: 5px;
-    font-size: 12px;
-  }
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+}
 
-  .buttonContainer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 367px;
-  }
-  
-  .cancelButton {
-    width: 48%;
-    height: 50px;
-    background-color: #a9a9d9; /* Primary Color보다 연한 색상 */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .saveButton {
-    width: 48%;
-    height: 50px;
-    background-color: var(--primary-color); /* Primary Color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .cancelButton:hover, .saveButton:hover {
-    opacity: 0.8;
-  }
+.select, .input, .textarea {
+  width: 100%;
+  min-height: 55px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.textarea {
+  margin-top: 0;
+  min-height: 100px;
+  width: 100%;
+  resize: none;
+  padding: 0;
+  border: none;
+  outline: none;
+  font-size: 13px;
+}
+
+.titletextarea {
+  margin-top: 0;
+  min-height: 20px;
+  width: 100%;
+  resize: none;
+  padding: 0;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  height: 20px;
+}
+
+.uploadButton {
+  margin-top: 20px;
+  width: 367px;
+  height: 55px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.uploadButton:hover {
+  background-color: #5a6599;
+}
+
+.previewImage {
+  width: 350px;
+  height: 170px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.imagetitle {
+  width: 344px;
+  margin: 0 0 10px 0;
+}
+
+.warningtext {
+  width: 344px;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 367px;
+}
+
+.cancelButton {
+  width: 48%;
+  height: 50px;
+  background-color: #a9a9d9; /* Primary Color보다 연한 색상 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.saveButton {
+  width: 48%;
+  height: 50px;
+  background-color: var(--primary-color); /* Primary Color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancelButton:hover, .saveButton:hover {
+  opacity: 0.8;
+}

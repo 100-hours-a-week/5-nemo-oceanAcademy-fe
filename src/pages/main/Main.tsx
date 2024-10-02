@@ -49,11 +49,7 @@ const Main: React.FC = () => {
   const navigate = useNavigate();
   const [liveClasses, setLiveClasses] = useState<Lecture[]>([]);
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]); 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(0); // 페이지 번호
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
+  const [page, setPage] = useState(0);
   
   useEffect(() => {
     axios.get(`${endpoints.classes}?target=live?page=${page}`)
@@ -102,6 +98,42 @@ const Main: React.FC = () => {
 
   return (
       <div className={styles.container}>
+
+
+        <section className={styles.adSection}>
+          <div className={styles.adImage}>
+            {/* <img /> */}
+          </div>
+        </section>
+
+
+
+        <section className={styles.top10Section}>
+          <div>
+            <h1 className={styles.sectionTitle}>
+              수강생이 많은 강의 TOP 10
+            </h1>
+          </div>
+
+        </section>
+
+        <div className={styles.divider} />
+
+
+        <section className={styles.liveSection}>
+
+
+      
+        </section>
+          <div>
+            <h1 className={styles.sectionTitle}>
+              🔴 Live: 모두가 주목하는 실시간 라이브 강의
+            </h1>
+
+          </div>
+      
+
+
         <section className={styles.adSection}>
           <div className={styles.feedback} onClick={handleFeedbackClick}>
             <img src={feedbackImage} alt="move to google form" />

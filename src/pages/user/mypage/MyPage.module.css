@@ -8,6 +8,12 @@
   padding-bottom: 80px;
   background-color: white;
 }
+
+@media (min-width: 1184px) {
+  .container {
+    width: 1184px;
+  }
+}
   
 .profileContainer {
   width: 370px;

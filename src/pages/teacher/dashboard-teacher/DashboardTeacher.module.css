@@ -11,6 +11,12 @@
     overflow-wrap: break-word;
 }
 
+@media (min-width: 1184px) {
+    .container {
+      width: 1184px;
+    }
+  }
+
 /* 스타일 처음부터 다시 잡기 . . . */
 
 .banner {

@@ -148,12 +148,12 @@ const SignInfo = () => {
 
                 {/* 사진변경버튼 */}
                 <button className={styles.uploadButton} onClick={handleFileClick}>
-  {preview ? (
-    <img src={preview} alt="Preview" className={styles.previewImage} />
-  ) : (
-    '+'
-  )}
-</button>
+                  {preview ? (
+                    <img src={preview} alt="Preview" className={styles.previewImage} />
+                  ) : (
+                    '+'
+                  )}
+                </button>
               </Row>
 
               <div className={styles.buttonContainer}>  

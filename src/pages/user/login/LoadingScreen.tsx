@@ -43,6 +43,10 @@ const LoaderContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media (min-width: 768px) {
+    width: 1184px;
+  }
 `;
 
 const Loader = styled.div`
