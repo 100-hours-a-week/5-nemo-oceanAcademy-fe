@@ -1,3 +1,10 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,8 +16,14 @@ body {
 
 @media (min-width: 1184px) {
   body {
-    background-color: black;
+    margin: 0 auto;
+    background-color: white;
   }
+}
+
+.black-background {
+  background-color: black; /* 배경을 검은색으로 설정 */
+  color: white; /* 텍스트 색상도 조정 가능 */
 }
 
 .App {}

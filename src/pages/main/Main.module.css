@@ -8,6 +8,7 @@
   --blue-bgr-color: #EBF1FF;
 }
 .container {
+  margin: 0 auto;
   width: 400px;
   min-height: 100vh;
   display: flex;
@@ -46,6 +47,7 @@
 
   .top10Section {
     height: 302px;
+    border: 1px solid blue;
   }
 
   .divider {

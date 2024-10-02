@@ -131,63 +131,8 @@ const Main: React.FC = () => {
             </h1>
 
           </div>
-      
 
 
-        <section className={styles.adSection}>
-          <div className={styles.feedback} onClick={handleFeedbackClick}>
-            <img src={feedbackImage} alt="move to google form" />
-          </div>
-        </section>
-
-        <section className={styles.liveSection}>
-          <Empty height="10px" />
-          <div className={styles.titleSection}>
-            <h1 className={styles.sectionTitle}>
-              🔴 Live: 모두가 주목하는 실시간 라이브 강의
-            </h1>
-            <span className={styles.link} onClick={() => navigate('/live-list')}>
-              라이브 중인 강의 보러 가기 &gt;
-            </span>
-          </div>
-          <div className={styles.lectureGrid}>
-            {liveClasses.slice(0, 4).map((lecture) => (
-              <LectureCard 
-                key={lecture.classId}
-                classId={lecture.classId}
-                bannerImage={lecture.bannerImage}
-                name={lecture.name}
-                instructor={lecture.instructor} 
-                category={lecture.category} 
-              />
-            ))}
-          </div>
-        </section>
-
-        <Empty />
-
-        <section className={styles.toptenSection}>
-          <div className={styles.titleSection}>
-            <h1 className={styles.sectionTitle}>
-              📌 수강생이 많은 강의 Top10
-            </h1>
-            <span className={styles.link} onClick={() => navigate('/list')}>
-              전체 강의 보러 가기 &gt;
-            </span>
-          </div>
-          <div className={styles.lectureGrid}>
-            {topTenClasses.map((lecture) => (
-              <LectureCard 
-                key={lecture.classId} 
-                classId={lecture.classId}
-                bannerImage={lecture.bannerImage} 
-                name={lecture.name} 
-                instructor={lecture.instructor} 
-                category={lecture.category} 
-              />
-            ))}
-          </div>
-        </section>
       </div>
   );
 };

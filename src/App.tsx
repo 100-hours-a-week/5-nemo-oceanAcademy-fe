@@ -44,6 +44,27 @@ const Analytics = () => {
   return null;
 };
 
+const BackgroundManager = () => {
+  const location = useLocation(); // useLocation()을 여기서 사용
+  useEffect(() => {
+    const body = document.body;
+
+    if (
+      location.pathname === '/' || 
+      location.pathname === '/list' || 
+      location.pathname === '/live-list' ||
+      location.pathname.startsWith('/live/teacher') || 
+      location.pathname.startsWith('/live/student')
+    ) {
+      body.classList.add('black-background');
+    } else {
+      body.classList.remove('black-background');
+    }
+  }, [location]);
+
+  return null; // 렌더링할 내용이 없으므로 null 반환
+};
+
 const App: React.FC = () => {
   return (
     <Sentry.ErrorBoundary 
@@ -54,6 +75,7 @@ const App: React.FC = () => {
     >
       <Router>
         <Analytics />
+        <BackgroundManager />
         <Header />
         <ScrollToTop />
         <Routes>

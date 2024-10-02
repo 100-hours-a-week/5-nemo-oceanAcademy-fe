@@ -45,6 +45,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
 
   @media (min-width: 768px) {
+    margin: 0 auto;
     width: 1184px;
   }
 `;

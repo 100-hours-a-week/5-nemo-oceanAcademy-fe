@@ -11,6 +11,7 @@
 
 @media (min-width: 1184px) {
   .container {
+    margin: 0 auto;
     width: 1184px;
   }
 }
