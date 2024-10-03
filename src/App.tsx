@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import ReactGA from "react-ga4";
 import * as Sentry from '@sentry/react';
 import './App.css';
-import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
 import Breadcrumb from './components/breadcrumb/Breadcrumb';
 import Main from './pages/main/Main';
@@ -24,9 +23,10 @@ import Login from './pages/user/login/Login';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
 import SignInfo from './pages/user/sign-info/SignInfo';
-import PrivateRoute from 'components/PrivateRoute';
-import Layout from './components/Layout';
-import NotFound from 'components/NotFound';
+import ScrollToTop from './components/utils/ScrollToTop';
+import PrivateRoute from 'components/utils/PrivateRoute';
+import Layout from './components/utils/Layout';
+import NotFound from './components/utils/NotFound';
 
 const Analytics = () => {
   const location = useLocation();

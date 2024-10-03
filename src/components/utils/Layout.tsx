@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import Breadcrumb from './breadcrumb/Breadcrumb';
+import Breadcrumb from '../breadcrumb/Breadcrumb';
 
 // 경로와 라벨을 맵핑하는 객체
 const breadcrumbNameMap: { [key: string]: string } = {
