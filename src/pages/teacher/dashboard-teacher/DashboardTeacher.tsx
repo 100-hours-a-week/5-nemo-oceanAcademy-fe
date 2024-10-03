@@ -62,15 +62,15 @@ const DashboardTeacher: React.FC = () => {
     return profileImages[index];
   };
 
-    // window.history 로그 출력
-    useEffect(() => {
-      console.log('History Length:', window.history.length); // 스택에 저장된 페이지 수
-      console.log('History State:', window.history.state); // 현재 state 정보
-      console.log('History Object:', window.history); // history 객체 전체 정보
-  
-      // window.history.back(), window.history.forward()는 뒤로/앞으로 이동
-      console.log('Can Go Back:', window.history.length > 1); // 이전 페이지가 있는지 확인
-    }, []);
+  // window.history 로그 출력
+  useEffect(() => {
+    console.log('History Length:', window.history.length); // 스택에 저장된 페이지 수
+    console.log('History State:', window.history.state); // 현재 state 정보
+    console.log('History Object:', window.history); // history 객체 전체 정보
+
+    // window.history.back(), window.history.forward()는 뒤로/앞으로 이동
+    console.log('Can Go Back:', window.history.length > 1); // 이전 페이지가 있는지 확인
+  }, []);
     
   useEffect(() => {
     const fetchDashboardData = async () => {
