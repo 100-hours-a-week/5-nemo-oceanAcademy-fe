@@ -1,7 +1,7 @@
 // 콜백 로딩 중 화면
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Empty } from '../../../styles/GlobalStyles';
+import { Space } from '../../../styles/GlobalStyles';
 
 const LoadingScreen: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ const LoadingScreen: React.FC = () => {
         <br />
         🐙🐙
       </LoadingText>
-      <Empty height="120px" />
+      <Space height="120px" />
     </LoaderContainer>
   );
 };

@@ -4,9 +4,7 @@ import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './SignInfo.module.css';
 import WideButton from '../../../components/wide-button/WideButton';
-import Row from 'components/Row';
-import Column from 'components/Column';
-import Space from 'components/Space';
+import { Row, Column, Space } from '../../../styles/GlobalStyles';
 
 interface LocationState {
   token: string;

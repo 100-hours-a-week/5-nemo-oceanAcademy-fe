@@ -7,11 +7,13 @@ import Navigation from '../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
-import { Empty } from '../../styles/GlobalStyles';
+import { Space } from '../../styles/GlobalStyles';
 
 // import images
 import emptyImage from '../../assets/images/utils/empty.png';
 import feedbackImage from '../../assets/images/ad/feedback.png';
+import whiteArrow from '../../../assets/images/icon/arrow_w.svg';
+import blackArrow from '../../../assets/images/icon/arrow_bl.svg';
 import image1 from '../../assets/images/banner/image1.png';
 import image2 from '../../assets/images/banner/image2.jpeg';
 import image3 from '../../assets/images/banner/image3.png';
@@ -115,22 +117,21 @@ const Main: React.FC = () => {
             </h1>
           </div>
 
+
+
         </section>
 
         <div className={styles.divider} />
 
-
         <section className={styles.liveSection}>
 
-
-      
-        </section>
           <div>
             <h1 className={styles.sectionTitle}>
               🔴 Live: 모두가 주목하는 실시간 라이브 강의
             </h1>
-
           </div>
+      
+        </section>
 
 
       </div>

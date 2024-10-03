@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './Login.module.css';
-import { Empty } from '../../../styles/GlobalStyles';
+import { Space } from '../../../styles/GlobalStyles';
 
 const Login: React.FC = () => {
     const [isKakaoLoaded, setIsKakaoLoaded] = useState(false); // SDK 로드 상태 추적
@@ -78,7 +78,7 @@ const Login: React.FC = () => {
             <button className={styles.alternativeButton} onClick={handleAltClick}>
                 다른 방법으로 로그인
             </button>
-            <Empty height="80px" />
+            <Space height="80px" />
         </div>
     );
 };
