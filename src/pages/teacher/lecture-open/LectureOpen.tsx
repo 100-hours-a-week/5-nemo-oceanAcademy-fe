@@ -6,14 +6,11 @@ import Button from '../../../components/button/Button';
 import Navigation from '../../../components/navigation/Navigation';
 import CategorySelect from 'components/category-select/CategorySelect';
 import styles from './LectureOpen.module.css';
-import { Container } from '../../../styles/GlobalStyles';
+import { Container,Row, Column, Space } from '../../../styles/GlobalStyles';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import { isValidTextInput, getTitleHelperText } from '../../../utils/validation';
 
-import Row from '../../../components/Row';
-import Column from '../../../components/Column';
-import Space from '../../../components/Space';
 import Announcement from "../../../components/dashboard/Announcement";
 
 interface Category {
