@@ -7,34 +7,10 @@ import Navigation from '../../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LectureList.module.css';
-import { Container } from '../../../styles/GlobalStyles';
+import { Container, Space, Divider } from '../../../styles/GlobalStyles';
 
 // import images
 import emptyImage from '../../../assets/images/utils/empty.png';
-import image1 from '../../../assets/images/banner/image1.png';
-import image2 from '../../../assets/images/banner/image2.jpeg';
-import image3 from '../../../assets/images/banner/image3.png';
-import image4 from '../../../assets/images/banner/image4.png';
-import image5 from '../../../assets/images/banner/image5.jpeg';
-import image6 from '../../../assets/images/banner/image6.png';
-import image7 from '../../../assets/images/banner/image7.png';
-import image8 from '../../../assets/images/banner/image8.jpeg';
-import image9 from '../../../assets/images/banner/image9.png';
-import image10 from '../../../assets/images/banner/image10.jpeg';
-
-// 기본 이미지 배열
-const defaultImages = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-];
 
 interface Lecture {
   classId: number;
@@ -53,11 +29,25 @@ const LectureList: React.FC = () => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
   const [page, setPage] = useState(0); // 페이지 번호
   const [hasMore, setHasMore] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('전체 카테고리');
+  const [selectedCategory, setSelectedCategory] = useState('전체');
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false); // 스크롤 시 데이터 가져오는 상태
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1184);
+  const isBlackBackground = true;
   const token = localStorage.getItem('accessToken');
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1184);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -101,7 +91,7 @@ const LectureList: React.FC = () => {
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          bannerImage: item.banner_image_path,
           instructor: item.instructor,
           category: item.category,
         }));
@@ -129,20 +119,18 @@ const LectureList: React.FC = () => {
     }
   }, []);
 
-  // 페이지나 카테고리가 변경될 때 강의 목록 다시 불러오기
+  // TO DO : selectedCategory 지우기 
   useEffect(() => {
     setLectures([]);
     fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0);
-  }, [selectedCategory,fetchLectures]);
+  }, [selectedCategory, fetchLectures]);
 
-  // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isFetching && hasMore) {
-      setPage((prevPage) => prevPage + 1); // 페이지 증가
+      setPage((prevPage) => prevPage + 1);
     }
   }, [isFetching, hasMore]);
 
-  // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
     if (page === 0) {
       fetchLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); 
@@ -151,7 +139,6 @@ const LectureList: React.FC = () => {
     }
   }, [page, fetchLectures, selectedCategory]);
 
-  // 스크롤 이벤트 등록
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -161,6 +148,65 @@ const LectureList: React.FC = () => {
     setSelectedCategory(category);
     setPage(0); // 카테고리 변경 시 페이지 0으로 리셋
   };
+
+
+  if (isDesktop) {
+    return (
+      <Container isBlackBackground={isBlackBackground}>
+        <Advertisement />
+        <Divider />
+        <Space height={"40px"} />
+
+        <section className={styles.filterSection}>
+          <div className={styles.categoryList}>
+            <button
+              className={`${styles.categoryButton} ${selectedCategory === '전체' ? styles.active : ''}`}
+              onClick={() => handleCategoryChange('전체')}
+            >
+              전체
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                className={`${styles.categoryButton} ${selectedCategory === category.name ? styles.active : ''}`}
+                onClick={() => handleCategoryChange(category.name)}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.lectureSection}>
+          <Space height={"40px"} />
+          <div>
+            <h1 className={styles.sectionTitle}>
+              수강생이 많은 강의 TOP 10
+            </h1>
+
+            
+          </div>
+          <Space height={"32px"} />
+
+          <div className={styles.lectureGrid}>
+            {lectures.map((lecture) => (
+              <LectureCard
+                key={lecture.classId}
+                classId={lecture.classId}
+                bannerImage={lecture.bannerImage}
+                name={lecture.name}
+                instructor={lecture.instructor}
+                category={lecture.category}
+              />
+            ))}
+          </div>
+
+        </section>
+
+        {isLoading && <p>Loading more lectures...</p>}
+      </Container>
+    );
+  }
 
   return (
     <Container>

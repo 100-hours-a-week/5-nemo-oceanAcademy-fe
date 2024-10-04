@@ -2,7 +2,11 @@
 import styled from 'styled-components';
 
 // 공통적인 컨테이너 스타일
-export const Container = styled.div`
+interface ContainerProps {
+  isBlackBackground?: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
   margin: 0 auto;
   width: 400px;
   min-height: calc(100vh - 65px);
@@ -10,7 +14,7 @@ export const Container = styled.div`
   flex-direction: column;
   text-align: left;
   align-items: center;
-  background-color: white;
+  background-color: ${({ isBlackBackground }) => (isBlackBackground ? '#141516' : 'white')};
 
   @media (min-width: 1184px) {
     width: 1184px;
@@ -38,6 +42,13 @@ export const Title = styled.h1`
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
+`;
+
+export const Divider = styled.div`
+  width: 100vw;
+  overflow-x: hidden;
+  height: 1px;
+  background-color: var(--divider-color);
 `;
 
 // 여백

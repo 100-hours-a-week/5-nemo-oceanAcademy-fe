@@ -7,37 +7,13 @@ import Navigation from '../../components/navigation/Navigation';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
-import { Space } from '../../styles/GlobalStyles';
+import { Row, Space, Divider } from '../../styles/GlobalStyles';
 
 // import images
 import emptyImage from '../../assets/images/utils/empty.png';
 import feedbackImage from '../../assets/images/ad/feedback.png';
-import whiteArrow from '../../../assets/images/icon/arrow_w.svg';
-import blackArrow from '../../../assets/images/icon/arrow_bl.svg';
-import image1 from '../../assets/images/banner/image1.png';
-import image2 from '../../assets/images/banner/image2.jpeg';
-import image3 from '../../assets/images/banner/image3.png';
-import image4 from '../../assets/images/banner/image4.png';
-import image5 from '../../assets/images/banner/image5.jpeg';
-import image6 from '../../assets/images/banner/image6.png';
-import image7 from '../../assets/images/banner/image7.png';
-import image8 from '../../assets/images/banner/image8.jpeg';
-import image9 from '../../assets/images/banner/image9.png';
-import image10 from '../../assets/images/banner/image10.jpeg';
-
-// 기본 이미지 배열
-const defaultImages = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-];
+import whiteArrow from '../../assets/images/icon/arrow_w.svg';
+import blackArrow from '../../assets/images/icon/arrow_bl.svg';
 
 interface Lecture {
   classId: number;
@@ -59,7 +35,7 @@ const Main: React.FC = () => {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          bannerImage: item.banner_image_path,
           instructor: item.instructor,
           category: item.category
         }));
@@ -79,7 +55,7 @@ const Main: React.FC = () => {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          bannerImage: item.banner_image_path,
           instructor: item.instructor,
           category: item.category
         }));
@@ -100,40 +76,58 @@ const Main: React.FC = () => {
 
   return (
       <div className={styles.container}>
-
-
-        <section className={styles.adSection}>
-          <div className={styles.adImage}>
-            {/* <img /> */}
-          </div>
-        </section>
-
-
+        <Advertisement />
 
         <section className={styles.top10Section}>
-          <div>
+          <Space height={"40px"} />
+          <Row align={"fill"} className={styles.top10Slides}>
             <h1 className={styles.sectionTitle}>
               수강생이 많은 강의 TOP 10
             </h1>
+
+            <div className={styles.link}>
+              <p>전체 강의 보기</p>
+              <img src={whiteArrow} />
+            </div>
+          </Row>
+          <Space height={"24px"} />
+
+
+          <div className={styles.carousel}>
+
           </div>
-
-
 
         </section>
 
-        <div className={styles.divider} />
+        <Divider />
 
         <section className={styles.liveSection}>
-
-          <div>
+          <Space height={"40px"} />
+          <Row align={"fill"}>
             <h1 className={styles.sectionTitle}>
               🔴 Live: 모두가 주목하는 실시간 라이브 강의
             </h1>
+            
+            <div className={styles.link}>
+              <p>현재 라이브 중인 강의 보기</p>
+              <img src={whiteArrow} />
+            </div>
+          </Row>
+          <Space height={"24px"} />
+          <div className={styles.lectureGrid}>
+            {liveClasses.map((lecture) => (
+              <LectureCard
+                key={lecture.classId}
+                classId={lecture.classId}
+                bannerImage={lecture.bannerImage}
+                name={lecture.name}
+                instructor={lecture.instructor}
+                category={lecture.category}
+              />
+            ))}
           </div>
-      
+          <Space height={"40px"} />
         </section>
-
-
       </div>
   );
 };

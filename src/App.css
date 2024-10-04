@@ -22,8 +22,8 @@ body {
 }
 
 .black-background {
-  background-color: black; /* 배경을 검은색으로 설정 */
-  color: white; /* 텍스트 색상도 조정 가능 */
+  background-color: #141516;
+  color: white;
 }
 
 .App {}

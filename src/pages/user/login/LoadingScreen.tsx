@@ -6,18 +6,22 @@ import { Space } from '../../../styles/GlobalStyles';
 const LoadingScreen: React.FC = () => {
   return (
     <LoaderContainer>
-      <LoadingText>
+      {/*
         🪼🪼 <br />
         <br />
+      */}
+      <LoadingText>
         바다서원으로 <br />
         이동 중입니다 <br />
         <br />
       </LoadingText>
       <Loader />
+      {/*
       <LoadingText>
         <br />
         🐙🐙
       </LoadingText>
+      */}
       <Space height="120px" />
     </LoaderContainer>
   );

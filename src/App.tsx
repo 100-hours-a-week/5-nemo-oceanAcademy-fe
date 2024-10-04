@@ -45,7 +45,7 @@ const Analytics = () => {
 };
 
 const BackgroundManager = () => {
-  const location = useLocation(); // useLocation()을 여기서 사용
+  const location = useLocation();
   useEffect(() => {
     const body = document.body;
 
@@ -62,7 +62,7 @@ const BackgroundManager = () => {
     }
   }, [location]);
 
-  return null; // 렌더링할 내용이 없으므로 null 반환
+  return null;
 };
 
 const App: React.FC = () => {
