@@ -18,7 +18,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
       // parent function에 selected file을 저장함
       onFileSelect(file);
     } else {
-      alert('Invalid file. Please select a .jpg or .png file under 5MB.');
+      alert('파일 확장자는 .jpg .png만 가능합니다. 5MB 이하의 파일만 업로드할 수 있습니다.');
       onFileSelect(null);
     }
   };
