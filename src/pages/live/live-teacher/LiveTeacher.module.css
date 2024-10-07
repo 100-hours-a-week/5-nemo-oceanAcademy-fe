@@ -1,4 +1,5 @@
 .container {
+  margin: 0 auto;
   width: 400px;
   min-height: 100vh;
   display: flex;
@@ -15,6 +16,7 @@
   }
 
   .desktopContainer {
+    margin: 0 auto;
     width: 1184px;
     background: black;
     display: flex;

@@ -82,3 +82,69 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.slick-slide {
+  display: flex;
+  justify-content: center;
+  padding: 0 8px; /* 슬라이드 간격을 맞춰주는 패딩 */
+}
+
+.lectureCardWrapper {
+  position: relative;
+}
+
+.rankNumber {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.nextArrow, .prevArrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.nextArrow {
+  right: -20px; /* 캐러셀 너비 외부에 버튼 위치 */
+}
+
+.prevArrow {
+  left: -20px; /* 캐러셀 너비 외부에 버튼 위치 */
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+
+  .slick-slide {
+    padding: 0;
+  }
+
+  .nextArrow, .prevArrow {
+    display: none;
+  }
+}

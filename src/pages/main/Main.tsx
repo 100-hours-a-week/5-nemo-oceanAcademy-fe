@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Advertisement from '../../components/advertisement/Advertisement';
 import LectureCard from '../../components/lecture-card/LectureCard';
 import Navigation from '../../components/navigation/Navigation';
+import Slider from 'react-slick';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
@@ -28,6 +29,19 @@ const Main: React.FC = () => {
   const [liveClasses, setLiveClasses] = useState<Lecture[]>([]);
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]); 
   const [page, setPage] = useState(0);
+
+  // Slider 설정
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />
+  };
   
   useEffect(() => {
     axios.get(`${endpoints.classes}?target=live?page=${page}`)
@@ -93,9 +107,32 @@ const Main: React.FC = () => {
           <Space height={"24px"} />
 
 
-          <div className={styles.carousel}>
 
+
+
+
+          <div className={styles.carousel}>
+            <Slider {...sliderSettings}>
+            {topTenClasses.map((lecture, index) => (
+              <div key={lecture.classId} className={styles.lectureCardWrapper}>
+                <div className={styles.rankNumber}>{String(index + 1).padStart(2, '0')}</div>
+                <LectureCard
+                  classId={lecture.classId}
+                  bannerImage={lecture.bannerImage}
+                  name={lecture.name}
+                  instructor={lecture.instructor}
+                  category={lecture.category}
+                />
+              </div>
+              ))}
+            </Slider>
           </div>
+
+
+
+
+
+
 
         </section>
 
@@ -129,6 +166,24 @@ const Main: React.FC = () => {
           <Space height={"40px"} />
         </section>
       </div>
+  );
+};
+
+const SampleNextArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <div className={styles.nextArrow} onClick={onClick}>
+      <img src={blackArrow} className={styles.sliderNext} />
+    </div>
+  );
+};
+
+const SamplePrevArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <div className={styles.prevArrow} onClick={onClick}>
+      <img src={blackArrow} className={styles.sliderPrev} />
+    </div>
   );
 };
 
