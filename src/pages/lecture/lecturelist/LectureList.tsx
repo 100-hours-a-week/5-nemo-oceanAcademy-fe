@@ -27,12 +27,12 @@ interface Category {
 
 const LectureList: React.FC = () => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
-  const [page, setPage] = useState(0); // 페이지 번호
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(false); // 스크롤 시 데이터 가져오는 상태
+  const [isFetching, setIsFetching] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1184);
   const isBlackBackground = true;
   const token = localStorage.getItem('accessToken');

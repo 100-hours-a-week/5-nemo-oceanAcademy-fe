@@ -1,7 +1,6 @@
 // GlobalStyles.ts - 공통적인 스타일 정의 
 import styled from 'styled-components';
 
-// 공통적인 컨테이너 스타일
 interface ContainerProps {
   isBlackBackground?: boolean;
 }

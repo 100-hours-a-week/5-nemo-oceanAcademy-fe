@@ -12,6 +12,7 @@ body {
   display: flex;
   justify-content: center;
   text-align: center;
+  overflow-x: hidden;
 }
 
 @media (min-width: 1184px) {

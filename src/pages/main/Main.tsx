@@ -8,7 +8,7 @@ import Slider from 'react-slick';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
-import { Row, Space, Divider } from '../../styles/GlobalStyles';
+import { Container, Row, Space, Divider } from '../../styles/GlobalStyles';
 
 // import images
 import emptyImage from '../../assets/images/utils/empty.png';
@@ -29,6 +29,7 @@ const Main: React.FC = () => {
   const [liveClasses, setLiveClasses] = useState<Lecture[]>([]);
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]); 
   const [page, setPage] = useState(0);
+  const isBlackBackground = true;
 
   // Slider 설정
   const sliderSettings = {
@@ -89,51 +90,42 @@ const Main: React.FC = () => {
   }
 
   return (
-      <div className={styles.container}>
+      <Container isBlackBackground={isBlackBackground}>
         <Advertisement />
 
         <section className={styles.top10Section}>
-          <Space height={"40px"} />
-          <Row align={"fill"} className={styles.top10Slides}>
-            <h1 className={styles.sectionTitle}>
-              수강생이 많은 강의 TOP 10
-            </h1>
 
-            <div className={styles.link}>
-              <p>전체 강의 보기</p>
-              <img src={whiteArrow} />
-            </div>
-          </Row>
-          <Space height={"24px"} />
+          <div className={styles.top10Content}>
+            <Row align={"fill"} className={styles.top10Slides}>
+              <h1 className={styles.sectionTitle}>
+                수강생이 많은 강의 TOP 10
+              </h1>
 
-
-
-
-
-
-          <div className={styles.carousel}>
-            <Slider {...sliderSettings}>
-            {topTenClasses.map((lecture, index) => (
-              <div key={lecture.classId} className={styles.lectureCardWrapper}>
-                <div className={styles.rankNumber}>{String(index + 1).padStart(2, '0')}</div>
-                <LectureCard
-                  classId={lecture.classId}
-                  bannerImage={lecture.bannerImage}
-                  name={lecture.name}
-                  instructor={lecture.instructor}
-                  category={lecture.category}
-                />
+              <div className={styles.link}>
+                <p>전체 강의 보기</p>
+                <img src={whiteArrow} />
               </div>
-              ))}
-            </Slider>
+            </Row>
+            <Space height={"24px"} />
+
+            <div className={styles.carousel}>
+              <Slider {...sliderSettings}>
+              {topTenClasses.map((lecture, index) => (
+                <div key={lecture.classId} className={styles.lectureCardWrapper}>
+                  <div className={styles.rankNumber}>{String(index + 1).padStart(2, '0')}</div>
+                  <LectureCard
+                    classId={lecture.classId}
+                    bannerImage={lecture.bannerImage}
+                    name={lecture.name}
+                    instructor={lecture.instructor}
+                    category={lecture.category}
+                  />
+                </div>
+                ))}
+              </Slider>
+            </div>
+
           </div>
-
-
-
-
-
-
-
         </section>
 
         <Divider />
@@ -165,7 +157,7 @@ const Main: React.FC = () => {
           </div>
           <Space height={"40px"} />
         </section>
-      </div>
+      </Container>
   );
 };
 

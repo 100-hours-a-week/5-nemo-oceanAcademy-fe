@@ -2,25 +2,23 @@
 import React from 'react';
 import styles from './Advertisement.module.css';
 
+import ad from '../../assets/images/ad/goormthon.png';
+
 interface AdvertisementProps {
   size?: 'small' | 'large';
 }
 
 const Advertisement: React.FC<AdvertisementProps> = ({ size = 'small' }) => {
-/*
+
   const handleAdClick = () => {
-    if (adImage === adImageTmt) {
-      window.open('https://youtu.be/qDvZ14qCRCU?si=xGtG-kfe9HEFUMAM', '_blank');
-    } else {
-      window.open('https://github.com/100-hours-a-week/5-nemo-oceanAcademy-fe', '_blank');
-    }
+    window.open('https://9oormthon.goorm.io/');
   };
-*/
+
 
   return (
     <section className={styles.adSection}>
       <div className={styles.adImage}>
-        {/* <img /> */}
+        <img src={ad} onClick={handleAdClick} alt="advertisement image" />
       </div>
     </section>
   );

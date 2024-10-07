@@ -6,11 +6,25 @@
   display: flex;
   justify-content: center;
 }
-
 .adImage {
-  width: 1184px;
+  margin-top: 16px;
+  width: 380px;
   height: 96px;
   border-radius: 8px;
-  margin-top: 32px;
   background-color: var(--banner-bgr-color);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 1184px) {
+  .adImage {
+    width: 1184px;
+    height: 96px;
+    margin-top: 32px;
+  }
 }
