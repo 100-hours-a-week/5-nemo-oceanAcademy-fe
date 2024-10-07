@@ -6,7 +6,6 @@ import styles from './InfoSection.module.css';
 interface InfoSectionProps {
     title: string;
     content: string | JSX.Element;
-
     className?: string;
     helpertext?: string;
     essential?: string;

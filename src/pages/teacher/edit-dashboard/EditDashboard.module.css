@@ -14,13 +14,15 @@
 .title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
+  margin-top: 32px;
 }
 
 .label {
   font-size: 16px;
   font-weight: bold;
-  margin-top: 20px;
+  display: block;
+  margin-bottom: 5px;
 }
 
 .select, .input, .textarea {
@@ -59,7 +61,7 @@
   margin-top: 20px;
   width: 367px;
   height: 55px;
-  background-color: var(--primary-color);
+  background-color: #2A62F2;
   color: white;
   border: none;
   border-radius: 5px;
@@ -67,7 +69,7 @@
 }
 
 .uploadButton:hover {
-  background-color: #5a6599;
+  opacity: 0.8;
 }
 
 .previewImage {
@@ -96,6 +98,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  margin-bottom: 50px;
   width: 100%;
   max-width: 367px;
 }
@@ -103,23 +106,78 @@
 .cancelButton {
   width: 48%;
   height: 50px;
-  background-color: #a9a9d9; /* Primary Color보다 연한 색상 */
+  background-color: #7a9aee; /* Primary Color보다 연한 색상 */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .saveButton {
   width: 48%;
   height: 50px;
-  background-color: var(--primary-color); /* Primary Color */
+  background-color: #2A62F2; /* Primary Color */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .cancelButton:hover, .saveButton:hover {
   opacity: 0.8;
+}
+
+/* Desktop ---------------------------------------------------- */
+
+.desktopContainer {
+  width: 1184px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  justify-self: center;
+  justify-items: center;
+  text-align: left;
+}
+
+/* 홈 > 내 강의실 > 강의소개 ------------ */
+.desktopNavigator {
+  padding: 15px 20px;
+  color: #888888;
+  text-align: left;
+}
+
+/* 전체 화이트 박스 ------------ */
+.desktopBox {
+  display: flex;
+  width: 100%;
+  border-radius: 16px;
+  padding: 40px 40px 20px 40px;
+  justify-content: flex-start;
+  border: 1px solid #ccc;
+}
+
+.inputField {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.required {
+  color: #2A62F2;
+}
+
+.helperText {
+  font-size: 12px;
+  color: #2A62F2;
+  margin-top: 5px;
+  min-height: 16px;
+}
+
+.bannerImage {
+  width: 86%;
 }
