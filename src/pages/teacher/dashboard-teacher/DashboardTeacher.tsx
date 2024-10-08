@@ -321,6 +321,7 @@ const DashboardTeacher: React.FC = () => {
                           <div className={styles.desktopTitle}>
                             {dashboard.name}
                           </div>
+                          <Space height={"14px"}/>
                           <div className="linkContainer">
                             <Link to={`/lecture/info/${classId}`} className={styles.link}>
                               강의 소개 보러 가기
