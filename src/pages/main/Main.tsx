@@ -31,7 +31,6 @@ const Main: React.FC = () => {
   const [page, setPage] = useState(0);
   const isBlackBackground = true;
 
-  // Slider 설정
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -39,9 +38,9 @@ const Main: React.FC = () => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />
+    autoplaySpeed: 5000,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />
   };
   
   useEffect(() => {
@@ -161,7 +160,7 @@ const Main: React.FC = () => {
   );
 };
 
-const SampleNextArrow = (props: any) => {
+const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
     <div className={styles.nextArrow} onClick={onClick}>
@@ -170,7 +169,7 @@ const SampleNextArrow = (props: any) => {
   );
 };
 
-const SamplePrevArrow = (props: any) => {
+const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
     <div className={styles.prevArrow} onClick={onClick}>

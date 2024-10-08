@@ -12,6 +12,7 @@
   height: 96px;
   border-radius: 8px;
   background-color: var(--banner-bgr-color);
+  cursor: pointer;
   
   img {
     width: 100%;
