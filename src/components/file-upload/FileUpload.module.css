@@ -13,7 +13,7 @@
   position: relative;
   display: inline-block;
   width: 100%;
-  height: 374px;
+  height: 205px;
 }
 
 .uploadedImage {
@@ -48,7 +48,7 @@
 
 .previewContainer {
   width: 100%;
-  height: 363px;
+  height: 195px;
   background-color: #e0e0e0;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -56,6 +56,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (min-width: 1184px) {
+  .previewContainer {
+    height: 363px;
+  }
+
+  .imageContainer {
+    height: 375px;
+  }
 }
 
 .placeholder {

@@ -190,7 +190,7 @@ const LectureInfo: React.FC = () => {
                         <span> 강의소개</span>
                     </div>
                 </Row>
-                <hr />
+                <hr className={styles.stylehr}/>
 
                 <div className={styles.desktopContainer}>
                     <Space height={"40px"}/>
@@ -225,7 +225,7 @@ const LectureInfo: React.FC = () => {
                         <Column align={"top"} gap={"10px"}>
                             <Space height={"10px"}/>
                             <div className={styles.desktopSubTitle}>{lecture.instructor}</div>
-                            <hr />
+                            <hr className={styles.stylehr}/>
                             <div className={styles.desktopBoxTitle}>강사 소개</div>
                             <div className={styles.desktopBoxContent}>
                                 {lecture.instructor_info || '등록된 강사 소개가 없습니다.'}

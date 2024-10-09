@@ -119,9 +119,14 @@ const LectureOpen: React.FC = () => {
     setSelectedCategory(category);
   };
 
-  const handleBannerImageUpload = (file: File) => {
-    setBannerImage(file);
+  const handleBannerImageUpload = (file: File | null) => {
+    if (file) {
+      setBannerImage(file); // 파일이 있을 때만 처리
+    } else {
+      setBannerImage(null); // 파일이 없거나 잘못된 파일일 때 처리
+    }
   };
+
 
   // [x] 버튼 valid 테스트
   const validateForm = () => {
@@ -264,7 +269,7 @@ const LectureOpen: React.FC = () => {
                   onChange={(e) => setPrerequisite(e.target.value)}
               />
 
-              <FileUpload />
+              <FileUpload onFileSelect={handleBannerImageUpload} />
 
               <div className={styles.buttonContainer}>
                 <Button
@@ -282,7 +287,7 @@ const LectureOpen: React.FC = () => {
                 <Space height={"30px"} />
 
                 {/* 강의 배너 이미지 */}
-                <FileUpload />
+                <FileUpload onFileSelect={handleBannerImageUpload} />
                 <Space height={"20px"} />
 
                 <div className={styles.desktopBox}>
