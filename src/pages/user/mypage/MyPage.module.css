@@ -1,17 +1,15 @@
 .container {
+  margin: 0 auto;
   width: 400px;
-  min-height: calc(100vh - 65px);
+  min-height: calc(100vh - 66px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
-  padding-bottom: 80px;
   background-color: white;
 }
 
 @media (min-width: 1184px) {
   .container {
-    margin: 0 auto;
     width: 1184px;
   }
 }

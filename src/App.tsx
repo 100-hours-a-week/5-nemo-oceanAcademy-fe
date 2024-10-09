@@ -85,7 +85,6 @@ const App: React.FC = () => {
           <Route path="/sign-info" element={<SignInfo />} />
           <Route path="/list" element={<LectureList />} />
           <Route path="/live-list" element={<LiveList />} />
-          <Route path="/test-sign" element={<SignInfo />} />
 
           {/* 이하 로그인 후 접근 가능 */}
           <Route

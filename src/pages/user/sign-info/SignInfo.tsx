@@ -12,7 +12,6 @@ import profile2 from '../../../assets/images/profile/jellyfish.png';
 import profile3 from '../../../assets/images/profile/seahorse.png';
 import profile4 from '../../../assets/images/profile/turtle.png';
 import profile5 from '../../../assets/images/profile/whale.png';
-import profile from '../../../assets/images/profile/profile_default.png';
 
 const profileImages = [ profile1, profile2, profile3, profile4, profile5 ];
 

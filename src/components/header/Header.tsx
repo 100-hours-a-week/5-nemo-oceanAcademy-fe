@@ -201,24 +201,7 @@ const Header: React.FC = () => {
     ) {
       return null;
     }
-    if (location.pathname === '/mypage') {
-      return (
-        <>
-          <img
-            src={settingIcon}
-            alt="설정"
-            className={styles.icon}
-            onClick={handleSettingClick}
-          />
-          {showDropdown && (
-            <div className={styles.dropdown}>
-              <div onClick={handleLogout}>로그아웃</div>
-              <div onClick={handleDeleteAccount}>회원탈퇴</div>
-            </div>
-          )}
-        </>
-      );
-    } else if (!isLoggedIn) {
+    if (!isLoggedIn) {
       return (
         <button className={styles.loginButton} onClick={handleLogin}>
           로그인
@@ -229,22 +212,25 @@ const Header: React.FC = () => {
       location.pathname === '/list' ||
       location.pathname === '/live-list' ||
       location.pathname === '/classroom' ||
+      location.pathname === '/mypage' || 
       location.pathname.includes('/lecture/open') ||
       location.pathname.includes('/lecture/info') ||
       location.pathname.includes('/dashboard') ||
       location.pathname.includes('/lecture/students')
     ) {
       return (
-        <img
-          src={profileImage}
-          alt="프로필"
-          className={styles.profileImage}
-          onClick={handleProfileClick}
-          onError={(e) => {
-            // 이미지 로드에 실패하면 기본 이미지로 교체
-            // (e.target as HTMLImageElement).src = getProfileImage(nickname);
-          }}
-        />
+        <div className={styles.classroom} onClick={handleProfileClick}>
+          <h5>내 강의실</h5>
+          <img
+            src={profileImage}
+            alt="프로필"
+            className={styles.profileImage}
+            onError={(e) => {
+              // 이미지 로드에 실패하면 기본 이미지로 교체
+              // (e.target as HTMLImageElement).src = getProfileImage(nickname);
+            }}
+          />
+        </div>
       );
     }
     return null;

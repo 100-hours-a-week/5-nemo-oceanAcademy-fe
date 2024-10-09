@@ -7,7 +7,7 @@ import LectureCard from '../../../components/lecture-card/LectureCard';
 import EmptyContent from '../../../components/empty-content/EmptyContent';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
-import { Container, Empty } from '../.\./../styles/GlobalStyles';
+import { Container, Space } from '../.\./../styles/GlobalStyles';
 
 // import images
 import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
@@ -332,7 +332,6 @@ const MyPage: React.FC = () => {
       )}
       </section>
       {isLoading && <p>Loading more lectures...</p>}
-      <Navigation />
     </div>
   );
 };

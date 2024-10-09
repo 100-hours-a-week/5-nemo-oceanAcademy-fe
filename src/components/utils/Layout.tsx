@@ -2,10 +2,9 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Breadcrumb from '../breadcrumb/Breadcrumb';
 
-// 경로와 라벨을 맵핑하는 객체
 const breadcrumbNameMap: { [key: string]: string } = {
   '/': '홈',
-  '/my-created-lectures': '내가 개설한 강의',
+  '/mypage': '내가 개설한 강의',
   '/enrollment': '강의 등록',
   '/lecture/info': '강의 정보',
   '/classroom': '내가 수강 중인 강의',
@@ -14,7 +13,6 @@ const breadcrumbNameMap: { [key: string]: string } = {
   '/dashboard/edit': '강의정보 수정',
   '/lecture/open': '강의 개설',
   '/lecture/students': '수강생 리스트',
-  '/mypage': '마이 페이지',
 };
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
