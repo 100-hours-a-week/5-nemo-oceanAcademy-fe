@@ -10,11 +10,15 @@
 
     --blue-color: #2A62F2;
     --blue-bgr-color: #EBF1FF;
-    --blue-hover-color: #214EC1;
+    --blue-hover-color: #0847e4;
     --red-color: #FF3333;
     --red-txt-color: #F22A2A;
     --red-bgr-color: #FFEBEB;
     --blue-container: #FAFBFD;
+
+    --profile-txt-color: #8E8E8E;
+    --input-stroke: #DFDFDF;
+    --placehoder: #787878;
 }
 
 @font-face {

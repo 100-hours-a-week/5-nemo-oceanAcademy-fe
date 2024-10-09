@@ -6,6 +6,16 @@ import styles from './SignInfo.module.css';
 import WideButton from '../../../components/wide-button/WideButton';
 import { Row, Column, Space } from '../../../styles/GlobalStyles';
 
+// image import
+import profile1 from '../../../assets/images/profile/crab.png';
+import profile2 from '../../../assets/images/profile/jellyfish.png';
+import profile3 from '../../../assets/images/profile/seahorse.png';
+import profile4 from '../../../assets/images/profile/turtle.png';
+import profile5 from '../../../assets/images/profile/whale.png';
+import profile from '../../../assets/images/profile/profile_default.png';
+
+const profileImages = [ profile1, profile2, profile3, profile4, profile5 ];
+
 interface LocationState {
   token: string;
   refreshToken: string;
@@ -35,12 +45,10 @@ const SignInfo = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
-    // 파일이 선택되지 않았을 때 즉시 리턴
     if (!file) {
       return;
     }
 
-    // 유효한 파일 타입 및 크기인지 확인
     if (
       (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') &&
       file.size <= 5 * 1024 * 1024
@@ -65,11 +73,10 @@ const SignInfo = () => {
   const handleFileClick = () => {
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     if (fileInput) {
-      fileInput.click(); // Only open file dialog when necessary
+      fileInput.click();
     }
   };
 
-  // 회원가입 완료 처리
   const handleSignupComplete = async () => {
     if (!nickname) {
       setHelperText('닉네임을 입력해주세요.');
@@ -112,15 +119,12 @@ const SignInfo = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // AxiosError인 경우
         console.error('Error during sign-up:', error.response?.data || error.message);
         alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
       } else if (error instanceof Error) {
-        // 일반 Error 객체인 경우
         console.error('Error during sign-up:', error.message);
         alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
       } else {
-        // 알 수 없는 에러인 경우
         console.error('Unknown error during sign-up:', error);
         alert('알 수 없는 오류가 발생했습니다. 다시 시도해주세요.');
       }
@@ -129,191 +133,73 @@ const SignInfo = () => {
 
   return (
     <div className={styles.container}>
-      {isMobile ? (
-        <Column>
-          {/* 제목 */}
-          <Row align='left'><div className={styles.title}>프로필 설정</div></Row>
-          <Space height='20px'/>
-          <hr />
-          <Space height='20px'/>
-          
-          <Row align='left'>
-            <label htmlFor="fileInput" className={styles.label}>프로필 사진<span className={styles.requiredMark}>*</span></label>
-            <Column>
-              <Row>
-                {/* 파일변경 - 숨김 */}
-                <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
-
-                {/* 사진변경버튼 */}
-                <button className={styles.uploadButton} onClick={handleFileClick}>
-                  {preview ? (
-                    <img src={preview} alt="Preview" className={styles.previewImage} />
-                  ) : (
-                    '+'
-                  )}
-                </button>
-              </Row>
-
-              <div className={styles.buttonContainer}>  
-              <button className={styles.uploadButton2} onClick={handleFileClick}>
-  사진 변경
-</button>
-<button className={styles.deleteButton} onClick={handleRemovePhoto}>
-  삭제
-</button>
-              </div>
-              <Row>
-                <div className={styles.bulletList}>  
-                  <p>
-                    - 사진은 1개만 업로드할 수 있습니다. <br />
-                    - 파일 사이즈는 100*100을 권장합니다. <br />
-                    - 파일 크기는 5MB 이하만 가능합니다. <br />
-                    - 파일은 .jpg, .jpeg, .png만 업로드할 수 있습니다. <br />
-                    - 사진을 업로드하지 않을 경우 기본 프로필로 설정됩니다.
-                  </p>
-                </div>
-              </Row>
-            </Column>
-          </Row>
-          <Space height='20px'/>
-
-          {/* 닉네임 */}
-          <Row align='left'>
-            
-            <label className={styles.label}>
-              닉네임<span className={styles.requiredMark}>*</span>
-            </label>
-            <Column>
-              <input
-                type="text"
-                className={styles.inputField}
-                placeholder="닉네임을 설정해주세요."
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-              />
-              {helperText && <p className={styles.helperText}>{helperText}</p>}
-            </Column>
-          </Row>
-          <Space height='20px'/>
-          
-          {/* 이메일 */}
-          <Row align='left'>
-            <label className={styles.label}>이메일<span className={styles.requiredMark}>*</span></label>
-            <Column>
-              <input
-                type="email"
-                className={styles.inputField}
-                placeholder="이메일을 입력해주세요."
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Column>
-          </Row>
-          <Space height='40px'/>
-
-          <WideButton 
-            text="회원 가입 완료" 
-            onClick={handleSignupComplete}
-          />
-        </Column>
-      ) : (
-        <Column>
-          {/* 제목 */}
-          <Row align='left'><div className={styles.title}>프로필 설정</div></Row>
-          <Space height='20px'/>
-          <hr />
-          <Space height='20px'/>
-          
-          <Row align='left'>
-            <label htmlFor="fileInput" className={styles.label}>프로필 사진<span className={styles.requiredMark}>*</span></label>
-            <Column>
-              <Row>
-                {/* 파일변경 - 숨김 */}
-                <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
-
-                {/* 사진변경버튼 */}
-                <button
-                  className={styles.uploadButton}
-                  onClick={handleFileClick}
-                >
-                
-                {/* 미리보기 */}
+      <Column>
+        <Row align='left'><div className={styles.title}>프로필 설정</div></Row>
+        <div className={styles.divider} />
+        <Space height='24px'/>
+        <Row align='left'>
+          <label htmlFor="fileInput" className={styles.label}>프로필 사진<span className={styles.requiredMark}>*</span></label>
+          <Column>
+            <div className={styles.imageContainer}>
+              <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
+              <button className={styles.uploadImageButton} onClick={handleFileClick}>
                 {preview ? (
                   <img src={preview} alt="Preview" className={styles.previewImage} />
                 ) : (
-                  '+'
+                  <img src={profile5} alt="default profile image" className={styles.previewImage} />
                 )}
-                </button>
-              </Row>
-
-              <div className={styles.buttonContainer}>  
-              <button className={styles.uploadButton2} 
-                onClick={handleFileClick}
-              >
-                사진 변경
               </button>
-              <button className={styles.deleteButton} 
-                onClick={handleRemovePhoto}
-              >
-                삭제
-              </button>
-              </div>
-              
-              <Row>
-                <div className={styles.bulletList}>  
-                  <p>
-                    - 사진은 1개만 업로드할 수 있습니다. <br />
-                    - 파일 사이즈는 100*100을 권장합니다. <br />
-                    - 파일 크기는 5MB 이하만 가능합니다. <br />
-                    - 파일은 .jpg, .jpeg, .png만 업로드할 수 있습니다. <br />
-                    - 사진을 업로드하지 않을 경우 기본 프로필로 설정됩니다.
-                  </p>
-                </div>
-              </Row>
-            </Column>
-          </Row>
-          <Space height='20px'/>
-
-          {/* 닉네임 */}
-          <Row align='left'>
             
-            <label className={styles.label}>
-              닉네임<span className={styles.requiredMark}>*</span>
-            </label>
-            <Column>
-              <input
-                type="text"
-                className={styles.inputField}
-                placeholder="닉네임을 설정해주세요."
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-              />
-              {helperText && <p className={styles.helperText}>{helperText}</p>}
-            </Column>
-          </Row>
-          <Space height='20px'/>
-          
-          {/* 이메일 */}
-          <Row align='left'>
-            <label className={styles.label}>이메일<span className={styles.requiredMark}>*</span></label>
-            <Column>
-              <input
-                type="email"
-                className={styles.inputField}
-                placeholder="이메일을 입력해주세요."
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Column>
-          </Row>
-          <Space height='40px'/>
-
-          <WideButton 
-            text="회원 가입 완료" 
-            onClick={handleSignupComplete}
-          />
-        </Column>
-      )}
+              <div className={styles.buttonContainer}>  
+                <button className={styles.uploadButton} onClick={handleFileClick}>
+                  사진 변경
+                </button>
+                <button className={styles.deleteButton} onClick={handleRemovePhoto}>
+                  삭제
+                </button>
+              </div>
+              <ul className={styles.bulletList}>
+                <li className={styles.listItem}>파일 사이즈는 100*100을 권장합니다.</li>
+                <li className={styles.listItem}>파일 크기는 5MB 이하만 가능합니다.</li>
+                <li className={styles.listItem}>파일은 .jpg, .jpeg, .png만 업로드할 수 있습니다. </li>
+                <li className={styles.listItem}>사진을 업로드하지 않을 경우 기본 프로필로 설정됩니다.</li>
+              </ul>
+            </div>
+          </Column>
+        </Row>
+        <Space height='36px'/>
+        <Row align='left'>
+          <label className={styles.label}>닉네임<span className={styles.requiredMark}>*</span></label>
+          <Column>
+            <input
+              type="text"
+              className={styles.inputField}
+              placeholder="닉네임을 입력해주세요."
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
+            {helperText && <p className={styles.helperText}>{helperText}</p>}
+          </Column>
+        </Row>
+        <Space height='20px'/>
+        <Row align='left'>
+          <label className={styles.label}>이메일<span className={styles.requiredMark}>*</span></label>
+          <Column>
+            <input
+              type="email"
+              className={styles.inputField}
+              placeholder="이메일을 입력해주세요."
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Column>
+        </Row>
+        <Space height='64px'/>
+        <WideButton 
+          text="회원가입 완료" 
+          onClick={handleSignupComplete}
+        />
+      </Column>
     </div>
   );
 };
