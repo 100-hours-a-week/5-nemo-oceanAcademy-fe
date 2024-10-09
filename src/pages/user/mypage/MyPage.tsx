@@ -7,46 +7,26 @@ import LectureCard from '../../../components/lecture-card/LectureCard';
 import EmptyContent from '../../../components/empty-content/EmptyContent';
 import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
-import { Container, Space } from '../.\./../styles/GlobalStyles';
+import { Container, Space, Row, Column } from '../.\./../styles/GlobalStyles';
 
 // import images
-import profileDefault1 from '../../../assets/images/profile/jellyfish.png';
-import profileDefault2 from '../../../assets/images/profile/whale.png';
-import profileDefault3 from '../../../assets/images/profile/crab.png';
 import emptyImage from '../../../assets/images/utils/empty.png';
-import editImage from '../../../assets/images/icon/edit_w.png';
-import image1 from '../../../assets/images/banner/image1.png';
-import image2 from '../../../assets/images/banner/image2.jpeg';
-import image3 from '../../../assets/images/banner/image3.png';
-import image4 from '../../../assets/images/banner/image4.png';
-import image5 from '../../../assets/images/banner/image5.jpeg';
-import image6 from '../../../assets/images/banner/image6.png';
-import image7 from '../../../assets/images/banner/image7.png';
-import image8 from '../../../assets/images/banner/image8.jpeg';
-import image9 from '../../../assets/images/banner/image9.png';
-import image10 from '../../../assets/images/banner/image10.jpeg';
+import editImage from '../../../assets/images/icon/edit.svg';
+import addImage from '../../../assets/images/icon/add.svg';
+import profile1 from '../../../assets/images/profile/crab.png';
+import profile2 from '../../../assets/images/profile/jellyfish.png';
+import profile3 from '../../../assets/images/profile/seahorse.png';
+import profile4 from '../../../assets/images/profile/turtle.png';
+import profile5 from '../../../assets/images/profile/whale.png';
 
-const profileImages = [profileDefault1, profileDefault2, profileDefault3];
-
-// 기본 이미지 배열
-const defaultImages = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-];
+const profileImages = [ profile1, profile2, profile3, profile4, profile5 ];
 
 interface Lecture {
     classId: number;
     name: string;
     bannerImage: string | null;
-    instructor: string;
+    instructor: string | null;
+    totalStudents: number,
     category: string;
 }
 
@@ -121,13 +101,14 @@ const MyPage: React.FC = () => {
       })
 
       const lecturesData = response.data.data;
+      console.log(lecturesData);
 
       if (lecturesData && lecturesData.length > 0) {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
-          instructor: item.instructor,
+          bannerImage: item.banner_image_path,
+          totalStudents: item.student_count,
           category: item.category
         }));
 
@@ -148,14 +129,12 @@ const MyPage: React.FC = () => {
     }
   }, []);
 
-  // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = useCallback(() => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isFetching && hasMore) {
       setPage((prevPage) => prevPage + 1);
     }
   }, [isFetching, hasMore]);
 
-  // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
     if (page === 0) {
       setLectures([]);
@@ -164,71 +143,10 @@ const MyPage: React.FC = () => {
     fetchLectures(page);
   }, [page, fetchLectures]);
 
-  // 스크롤 이벤트 등록
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setProfileImage(URL.createObjectURL(e.target.files[0])); // preview
-      setIsButtonActive(true);
-    }
-  };
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleSaveClick = async () => {
-    const isChanged = 
-    nickname !== initialNickname || 
-    email !== initialEmail || 
-    selectedFile !== null;
-
-    if (!isChanged) {
-      setIsEditing(false); // 아무 변경 사항이 없을 경우 편집 모드 해제만
-      return;
-    }
-
-    setIsEditing(false);
-
-    // 수정된 정보를 FormData로 구성
-    const formData = new FormData();
-    const userUpdateDTO = { nickname, email };
-    formData.append(
-      'userUpdateDTO',
-      new Blob([JSON.stringify(userUpdateDTO)], { type: 'application/json' })
-    );
-    if (selectedFile) {
-      formData.append('imagefile', selectedFile);
-    }
-
-    try {
-      const response = await axios.patch(endpoints.userInfo, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.status === 200) {
-        console.log("수정 요청 완료");
-        window.location.reload(); // 성공적으로 수정 후 페이지 새로고침
-        // alert('회원 정보가 수정되었습니다.');
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError.response && axiosError.response.status === 401) {
-        alert('사용자 인증에 실패했습니다. 다시 로그인하세요.');
-        navigate('/login');
-      } else {
-        console.error('회원 정보를 수정하는 중 오류가 발생했습니다:', axiosError.message);
-      }
-    }
-  };
 
   const handleAddLectureClick = () => {
     navigate('/lecture/open');
@@ -238,101 +156,98 @@ const MyPage: React.FC = () => {
     navigate(`/dashboard/teacher/${classId}`);
   };
 
-  const handleImageClick = () => {
-    if (isEditing && fileInputRef.current) {
-      fileInputRef.current.click();
+  const handleEditClick = (classId: number) => {
+    return () => {
+      navigate(`/dashboard/edit/${classId}`);   
     }
   };
 
-  // 지워도 될 것 같다. main 올려보고 오류 없으면 지우기 
-  const handleImageError = () => {
-    setProfileImage(getProfileImage(nickname));
+  const handleLectureDelete = async (classId: number) => {
+    try {
+      const response = await axios.delete(endpoints.deleteLecture.replace('{classId}', classId.toString()), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        alert('강의가 삭제되었습니다😢');
+        window.location.reload();
+      } else {
+        alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
+      }
+    } catch (error) {
+      console.error('Error deleting lecture:', error);
+      alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.profileContainer}>
-        <div className={styles.profileImageContainer} onClick={handleImageClick}>
-          <img 
-            src={profileImage} 
-            alt="Profile" 
-            className={`${styles.profilePicture} ${isEditing ? styles.profilePictureEditing : ''}`} 
-            onError={handleImageError}
-          />
-          {isEditing && (
-            <div className={styles.editOverlay}>
-              <img src={editImage} alt="Edit Icon" className={styles.editIcon} />
-            </div>
-          )}
-        </div>
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          style={{ display: 'none' }} 
-          onChange={handleFileChange} 
-        />
-        <div className={styles.textContainer}>
-          {isEditing ? (
-            <input 
-              type="text" 
-              value={nickname} 
-              onChange={(e) => setNickname(e.target.value)} 
-              className={styles.nicknameInput} 
-            />
-          ) : (
-            <p className={styles.nickname}>{nickname}</p>
-          )}
-          {isEditing ? (
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={styles.emailInput}
-            />
-          ) : (
-            <p className={styles.email}>{email}</p>
-          )}
-        </div>
-        {isEditing ? (
-          <button className={styles.saveButton} onClick={handleSaveClick}>
-            완료
-          </button>
-        ) : (
-          <button className={styles.saveButton} onClick={handleEditClick}>
-            수정
-          </button>
-        )}
-      </div>
+    <Container>
+      <Space height={"48px"} />
+      <Row>
+        <div className={styles.user}>
+          <Row align={"fill"}>
+            <h3>강좌 관리 by {nickname}</h3>
+            <img src={editImage} alt="Edit Button" />    
+          </Row>
 
-      <div className={styles.lecturesHeader}>
-        <h3>내가 개설한 강의</h3>
-        <button className={styles.addLectureButton} onClick={handleAddLectureClick}>+</button>
-      </div>
-      <section>
-      {lectures.length === 0 ? (
-        <div className={styles.emptyContainer}>
-          <p>아직 강의를 개설하지 않았어요.</p>
-          <p>+ 버튼을 눌러 강의를 시작해보세요!</p>
-          <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
+          <Space height={"32px"} />
+          <button className={styles.myClassesButton}>
+            내가 개설한 강의
+          </button>
+          <button className={styles.logoutButton}>
+            로그아웃
+          </button>
         </div>
-      ) : (
-        <div className={styles.lectureGrid}>
-          {lectures.map((lecture) => (
-            <div key={lecture.classId} onClick={() => handleLectureClick(lecture.classId)}>
-              <LectureCard 
-                classId={lecture.classId} 
-                bannerImage={lecture.bannerImage} 
-                name={lecture.name} 
-                instructor={lecture.instructor} 
-                category={lecture.category}
-              />
+
+        <div className={styles.class}>
+
+          <div className={styles.classHeader}>
+            <h1>내가 개설한 강의 <span className={styles.blueText}>{lectures.length}</span>개</h1>
+            <div className={styles.lectureOpen}>
+              <h5>강의 개설하기</h5>
+              <button onClick={handleAddLectureClick}>
+                <img src={addImage} alt="Lecture Open Button" />
+              </button>
             </div>
-          ))}
+          </div>                  
+
+          <section>
+            {lectures.length === 0 ? (
+              <div className={styles.emptyContainer}>
+                <p>아직 강의를 개설하지 않았어요.</p>
+                <p>+ 버튼을 눌러 강의를 시작해보세요!</p>
+                <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
+              </div>
+            ) : (
+              <div className={styles.lectureGrid}>
+                {lectures.map((lecture) => (
+                  <div key={lecture.classId}>
+                    <LectureCard 
+                      classId={lecture.classId} 
+                      bannerImage={lecture.bannerImage} 
+                      name={lecture.name}
+                      instructor={null} 
+                      totalStudents={lecture.totalStudents}
+                      category={lecture.category}
+                      isMyPage={true}
+                      onClick={() => handleLectureClick(lecture.classId)}
+                    />
+
+                    <div className={styles.buttonContainer}>
+                      <button className={styles.editButton} onClick={handleEditClick(lecture.classId)}>수정</button>
+                      <button className={styles.deleteButton} onClick={() => handleLectureDelete(lecture.classId)}>삭제</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            </section>
+            {isLoading && <p>Loading more lectures...</p>}
         </div>
-      )}
-      </section>
-      {isLoading && <p>Loading more lectures...</p>}
-    </div>
+      </Row>
+    </Container>
   );
 };
 

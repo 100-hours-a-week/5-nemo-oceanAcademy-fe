@@ -7,15 +7,17 @@ import axios from 'axios';
 import endpoints from '../../api/endpoints';
 
 // image import
-import profileDefault1 from '../../assets/images/profile/jellyfish.png';
-import profileDefault2 from '../../assets/images/profile/whale.png';
-import profileDefault3 from '../../assets/images/profile/crab.png';
 import backIcon from '../../assets/images/icon/back.png';
 import settingIcon from '../../assets/images/icon/setting.png';
 import outIcon from '../../assets/images/icon/out.png';
 import closeIcon from '../../assets/images/icon/close.png';
+import profile1 from '../../assets/images/profile/crab.png';
+import profile2 from '../../assets/images/profile/jellyfish.png';
+import profile3 from '../../assets/images/profile/seahorse.png';
+import profile4 from '../../assets/images/profile/turtle.png';
+import profile5 from '../../assets/images/profile/whale.png';
 
-const profileImages = [profileDefault1, profileDefault2, profileDefault3];
+const profileImages = [ profile1, profile2, profile3, profile4, profile5 ];
 
 const Header: React.FC = () => {
   const navigate = useNavigate();

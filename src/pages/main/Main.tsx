@@ -3,7 +3,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Advertisement from '../../components/advertisement/Advertisement';
 import LectureCard from '../../components/lecture-card/LectureCard';
-import Navigation from '../../components/navigation/Navigation';
 import Slider from 'react-slick';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';

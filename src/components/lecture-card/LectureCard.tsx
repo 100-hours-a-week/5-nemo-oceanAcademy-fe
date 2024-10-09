@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LectureCard.module.css';
+import axios from 'axios';
+import endpoints from '../../api/endpoints';
 
 // import image
 import image1 from '../../assets/images/banner/image1.png';
@@ -20,13 +22,16 @@ interface LectureCardProps {
   classId: number;
   name: string;
   bannerImage: string | null;
-  instructor: string;
+  instructor: string | null;
+  totalStudents: number;
   category: string;
+  isMyPage?: boolean;
   onClick?: () => void;
 }
 
-const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, category, onClick }) => {
+const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, totalStudents, category, onClick, isMyPage = false }) => {
   const navigate = useNavigate();
+  const token = localStorage.getItem('accessToken'); 
 
   const handleClick = () => {
     if (onClick) {
@@ -51,7 +56,11 @@ const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, i
             </div>
           </div>
           <h2 className={styles.title}>{name}</h2>
-          <p className={styles.instructor}>{instructor}</p>
+          {instructor && <p className={styles.instructor}>{instructor}</p>}
+
+          {isMyPage && (
+           <p className={styles.instructor}>총 수강생: {totalStudents}명</p>
+          )}
         </div>
       </div>
     );

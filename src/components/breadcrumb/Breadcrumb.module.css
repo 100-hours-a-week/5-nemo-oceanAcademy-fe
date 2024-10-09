@@ -11,18 +11,21 @@
 }
   
 .breadcrumbItem {
+  color: #7a7a7a; /* Gray for previous links */
   text-decoration: none;
-  color: #0073e6;
-  margin-right: 8px;
 }
 
 .breadcrumbItem:hover {
   text-decoration: underline;
 }
 
+.currentItem {
+  color: #000000; /* Black for current page */
+}
+
 .separator {
-  margin-right: 8px;
-  color: #888;
+  margin: 0 8px;
+  color: #7a7a7a; /* Gray for the '>' separator */
 }
 
 .divider {
