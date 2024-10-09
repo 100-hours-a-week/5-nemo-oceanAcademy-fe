@@ -8,7 +8,7 @@ interface ContainerProps {
 export const Container = styled.div<ContainerProps>`
   margin: 0 auto;
   width: 400px;
-  min-height: calc(100vh - 65px);
+  min-height: calc(100vh - 66px);
   display: flex;
   flex-direction: column;
   text-align: left;

@@ -71,14 +71,16 @@ const Login: React.FC = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>로그인</h1>
+            <Space height="32px" />
             <button className={styles.kakaoButton} onClick={handleKakaoLogin} disabled={!isKakaoLoaded}>
                 <img src="/kakao_icon.svg" alt="Kakao Icon" className={styles.icon} />
                 카카오로 로그인
             </button>
+            <Space height="12px" />
             <button className={styles.alternativeButton} onClick={handleAltClick}>
                 다른 방법으로 로그인
             </button>
-            <Space height="80px" />
+            <Space height="120px" />
         </div>
     );
 };

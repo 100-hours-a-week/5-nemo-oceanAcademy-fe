@@ -5,28 +5,19 @@
 }
 
 .container {
-  margin-top: -65px;
+  margin: 0 auto;
   width: 400px;
-  height: calc(100vh - 66px);
+  min-height: calc(100vh - 66px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   background-color: white;
 }
 
-@media (min-width: 1184px) {
-  .container {
-    margin: 0 auto;
-    width: 1184px;
-  }
-}
-  
 .title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 20px;
 }
 
 .kakaoButton, 
@@ -37,6 +28,7 @@
   border-radius: 5px;
   font-size: 14px;
   font-weight: bold;
+  box-sizing: border-box;
 }
 
 .kakaoButton {
@@ -45,7 +37,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
 }
 
 .icon {
@@ -61,7 +52,19 @@
 
 .link {
   font-size: 14px;
-  color: #007bff;
+  color: var(--blue-color);
   cursor: pointer;
   text-decoration: underline;
+}
+
+@media (min-width: 1184px) {
+  .container {
+    width: 1184px;
+  }
+
+  .kakaoButton, 
+  .alternativeButton {
+    width: 500px;
+    height: 50px; 
+  }
 }
