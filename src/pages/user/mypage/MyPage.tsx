@@ -5,12 +5,10 @@ import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import EmptyContent from '../../../components/empty-content/EmptyContent';
-import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
 import { Container, Space, Row, Column } from '../.\./../styles/GlobalStyles';
 
 // import images
-import emptyImage from '../../../assets/images/utils/empty.png';
 import editImage from '../../../assets/images/icon/edit.svg';
 import addImage from '../../../assets/images/icon/add.svg';
 import profile1 from '../../../assets/images/profile/crab.png';
@@ -36,17 +34,12 @@ const MyPage: React.FC = () => {
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [profileImage, setProfileImage] = useState('');
-  const [initialNickname, setInitialNickname] = useState('');
-  const [initialEmail, setInitialEmail] = useState('');
-  const [initialProfilePic, setInitialProfilePic] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
   const token = localStorage.getItem('accessToken');
 
   const getProfileImage = (nickname: string): string => {
@@ -231,11 +224,7 @@ const MyPage: React.FC = () => {
 
           <section>
             {lectures.length === 0 ? (
-              <div className={styles.emptyContainer}>
-                <p>아직 강의를 개설하지 않았어요.</p>
-                <p>+ 버튼을 눌러 강의를 시작해보세요!</p>
-                <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-              </div>
+              <EmptyContent />
             ) : (
               <div className={styles.lectureGrid}>
                 {lectures.map((lecture) => (
