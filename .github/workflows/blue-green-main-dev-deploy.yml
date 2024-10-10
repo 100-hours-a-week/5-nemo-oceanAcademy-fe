@@ -25,7 +25,7 @@ jobs:
 
       - name: .env 파일 생성
         run: |
-          echo "${{ secrets.ENV_FILE }}" | base64 --decode > /app/config/.env
+          echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: Docker 이미지 빌드
         run: |
@@ -161,7 +161,8 @@ jobs:
             sudo chown -R $USER:$USER /app/config
 
             # .env 파일 생성
-            echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
+            echo "${{ secrets.ENV_FILE }}" | base64 --decode > /app/config/.env
+
 
             # Docker 이미지 이름 설정
             if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
