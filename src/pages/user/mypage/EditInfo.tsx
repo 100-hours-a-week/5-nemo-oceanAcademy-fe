@@ -316,7 +316,12 @@ const EditInfo: React.FC = () => {
         {showDeleteModal && (
           <Modal
             title="회원 탈퇴 하시겠습니까?"
-            content="삭제한 계정은 복구할 수 없습니다. 그래도 탈퇴하시겠습니까?"
+            content={(
+              <>
+                삭제한 계정은 복구할 수 없습니다. <br />
+                그래도 탈퇴하시겠습니까?
+              </>
+            )}
             rightButtonText="회원 탈퇴"
             onRightButtonClick={confirmDeleteAccount}
             onLeftButtonClick={() => setShowDeleteModal(false)}
