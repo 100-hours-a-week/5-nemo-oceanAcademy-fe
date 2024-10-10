@@ -73,12 +73,12 @@ jobs:
 
             # 타겟 그룹 ARN에 따라 현재 포트 결정
             if [ "$CURRENT_TARGET_GROUP_ARN" == "${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}" ]; then
-              CURRENT_PORT=3000
-              NEW_PORT=3001
+              CURRENT_PORT=4000
+              NEW_PORT=4001
               TARGET_GROUP_ARN=${{ secrets.DEV_GREEN_TARGET_GROUP_ARN }}
             else
-              CURRENT_PORT=3001
-              NEW_PORT=3000
+              CURRENT_PORT=4001
+              NEW_PORT=4000
               TARGET_GROUP_ARN=${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}
             fi
             
@@ -172,7 +172,7 @@ jobs:
             INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
             echo "INSTANCE_ID is: $INSTANCE_ID"
 
-            if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
+            if [ "${{ env.CURRENT_PORT }}" -eq "4000" ]; then
               OLD_TARGET_GROUP_ARN=${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}
               echo "blue >> green"
             else
