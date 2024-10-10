@@ -103,7 +103,7 @@ jobs:
             docker stop nemo-fe-green || true
             docker rm nemo-fe-green || true
 
-      - name: 새로운 Docker 컨테이너 배포
+      - name: 새로운 Docker 컨테이너 배포 -
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
