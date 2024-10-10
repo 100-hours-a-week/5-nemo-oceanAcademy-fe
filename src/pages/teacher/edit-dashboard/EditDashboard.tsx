@@ -227,7 +227,7 @@ const EditDashboard: React.FC = () => {
 
 
   const handleCancel = () => {
-    navigate(`/dashboard/teacher/${classId}`);
+    navigate(-1);
   };
 
   return (
