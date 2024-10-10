@@ -29,9 +29,9 @@ jobs:
 
       - name: Docker 이미지 빌드
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
             IMAGE_NAME="judykimsohui/nemo-fe"
-          elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
+          elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
             IMAGE_NAME="judykimsohui/nemo-dev-fe"
           fi
           
@@ -64,9 +64,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
           # 환경에 따라 호스트 선택
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
             SERVER_HOST="${{ secrets.SERVER_HOST }}"
-          elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
+          elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
             SERVER_HOST="${{ secrets.DEV_SERVER_HOST }}"
           fi
 
@@ -85,11 +85,10 @@ jobs:
         run: |
           echo "Current branch: ${GITHUB_REF}"
           
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
             # main 브랜치: Blue-Green 타겟 그룹 설정
-            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text --debug)
+            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
 
-            # 오류 확인
             if [ -z "$CURRENT_TARGET_GROUP_ARN" ]; then
               echo "Error: Failed to retrieve Target Group ARN"
               exit 1
@@ -105,11 +104,10 @@ jobs:
               TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
             fi
 
-          elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
+          elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
             # dev(wideview-deploy) 브랜치: Dev Blue-Green 타겟 그룹 설정
-            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text --debug)
+            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
 
-            # 오류 확인
             if [ -z "$CURRENT_TARGET_GROUP_ARN" ]; then
               echo "Error: Failed to retrieve Target Group ARN"
               exit 1
@@ -127,14 +125,14 @@ jobs:
           fi
 
           # 포트 및 타겟 그룹 정보 저장
-          echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
-          echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
-          echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN" >> $GITHUB_ENV
+          echo "CURRENT_PORT=$CURRENT_PORT"
+          echo "NEW_PORT=$NEW_PORT"
+          echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN"
 
       - name: 기존 컨테이너 중지 및 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -145,20 +143,30 @@ jobs:
       - name: 새로운 Docker 컨테이너 배포
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-            docker run -d --name nemo-fe-green -p ${{ env.NEW_PORT }}:${{ env.NEW_PORT }} \
+            # /app/config 디렉토리 생성 및 권한 설정
+            if [ ! -d "/app/config" ]; then
+              sudo mkdir -p /app/config
+            fi
+            sudo chown -R $USER:$USER /app/config
+
+            # .env 파일 생성
+            echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
+
+            # Docker 이미지 최신 버전 가져오기
+            docker pull $IMAGE_NAME:${{ github.sha }}
+            docker run -d --name nemo-fe-green -p $NEW_PORT:$NEW_PORT \
             --env-file /app/config/.env \
-            -e PORT=${{ env.NEW_PORT }} \
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            -e PORT=$NEW_PORT \
+            $IMAGE_NAME:${{ github.sha }}
 
       - name: 새 배포 환경의 Health Check
         run: |
           for i in {1..20}; do
-            response=$(curl -v --max-time 10 http://${{ env.SERVER_HOST }}:${{ env.NEW_PORT }})
+            response=$(curl -v --max-time 10 http://$SERVER_HOST:$NEW_PORT)
             if [[ "$response" == *"<title>바다서원</title>"* ]]; then
               echo "Health Check passed!"
               exit 0
@@ -173,37 +181,37 @@ jobs:
       - name: 새 타겟 그룹에 인스턴스 등록
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-            aws elbv2 register-targets --target-group-arn ${{ env.TARGET_GROUP_ARN }} --targets Id=$INSTANCE_ID
+            aws elbv2 register-targets --target-group-arn $TARGET_GROUP_ARN --targets Id=$INSTANCE_ID
 
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트 (호스트 헤더 사용)
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            if [[ "${{ github.ref_name }}" == "main" ]]; then
               aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.LISTENER_ARN }} \
-              --default-actions '[{"Type": "forward", "Order": 1, "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": "'${{ env.TARGET_GROUP_ARN }}'","Weight": 1}]},"Conditions":[{"Field": "host-header", "Values": ["main.yourdomain.com"]}]}]'
-            elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
+              --default-actions '[{"Type": "forward", "Order": 1, "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": "'$TARGET_GROUP_ARN'","Weight": 1}]},"Conditions":[{"Field": "host-header", "Values": ["main.yourdomain.com"]}]}]'
+            elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
               aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.DEV_LISTENER_ARN }} \
-              --default-actions '[{"Type": "forward", "Order": 1, "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": "'${{ env.TARGET_GROUP_ARN }}'","Weight": 1}]},"Conditions":[{"Field": "host-header", "Values": ["dev.yourdomain.com"]}]}]'
+              --default-actions '[{"Type": "forward", "Order": 1, "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": "'$TARGET_GROUP_ARN'","Weight": 1}]},"Conditions":[{"Field": "host-header", "Values": ["dev.yourdomain.com"]}]}]'
             fi
 
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-            if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
+            if [ "$CURRENT_PORT" -eq "3000" ]; then
               aws elbv2 deregister-targets --target-group-arn ${{ secrets.BLUE_TARGET_GROUP_ARN }} --targets Id=$INSTANCE_ID
             else
               aws elbv2 deregister-targets --target-group-arn ${{ secrets.GREEN_TARGET_GROUP_ARN }} --targets Id=$INSTANCE_ID
@@ -211,7 +219,7 @@ jobs:
       - name: Docker 사용하지 않는 이미지 정리
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -220,7 +228,7 @@ jobs:
       - name: 이전 버전의 환경을 멈추고 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
