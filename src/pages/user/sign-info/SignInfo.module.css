@@ -104,7 +104,7 @@
   font-size: 14px;
   font-weight: bold;
   color: var(--placeholder);
-  border: 1px solid var(--input-stroke);
+  border: 1px solid var(--stroke);
   border-radius: 4px;
 }
   .requiredMark {

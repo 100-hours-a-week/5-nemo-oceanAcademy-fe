@@ -1,41 +1,16 @@
 // #F-1: Classroom (/classroom) - 수강 중인 강의
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CategorySelect from 'components/category-select/CategorySelect';
 import LectureCard from '../../../components/lecture-card/LectureCard';
-import Button from '../../../components/button/Button';
-import Navigation from 'components/navigation/Navigation';
+import EmptyContent from 'components/empty-content/EmptyContent';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './Classroom.module.css';
-import { Container } from '../../../styles/GlobalStyles';
+import { Container, Space, Row, Column } from '../../../styles/GlobalStyles';
 
 // import images
 import emptyImage from '../../../assets/images/utils/empty.png';
-import image1 from '../../../assets/images/banner/image1.png';
-import image2 from '../../../assets/images/banner/image2.jpeg';
-import image3 from '../../../assets/images/banner/image3.png';
-import image4 from '../../../assets/images/banner/image4.png';
-import image5 from '../../../assets/images/banner/image5.jpeg';
-import image6 from '../../../assets/images/banner/image6.png';
-import image7 from '../../../assets/images/banner/image7.png';
-import image8 from '../../../assets/images/banner/image8.jpeg';
-import image9 from '../../../assets/images/banner/image9.png';
-import image10 from '../../../assets/images/banner/image10.jpeg';
-
-// 기본 이미지 배열
-const defaultImages = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-];
+import editImage from '../../../assets/images/icon/edit.svg';
 
 interface Lecture {
   classId: number;
@@ -53,16 +28,47 @@ interface Category {
 const Classroom: React.FC = () => {
   const navigate = useNavigate();
   const [lectures, setLectures] = useState<Lecture[]>([]);
+  const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('');
+  const [profileImage, setProfileImage] = useState('');
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('전체 카테고리');
+  const [selectedCategory, setSelectedCategory] = useState('전체');
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    // 카테고리 목록 가져오기
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(endpoints.userInfo, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          const userData = response.data.data;
+          setNickname(userData.nickname);
+          setEmail(userData.email || '이메일 정보 없음');
+        }
+      } catch (error) {
+        const axiosError = error as AxiosError;
+
+        if (axiosError.response && axiosError.response.status === 401) {
+          alert('사용자 인증에 실패했습니다. 다시 로그인하세요.');
+          navigate('/login');
+        } else {
+          console.error('사용자 정보를 가져오는 중 오류가 발생했습니다:', axiosError.message);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [navigate, token]);
+
+  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const categoryResponse = await axios.get(endpoints.getCategories, {
@@ -74,12 +80,11 @@ const Classroom: React.FC = () => {
       } catch (error) {
         console.error('Failed to fetch categories:', error);
         setCategories([]);
-        alert('카테고리 정보를 가져오는 데 실패했습니다.');
       }
     };
 
     fetchCategories();
-  }, [token]);
+  }, []);
 
   // 수강 중인 강의 목록 가져오기 API 요청 (페이지와 카테고리 필터 적용)
   const fetchEnrolledLectures = useCallback(async (categoryId: number | null = null, page: number = 0) => {
@@ -104,7 +109,7 @@ const Classroom: React.FC = () => {
         const classes = lecturesData.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          bannerImage: item.banner_image_path,
           instructor: item.instructor,
           category: item.category,
         }));
@@ -142,7 +147,11 @@ const Classroom: React.FC = () => {
 
   // 페이지가 변경되면 새 강의 목록을 불러옴
   useEffect(() => {
-    fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page);
+    if (page === 0) {
+      fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, 0); 
+    } else {
+      fetchEnrolledLectures(categories.find(cat => cat.name === selectedCategory)?.id || 0, page);
+    }
   }, [page, fetchEnrolledLectures, selectedCategory]);
 
   // 스크롤 이벤트 등록
@@ -156,44 +165,99 @@ const Classroom: React.FC = () => {
     setPage(0);
   };
 
+  const handleLectureClick = (classId: number) => {
+    navigate(`/dashboard/student/${classId}`);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    navigate('/');
+  };
+
+  const handleClass = () => {
+    navigate('/mypage');
+  }
+
+  const handleClassroom = () => {
+    navigate('/classroom');
+  }
+
+  const handleEdit = () => {
+    navigate('/edit-info');
+  }
+
   return (
     <Container>
-      <div className={styles.header}>
-        <h1 className={styles.title}>📝 I'm Learning.. </h1>
-        <CategorySelect 
-          selected={selectedCategory} 
-          onSelectCategory={handleCategoryChange}
-          categories={categories}
-        />
-      </div>
-
-      <section className={styles.lectureSection}>
-        {isLoading && lectures.length === 0 ? (
-          <p>Loading...</p>
-        ) : lectures.length === 0 ? (
-          <div className={styles.emptyContainer}>
-            <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-            <h5>아직 수강 중인 강의가 없어요!</h5>
-            <Button text="수강 신청하러 가기" onClick={() => navigate('/list')} />
-          </div>
-        ) : (
-          <div className={styles.lectureGrid}>
-            {lectures.map((lecture, index) => (
-              <LectureCard
-                key={`${lecture.classId}-${index}`}
-                classId={lecture.classId}
-                bannerImage={lecture.bannerImage}
-                name={lecture.name}
-                instructor={lecture.instructor}
-                category={lecture.category}
-                onClick={() => navigate(`/dashboard/student/${lecture.classId}`)}
-              />
-            ))}
-            </div>
-          )}
+      <Space height={"40px"} />
+      <section className={styles.filterSection}>
+        <div className={styles.categoryList}>
+          <button
+            className={`${styles.categoryButton} ${selectedCategory === '전체' ? styles.active : ''}`}
+            onClick={() => handleCategoryChange('전체')}
+          >
+            전체
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              className={`${styles.categoryButton} ${selectedCategory === category.name ? styles.active : ''}`}
+              onClick={() => handleCategoryChange(category.name)}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
       </section>
-      {isLoading && <p>Loading more lectures...</p>}
-      <Navigation />
+
+      <Space height={"48px"} />
+      <Row>
+        <div className={styles.user}>
+          <Row align={"fill"}>
+            <h3>강좌 관리 by {nickname}</h3>
+            <img src={editImage} className={styles.editIcon} onClick={handleEdit} alt="Edit Button" /> 
+          </Row>
+          <Space height={"32px"} />
+          <button className={styles.myClassesButton} onClick={handleClass}>
+            내가 개설한 강의
+          </button>
+          <button className={styles.myClassroomButton} onClick={handleClassroom}>
+            내가 수강 중인 강의
+          </button>
+          <button className={styles.logoutButton} onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
+
+        <div className={styles.class}>
+
+          <div className={styles.classHeader}>
+            <h1>내가 수강 중인 강의 <span className={styles.blueText}>{lectures.length}</span>개</h1>
+          </div>    
+          <section>
+            {lectures.length === 0 ? (
+              <EmptyContent />
+            ) : (
+              <div className={styles.lectureGrid}>
+                {lectures.map((lecture) => (
+                  <div key={lecture.classId}>
+                    <LectureCard 
+                      classId={lecture.classId}
+                      bannerImage={lecture.bannerImage}
+                      name={lecture.name}
+                      instructor={null}
+                      category={lecture.category}
+                      onClick={() => handleLectureClick(lecture.classId)} totalStudents={0} />
+                  </div>
+                ))}
+              </div>
+            )}
+            </section>
+            {isLoading && <p>Loading more lectures...</p>}
+        </div>
+
+
+      </Row>
     </Container>
   );
 };

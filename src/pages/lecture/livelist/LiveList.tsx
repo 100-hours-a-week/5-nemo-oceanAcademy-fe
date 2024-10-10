@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import CategorySelect from 'components/category-select/CategorySelect';
 import Navigation from '../../../components/navigation/Navigation';
+import EmptyContent from '../../../components/empty-content/EmptyContent';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './LiveList.module.css';
@@ -26,7 +27,7 @@ const LiveList: React.FC = () => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('전체 카테고리');
+  const [selectedCategory, setSelectedCategory] = useState('전체');
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -182,7 +183,7 @@ const LiveList: React.FC = () => {
               bannerImage={lecture.bannerImage}
               name={lecture.name}
               instructor={lecture.instructor}
-              category={lecture.category}
+              category={lecture.category} totalStudents={0}
             />
           ))}
         </div>

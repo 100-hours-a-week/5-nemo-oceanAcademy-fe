@@ -201,7 +201,7 @@ background-color: #FAFBFD;
 .desktopBoxTitle {
 font-size: 16px;
 font-weight: bold;
-color: #2A62F2;
+color: var(--blue-color);
 }
 
 /* 소개 내용 ------------ */

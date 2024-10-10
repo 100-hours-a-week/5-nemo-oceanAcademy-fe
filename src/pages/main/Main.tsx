@@ -87,6 +87,14 @@ const Main: React.FC = () => {
     window.open('https://forms.gle/vN3RDGNmM1okqRfq7', '_blank');
   }
 
+  const moveList = () => {
+    navigate('/list');
+  }
+
+  const moveLive = () => {
+    navigate('/live-list');
+  }
+
   return (
       <Container isBlackBackground={isBlackBackground}>
         <Advertisement />
@@ -99,7 +107,7 @@ const Main: React.FC = () => {
                 수강생이 많은 강의 TOP 10
               </h1>
 
-              <div className={styles.link}>
+              <div className={styles.link} onClick={moveList}>
                 <p>전체 강의 보기</p>
                 <img src={whiteArrow} />
               </div>
@@ -116,7 +124,7 @@ const Main: React.FC = () => {
                     bannerImage={lecture.bannerImage}
                     name={lecture.name}
                     instructor={lecture.instructor}
-                    category={lecture.category}
+                    category={lecture.category} totalStudents={0}
                   />
                 </div>
                 ))}
@@ -135,7 +143,7 @@ const Main: React.FC = () => {
               🔴 Live: 모두가 주목하는 실시간 라이브 강의
             </h1>
             
-            <div className={styles.link}>
+            <div className={styles.link} onClick={moveLive}>
               <p>현재 라이브 중인 강의 보기</p>
               <img src={whiteArrow} />
             </div>
@@ -149,7 +157,7 @@ const Main: React.FC = () => {
                 bannerImage={lecture.bannerImage}
                 name={lecture.name}
                 instructor={lecture.instructor}
-                category={lecture.category}
+                category={lecture.category} totalStudents={0}
               />
             ))}
           </div>

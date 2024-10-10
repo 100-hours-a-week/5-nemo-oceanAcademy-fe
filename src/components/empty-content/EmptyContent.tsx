@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './emptyContent.module.css';
+import styles from './EmptyContent.module.css';
 import emptyImage from '../../../src/assets/images/utils/empty.png';
 
 const EmptyContent: React.FC = () => {
