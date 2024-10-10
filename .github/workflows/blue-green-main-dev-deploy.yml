@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
 
-      - name: Docker 이미지 빌드 및 Docker Hub에 푸시
+      - name: Docker 이미지 빌드
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             IMAGE_NAME="judykimsohui/nemo-fe"
@@ -37,6 +37,7 @@ jobs:
 
           echo "Docker 이미지 이름: $IMAGE_NAME"
 
+      - name: Docker Hub에 푸시
         uses: docker/build-push-action@v2
         with:
           context: .
