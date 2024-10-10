@@ -34,7 +34,8 @@ jobs:
           elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
             IMAGE_NAME="judykimsohui/nemo-dev-fe"
           fi
-
+          
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
           echo "Docker 이미지 이름: $IMAGE_NAME"
 
       - name: Docker Hub에 푸시
@@ -42,7 +43,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: $IMAGE_NAME:latest,$IMAGE_NAME:${{ github.sha }}
+          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   deploy:
     needs: build_and_push
@@ -109,17 +110,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-              IMAGE_NAME="judykimsohui/nemo-fe"
-            elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
-              IMAGE_NAME="judykimsohui/nemo-dev-fe"
-            fi
-
-            docker pull $IMAGE_NAME:${{ github.sha }}
+            docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
             docker run -d --name nemo-fe-green -p $NEW_PORT:$NEW_PORT \
             --env-file /app/config/.env \
             -e PORT=$NEW_PORT \
-            $IMAGE_NAME:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: 새 배포 환경의 Health Check
         run: |
