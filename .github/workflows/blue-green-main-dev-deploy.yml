@@ -67,7 +67,7 @@ jobs:
           
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             # main 브랜치: Blue-Green 타겟 그룹 설정
-            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text --debug)
+            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text --debug)
 
             # 오류 확인
             if [ -z "$CURRENT_TARGET_GROUP_ARN" ]; then
@@ -87,7 +87,7 @@ jobs:
 
           elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
             # dev(wideview-deploy) 브랜치: Dev Blue-Green 타겟 그룹 설정
-            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text --debug)
+            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text --debug)
 
             # 오류 확인
             if [ -z "$CURRENT_TARGET_GROUP_ARN" ]; then
