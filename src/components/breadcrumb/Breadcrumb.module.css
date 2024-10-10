@@ -11,7 +11,7 @@
 }
   
 .breadcrumbItem {
-  color: #7a7a7a; /* Gray for previous links */
+  color: #888;
   text-decoration: none;
 }
 
@@ -20,12 +20,13 @@
 }
 
 .currentItem {
-  color: #000000; /* Black for current page */
+  color: #000000;
 }
 
 .separator {
-  margin: 0 8px;
-  color: #7a7a7a; /* Gray for the '>' separator */
+  margin: 0 10px;
+  height: 12px;
+  color: #888;
 }
 
 .divider {

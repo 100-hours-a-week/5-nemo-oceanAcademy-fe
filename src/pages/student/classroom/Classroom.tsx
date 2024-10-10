@@ -9,7 +9,6 @@ import styles from './Classroom.module.css';
 import { Container, Space, Row, Column } from '../../../styles/GlobalStyles';
 
 // import images
-import emptyImage from '../../../assets/images/utils/empty.png';
 import editImage from '../../../assets/images/icon/edit.svg';
 
 interface Lecture {

@@ -197,6 +197,10 @@ const EditInfo: React.FC = () => {
         localStorage.removeItem('refreshToken');
         navigate('/');
     };
+
+    const handleClass = () => {
+      navigate('/mypage');
+    }  
     
     const handleClassroom = () => {
         navigate('/classroom');
@@ -206,8 +210,15 @@ const EditInfo: React.FC = () => {
         navigate('/edit-info');
     }
 
+    const breadcrumbItems = [
+      { label: '홈', link: '/' },
+      { label: '내 강의실', link: '/mypage' },
+      { label: '프로필 설정', link: '/edit-info' }
+    ];
+
     return (
         <div className={styles.container}>
+          <Breadcrumb items={breadcrumbItems} />
             <Space height={"48px"} />
             <Row>
                 <div className={styles.user}>
@@ -217,7 +228,7 @@ const EditInfo: React.FC = () => {
                     </Row>
 
                     <Space height={"32px"} />
-                    <button className={styles.myClassesButton}>
+                    <button className={styles.myClassesButton} onClick={handleClass}>
                         내가 개설한 강의
                     </button>
                     <button className={styles.myClassroomButton} onClick={handleClassroom}>
@@ -295,10 +306,11 @@ const EditInfo: React.FC = () => {
                     text="저장" 
                     onClick={handleSaveClick}
                     />
-                    <Space height={"32px"} />
+                    <Space height={"24px"} />
                     <button className={styles.quitButton} onClick={confirmDeleteAccount}>
                         회원탈퇴
                     </button>
+                    <Space height={"48px"} />
                 </Column>
             </section>
         </Row>
