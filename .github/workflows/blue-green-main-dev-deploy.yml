@@ -29,9 +29,9 @@ jobs:
 
       - name: Docker 이미지 빌드
         run: |
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             IMAGE_NAME="judykimsohui/nemo-fe"
-          elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
+          elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
             IMAGE_NAME="judykimsohui/nemo-dev-fe"
           fi
           
@@ -62,31 +62,28 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
+
           # 환경에 따라 호스트 선택
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             SERVER_HOST="${{ secrets.SERVER_HOST }}"
-          elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
+          elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
             SERVER_HOST="${{ secrets.DEV_SERVER_HOST }}"
           fi
-          
-          # 서버 호스트 값 출력 (디버깅용)!
-          echo "SERVER_HOST is set to: $SERVER_HOST"
-          
+
+          echo "Using server: $SERVER_HOST"
           if [ -z "$SERVER_HOST" ]; then
-            echo "Error: SERVER_HOST is not set!"
+          echo "Error: SERVER_HOST is not set!"
             exit 1
-          fi
+            fi
           
           echo "SERVER_HOST=$SERVER_HOST" >> $GITHUB_ENV
-          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
-
+          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts       
 
       - name: 타겟 그룹 선택 및 포트 설정
         run: |
           echo "Current branch: ${GITHUB_REF}"
           
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             # main 브랜치: Blue-Green 타겟 그룹 설정
             CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
 
@@ -105,7 +102,7 @@ jobs:
               TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
             fi
 
-          elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
+          elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
             # dev(wideview-deploy) 브랜치: Dev Blue-Green 타겟 그룹 설정
             CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --region ap-northeast-2 --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
 
@@ -162,9 +159,9 @@ jobs:
             echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
 
             # Docker 이미지 이름 설정
-            if [[ "${{ github.ref_name }}" == "main" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
               IMAGE_NAME="judykimsohui/nemo-fe"
-            elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
+            elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
               IMAGE_NAME="judykimsohui/nemo-dev-fe"
             fi
             
@@ -211,10 +208,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            if [[ "${{ github.ref_name }}" == "main" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
               aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.LISTENER_ARN }} \
               --default-actions '[{"Type": "forward", "Order": 1, "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": "'${{ env.TARGET_GROUP_ARN }}'","Weight": 1}]},"Conditions":[{"Field": "host-header", "Values": ["www.nemooceanacademy.com"]}]}]'
-            elif [[ "${{ github.ref_name }}" == "wideview-deploy" ]]; then
+            elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
               aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.DEV_LISTENER_ARN }} \
               --default-actions '[{"Type": "forward", "Order": 1, "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": "'${{ env.TARGET_GROUP_ARN }}'","Weight": 1}]},"Conditions":[{"Field": "host-header", "Values": ["dev.nemooceanacademy.com"]}]}]'
             fi
