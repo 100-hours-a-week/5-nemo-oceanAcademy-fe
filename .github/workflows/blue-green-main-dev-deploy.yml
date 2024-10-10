@@ -1,10 +1,10 @@
 name: BlueGreen CICD Pipeline
 
-on:
-  push:
-    branches:
-      - main            # www.nemooceanacademy.com
-      - wideview-deploy # dev.nemooceanacademy.com
+#on:
+#  push:
+#    branches:
+#      - main            # www.nemooceanacademy.com
+#      - wideview-deploy # dev.nemooceanacademy.com
 
 jobs:
   build_and_push:
@@ -186,7 +186,7 @@ jobs:
           set +e
           echo "Starting Health Check on ${{ env.SERVER_HOST }}:${{ env.NEW_PORT }}"
           echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
-          for i in {1..20}; do
+          for i in {1..3}; do
             # 첫 번째 헬스 체크 시도
             response=$(curl -v --max-time 10 http://${{ env.SERVER_HOST }}:${{ env.NEW_PORT }})
             echo "Health Check attempt $i: Response was '$response'"

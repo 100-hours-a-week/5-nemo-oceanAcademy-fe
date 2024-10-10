@@ -3,7 +3,7 @@ name: BlueGreen CICD Pipeline
 on:
   push:
     branches:
-      - main
+      - wideview-deploy
 
 jobs:
   build_and_push:
@@ -31,7 +31,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: judykimsohui/nemo-fe:latest,judykimsohui/nemo-fe:${{ github.sha }}
+          tags: judykimsohui/nemo-dev-fe:latest,judykimsohui/nemo-dev-fe:${{ github.sha }}
 
   deploy:
     needs: build_and_push
@@ -43,22 +43,22 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.DEV_SERVER_HOST }} >> ~/.ssh/known_hosts
       
       - name: 기존 컨테이너 중지 및 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker stop nemo-fe-green || true
-            docker rm nemo-fe-green || true
+            docker stop nemo-dev-fe-green || true
+            docker rm nemo-dev-fe-green || true
 
       - name: 현재 실행 중이지 않는 서비스에 새로운 Docker 컨테이너 배포
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -66,22 +66,22 @@ jobs:
             TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 
             # 현재 리스너에 연결된 타겟 그룹 ARN 가져오기
-            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
+            CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
 
             # 로그에 현재 타겟 그룹 ARN 출력
             echo "Current Target Group ARN: $CURRENT_TARGET_GROUP_ARN"
 
             # 타겟 그룹 ARN에 따라 현재 포트 결정
-            if [ "$CURRENT_TARGET_GROUP_ARN" == "${{ secrets.BLUE_TARGET_GROUP_ARN }}" ]; then
+            if [ "$CURRENT_TARGET_GROUP_ARN" == "${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}" ]; then
               CURRENT_PORT=3000
               NEW_PORT=3001
-              TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+              TARGET_GROUP_ARN=${{ secrets.DEV_GREEN_TARGET_GROUP_ARN }}
             else
               CURRENT_PORT=3001
               NEW_PORT=3000
-              TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+              TARGET_GROUP_ARN=${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}
             fi
-
+            
             # 로그에 현재 포트 및 새 포트 정보 출력
             echo "Current port in use: $CURRENT_PORT"
             echo "New port to be used: $NEW_PORT"
@@ -101,17 +101,17 @@ jobs:
             echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
 
             # Docker 이미지 최신 버전 가져오기
-            docker pull judykimsohui/nemo-fe:${{ github.sha }}
+            docker pull judykimsohui/nemo-dev-fe:${{ github.sha }}
 
             # 새로운 포트로 새로운 Docker 컨테이너 실행
-            docker run -d --name nemo-fe-green -p $NEW_PORT:$NEW_PORT \
+            docker run -d --name nemo-dev-fe-green -p $NEW_PORT:$NEW_PORT \
             --env-file /app/config/.env \
             -e PORT=$NEW_PORT \
-            judykimsohui/nemo-fe:${{ github.sha }}
+            judykimsohui/nemo-dev-fe:${{ github.sha }}
 
       - name: PORT 정보를 GITHUB로 Fetch
         run: |
-          scp -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/deployment_ports.env .
+          scp -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}:/tmp/deployment_ports.env .
           source deployment_ports.env
           echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
           echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
@@ -120,11 +120,11 @@ jobs:
       - name: 새 배포 환경의 Health Check
         run: |
           set +e
-          echo "Starting Health Check on ${{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }}"
+          echo "Starting Health Check on ${{ secrets.DEV_SERVER_HOST }}:${{ env.NEW_PORT }}"
           echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
           for i in {1..20}; do
             # 첫 번째 헬스 체크 시도
-            response=$(curl -v --max-time 10 http://${{ secrets.SERVER_HOST }}:${{ env.NEW_PORT }})
+            response=$(curl -v --max-time 10 http://${{ secrets.DEV_SERVER_HOST }}:${{ env.NEW_PORT }})
             echo "Health Check attempt $i: Response was '$response'"
             
             # 응답을 확인하여 "status\":\"ok"가 포함되어 있는지 검사
@@ -143,7 +143,7 @@ jobs:
       - name: 새 타겟 그룹에 인스턴스 등록
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -157,16 +157,16 @@ jobs:
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }} --debug
+            aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }} --debug
   
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -175,10 +175,10 @@ jobs:
             echo "INSTANCE_ID is: $INSTANCE_ID"
 
             if [ "${{ env.CURRENT_PORT }}" -eq "3000" ]; then
-              OLD_TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+              OLD_TARGET_GROUP_ARN=${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}
               echo "blue >> green"
             else
-              OLD_TARGET_GROUP_ARN=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+              OLD_TARGET_GROUP_ARN=${{ secrets.DEV_GREEN_TARGET_GROUP_ARN }}
               echo "green >> blue"
             fi
             aws elbv2 deregister-targets --target-group-arn $OLD_TARGET_GROUP_ARN --targets Id=$INSTANCE_ID
@@ -186,7 +186,7 @@ jobs:
       - name: Docker 사용하지 않는 이미지 정리
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -195,12 +195,12 @@ jobs:
       - name: 이전 버전의 환경을 멈추고 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker stop nemo-fe || true
-            docker rm nemo-fe || true
+            docker stop nemo-dev-fe || true
+            docker rm nemo-dev-fe || true
             
-            # 다음 사이클을 위해, nemo-fe-green을 nemo-fe로 이름 변경
-            docker rename nemo-fe-green nemo-fe || true
+            # 다음 사이클을 위해, nemo-dev-fe-green을 nemo-dev-fe로 이름 변경
+            docker rename nemo-dev-fe-green nemo-dev-fe || true
