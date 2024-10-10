@@ -129,9 +129,9 @@ jobs:
           echo "NEW_PORT=$NEW_PORT"
           echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN"
 
-          echo "CURRENT_PORT=CURRENT_PORT" >> $GITHUB_ENV
-          echo "TARGET_GROUP_ARN=TARGET_GROUP_ARN" >> $GITHUB_ENV
-          echo "$NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
+          echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
+          echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN" >> $GITHUB_ENV
+          echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
 
       - name: 기존 컨테이너 중지 및 삭제
         uses: appleboy/ssh-action@v0.1.6
