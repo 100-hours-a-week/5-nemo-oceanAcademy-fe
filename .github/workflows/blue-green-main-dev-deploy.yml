@@ -25,7 +25,7 @@ jobs:
 
       - name: .env 파일 생성
         run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
+          echo "${{ secrets.ENV_FILE }}" | base64 --decode > /app/config/.env
 
       - name: Docker 이미지 빌드
         run: |
@@ -180,19 +180,26 @@ jobs:
             echo "Using Docker image: $IMAGE_NAME:${{ github.sha }}"
             echo "Running on port: ${{ env.NEW_PORT }}"
 
-
       - name: 새 배포 환경의 Health Check
         run: |
+          set +e
+          echo "Starting Health Check on ${{ env.SERVER_HOST }}:${{ env.NEW_PORT }}"
+          echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
           for i in {1..20}; do
+            # 첫 번째 헬스 체크 시도
             response=$(curl -v --max-time 10 http://${{ env.SERVER_HOST }}:${{ env.NEW_PORT }})
+            echo "Health Check attempt $i: Response was '$response'"
+          
+            # 응답을 확인하여 "status\":\"ok"가 포함되어 있는지 검사
             if [[ "$response" == *"<title>바다서원</title>"* ]]; then
               echo "Health Check passed!"
               exit 0
             else
-              echo "Health Check failed. Retrying..."
+              echo "Health Check attempt $i failed. Retrying in 5 seconds..."
               sleep 5
             fi
           done
+          
           echo "Health Check failed after 20 attempts."
           exit 1
 
