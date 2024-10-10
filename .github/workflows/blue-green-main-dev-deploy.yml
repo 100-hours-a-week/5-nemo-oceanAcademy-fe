@@ -77,8 +77,8 @@ jobs:
             echo "Error: SERVER_HOST is not set!"
             exit 1
           fi
-
-          echo "SERVER_HOST=$SERVER_HOST" >> $GITHUB_ENV
+          
+          echo "SERVER_HOST=SERVER_HOST"
           ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
 
       - name: 타겟 그룹 선택 및 포트 설정
@@ -136,7 +136,7 @@ jobs:
       - name: 기존 컨테이너 중지 및 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -147,7 +147,7 @@ jobs:
       - name: 새로운 Docker 컨테이너 배포
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -181,7 +181,7 @@ jobs:
       - name: 새 배포 환경의 Health Check
         run: |
           for i in {1..20}; do
-            response=$(curl -v --max-time 10 http://${{ env.SERVER_HOST }}:${{ env.NEW_PORT }})
+            response=$(curl -v --max-time 10 http://$SERVER_HOST:${{ env.NEW_PORT }})
             if [[ "$response" == *"<title>바다서원</title>"* ]]; then
               echo "Health Check passed!"
               exit 0
@@ -196,7 +196,7 @@ jobs:
       - name: 새 타겟 그룹에 인스턴스 등록
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -206,7 +206,7 @@ jobs:
       - name: ELB 리스너를 새 타겟 그룹으로 업데이트 (호스트 헤더 사용)
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -221,7 +221,7 @@ jobs:
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -234,7 +234,7 @@ jobs:
       - name: Docker 사용하지 않는 이미지 정리
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -243,7 +243,7 @@ jobs:
       - name: 이전 버전의 환경을 멈추고 삭제
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ env.SERVER_HOST }}
+          host: $SERVER_HOST
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
