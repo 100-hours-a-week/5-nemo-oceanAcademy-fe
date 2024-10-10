@@ -1,10 +1,10 @@
 name: BlueGreen CICD Pipeline
 
-#on:
-#  push:
-#    branches:
-#      - wideview-deploy
-#      - wideview
+on:
+  push:
+    branches:
+      - wideview-deploy
+      - wideview
 
 jobs:
   build_and_push:
