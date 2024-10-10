@@ -70,7 +70,7 @@ jobs:
             SERVER_HOST="${{ secrets.DEV_SERVER_HOST }}"
           fi
 
-          # 서버 호스트 값 출력 (디버깅용)
+          # 서버 호스트 값 출력 (디버깅용)!
           echo "SERVER_HOST is set to: $SERVER_HOST"
 
           if [ -z "$SERVER_HOST" ]; then
