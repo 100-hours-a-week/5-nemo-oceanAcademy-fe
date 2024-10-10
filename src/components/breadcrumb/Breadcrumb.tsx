@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // for proper internal navigation
+import { Link } from 'react-router-dom';
 import styles from './Breadcrumb.module.css';
+import arrow from '../../assets/images/icon/arrow_bl.svg';
 
 interface BreadcrumbProps {
-  items: { label: string; link: string }[]; // items will contain page label and link
+  items: { label: string; link: string }[];
 }
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
@@ -11,19 +12,17 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
     <>
       <nav className={styles.breadcrumb}>
         {items.map((item, index) => {
-          const isLastItem = index === items.length - 1; // Check if it's the last item (current page)
+          const isLastItem = index === items.length - 1;
           return (
             <React.Fragment key={index}>
               {!isLastItem ? (
-                // For all items except the last one, make them clickable
                 <Link to={item.link} className={styles.breadcrumbItem}>
                   {item.label}
                 </Link>
               ) : (
-                // Last item, current page (non-clickable)
                 <span className={styles.currentItem}>{item.label}</span>
               )}
-              {index < items.length - 1 && <span className={styles.separator}>{'>'}</span>}
+              {index < items.length - 1 && <img src={arrow} className={styles.separator} />}
             </React.Fragment>
           );
         })}

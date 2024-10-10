@@ -4,7 +4,6 @@ import ReactGA from "react-ga4";
 import * as Sentry from '@sentry/react';
 import './App.css';
 import Header from './components/header/Header';
-import Breadcrumb from './components/breadcrumb/Breadcrumb';
 import Main from './pages/main/Main';
 import Enrollment from './pages/lecture/enrollment/Enrollment';
 import LectureInfo from './pages/lecture/lecture-info/LectureInfo';
@@ -22,10 +21,10 @@ import StudentList from './pages/teacher/student-list/StudentList';
 import Login from './pages/user/login/Login';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
+import EditInfo from './pages/user/mypage/EditInfo';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import ScrollToTop from './components/utils/ScrollToTop';
 import PrivateRoute from 'components/utils/PrivateRoute';
-import Layout from './components/utils/Layout';
 import NotFound from './components/utils/NotFound';
 
 const Analytics = () => {
@@ -107,9 +106,7 @@ const App: React.FC = () => {
             path="/lecture/info/:classId"
             element={
               <PrivateRoute>
-                <Layout>
-                  <LectureInfo />
-                </Layout>
+                <LectureInfo />
               </PrivateRoute>
             }
           />
@@ -137,9 +134,7 @@ const App: React.FC = () => {
             path="/classroom"
             element={
               <PrivateRoute>
-                <Layout>
-                  <Classroom />
-                </Layout>
+                <Classroom />
               </PrivateRoute>
             }
           />
@@ -147,9 +142,7 @@ const App: React.FC = () => {
             path="/dashboard/student/:classId"
             element={
               <PrivateRoute>
-                <Layout>
-                  <DashboardStudent />
-                </Layout>
+                <DashboardStudent />
               </PrivateRoute>
             }
           />
@@ -159,9 +152,7 @@ const App: React.FC = () => {
             path="/dashboard/teacher/:classId"
             element={
               <PrivateRoute>
-                <Layout>
-                  <DashboardTeacher />
-                </Layout>
+                <DashboardTeacher />
               </PrivateRoute>
             }
           />
@@ -169,9 +160,7 @@ const App: React.FC = () => {
             path="/dashboard/edit/:classId"
             element={
               <PrivateRoute>
-                <Layout>
-                  <EditDashboard />
-                </Layout>
+                <EditDashboard />
               </PrivateRoute>
             }
           />
@@ -179,9 +168,7 @@ const App: React.FC = () => {
             path="/lecture/created"
             element={
               <PrivateRoute>
-                <Layout>
-                  <LectureCreated />
-                </Layout>
+                <LectureCreated />
               </PrivateRoute>
             }
           />
@@ -189,9 +176,7 @@ const App: React.FC = () => {
             path="/lecture/created/:classId"
             element={
               <PrivateRoute>
-                <Layout>
-                  <LectureCreated />
-                </Layout>
+                <LectureCreated />
               </PrivateRoute>
             }
           />
@@ -199,9 +184,7 @@ const App: React.FC = () => {
             path="/lecture/open"
             element={
               <PrivateRoute>
-                <Layout>
-                  <LectureOpen />
-                </Layout>
+                 <LectureOpen />
               </PrivateRoute>
             }
           />
@@ -209,9 +192,7 @@ const App: React.FC = () => {
             path="/lecture/students/:classId"
             element={
               <PrivateRoute>
-                <Layout>
-                  <StudentList />
-                </Layout>
+                <StudentList />
               </PrivateRoute>
             }
           />
@@ -221,9 +202,16 @@ const App: React.FC = () => {
             path="/mypage"
             element={
               <PrivateRoute>
-                <Layout>
-                  <MyPage />
-                </Layout>
+                <MyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/edit-info"
+            element={
+              <PrivateRoute>
+                <EditInfo />
               </PrivateRoute>
             }
           />

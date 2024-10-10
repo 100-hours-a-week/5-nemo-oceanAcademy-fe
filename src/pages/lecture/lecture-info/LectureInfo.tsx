@@ -183,6 +183,7 @@ const LectureInfo: React.FC = () => {
             ) : (
                 // 데스크탑 UI
                 <Column align={"all"}>
+                {/*
                 <Row align={"left"}>
                     <div className={styles.desktopNavigator}>
                         <a href="/">홈</a> &gt;
@@ -191,6 +192,7 @@ const LectureInfo: React.FC = () => {
                     </div>
                 </Row>
                 <hr className={styles.stylehr}/>
+                */}
 
                 <div className={styles.desktopContainer}>
                     <Space height={"40px"}/>
@@ -206,7 +208,6 @@ const LectureInfo: React.FC = () => {
                         <Column align={"fill"} gap={"18px"}>
                             <div className={styles.desktopCategory}>{lecture.category}</div>
                             <div className={styles.desktopTitle}>{lecture.name}</div>
-                            <div className={styles.desktopReview}>리뷰 4.8 (12)</div>
                         </Column>
                         <Row align={"right"}>
                             {/* 수강신청 버튼 */}
@@ -269,9 +270,6 @@ const LectureInfo: React.FC = () => {
                         </Column>
                     </div>
                     <Space height={"200px"}/>
-
-                    {/* 네비게이션 */}
-                    <Navigation />
                 </div>
                 </Column>
             )}

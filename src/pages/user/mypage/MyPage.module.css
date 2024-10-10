@@ -1,13 +1,3 @@
-.container {
-  margin: 0 auto;
-  width: 400px;
-  min-height: calc(100vh - 66px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-}
-
 .lectureGrid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -26,13 +16,15 @@
   }
 
   .lectureGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/*************** Now Working *********************/
 .user {
   width: 236px;
+}
+.editIcon {
+  cursor: pointer;
 }
   .myClassesButton {
     width: 236px;
@@ -47,10 +39,10 @@
     color: white;
     background-color: black;
   }
-
-  .logoutButton {
+  .myClassroomButton, .logoutButton {
     width: 236px;
     height: 59px;
+    margin-bottom: 12px;
     padding-left: 24px;
     display: flex;
     justify-content: flex-start;
@@ -59,12 +51,14 @@
     font-weight: bold;
     background-color: white;
     border: 1px solid #E5E5E5;
+    &:hover {
+      color: white;
+      background-color: black;
+    }
   }
-
 
 .class {
   margin-left: 64px;
-
 }
 
   .classHeader {

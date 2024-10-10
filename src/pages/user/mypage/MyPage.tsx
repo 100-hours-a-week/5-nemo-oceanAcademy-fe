@@ -1,16 +1,16 @@
-// #C-1: MyPage(/mypage) - 사용자 페이지 (프로필 수정, 내가 개설한 강의 조회, 강의 개설 페이지로 이동)
+// #C-1: MyPage(/mypage) - 사용자 페이지 (내가 개설한 강의 조회, 강의 개설 페이지로 이동)
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
+import Modal from 'components/modal/Modal';
+import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import EmptyContent from '../../../components/empty-content/EmptyContent';
-import Navigation from '../../../components/navigation/Navigation';
 import styles from './MyPage.module.css';
 import { Container, Space, Row, Column } from '../.\./../styles/GlobalStyles';
 
 // import images
-import emptyImage from '../../../assets/images/utils/empty.png';
 import editImage from '../../../assets/images/icon/edit.svg';
 import addImage from '../../../assets/images/icon/add.svg';
 import profile1 from '../../../assets/images/profile/crab.png';
@@ -36,17 +36,14 @@ const MyPage: React.FC = () => {
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [profileImage, setProfileImage] = useState('');
-  const [initialNickname, setInitialNickname] = useState('');
-  const [initialEmail, setInitialEmail] = useState('');
-  const [initialProfilePic, setInitialProfilePic] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 필드 참조
+  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const token = localStorage.getItem('accessToken');
 
   const getProfileImage = (nickname: string): string => {
@@ -180,23 +177,49 @@ const MyPage: React.FC = () => {
       console.error('Error deleting lecture:', error);
       alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
     }
+    console.log(`강의 ${classId} 삭제`);
+    setShowDeleteModal(false);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    navigate('/');
+  };
+
+  const handleClassroom = () => {
+    navigate('/classroom');
+  }
+
+  const handleEdit = () => {
+    navigate('/edit-info');
+  }
+
+  const breadcrumbItems = [
+    { label: '홈', link: '/' },
+    { label: '내 강의실', link: '/mypage' },
+    { label: '내가 수강 중인 강의', link: '/mypage' }
+  ];
 
   return (
     <Container>
+      <Breadcrumb items={breadcrumbItems} />
+
       <Space height={"48px"} />
       <Row>
         <div className={styles.user}>
           <Row align={"fill"}>
             <h3>강좌 관리 by {nickname}</h3>
-            <img src={editImage} alt="Edit Button" />    
+            <img src={editImage} className={styles.editIcon} onClick={handleEdit} alt="Edit Button" /> 
           </Row>
-
           <Space height={"32px"} />
           <button className={styles.myClassesButton}>
             내가 개설한 강의
           </button>
-          <button className={styles.logoutButton}>
+          <button className={styles.myClassroomButton} onClick={handleClassroom}>
+            내가 수강 중인 강의
+          </button>
+          <button className={styles.logoutButton} onClick={handleLogout}>
             로그아웃
           </button>
         </div>
@@ -215,11 +238,7 @@ const MyPage: React.FC = () => {
 
           <section>
             {lectures.length === 0 ? (
-              <div className={styles.emptyContainer}>
-                <p>아직 강의를 개설하지 않았어요.</p>
-                <p>+ 버튼을 눌러 강의를 시작해보세요!</p>
-                <img src={emptyImage} alt="No lectures available" className={styles.emptyImage} />
-              </div>
+              <EmptyContent />
             ) : (
               <div className={styles.lectureGrid}>
                 {lectures.map((lecture) => (
@@ -237,7 +256,14 @@ const MyPage: React.FC = () => {
 
                     <div className={styles.buttonContainer}>
                       <button className={styles.editButton} onClick={handleEditClick(lecture.classId)}>수정</button>
-                      <button className={styles.deleteButton} onClick={() => handleLectureDelete(lecture.classId)}>삭제</button>
+                      <button 
+                        className={styles.deleteButton}
+                        onClick={() => {
+                          setSelectedClassId(lecture.classId);
+                          setShowDeleteModal(true);
+                        }}>
+                          삭제
+                        </button>
                     </div>
                   </div>
                 ))}
@@ -247,6 +273,26 @@ const MyPage: React.FC = () => {
             {isLoading && <p>Loading more lectures...</p>}
         </div>
       </Row>
+      {showDeleteModal && (
+        <Modal
+          title="강의를 삭제하시겠습니까?"
+          content={(
+            <>
+              삭제한 강의는 복구할 수 없습니다. <br />
+              그래도 삭제하시겠습니까?
+            </>
+          )}
+          rightButtonText="강의 삭제"
+          onRightButtonClick={() => {
+            if (selectedClassId !== null) {
+              handleLectureDelete(selectedClassId);
+            } else {
+              console.error('강의를 삭제할 수 없습니다: classId가 null입니다.');
+            }
+          }}
+          onLeftButtonClick={() => setShowDeleteModal(false)}
+        />
+      )}
     </Container>
   );
 };

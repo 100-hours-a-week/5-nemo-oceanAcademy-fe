@@ -1,5 +1,6 @@
 // #D-1: LectureList (/list) - 전체 강의 리스트 페이지 (현재 개설된 강의 조회, 카테고리)
 import React, { useEffect, useState, useCallback } from 'react';
+import EmptyContent from 'components/empty-content/EmptyContent';
 import Advertisement from '../../../components/advertisement/Advertisement';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import CategorySelect from 'components/category-select/CategorySelect';
@@ -196,7 +197,7 @@ const LectureList: React.FC = () => {
                 bannerImage={lecture.bannerImage}
                 name={lecture.name}
                 instructor={lecture.instructor}
-                category={lecture.category}
+                category={lecture.category} totalStudents={0}
               />
             ))}
           </div>
@@ -234,12 +235,12 @@ const LectureList: React.FC = () => {
             <div className={styles.lectureGrid}>
               {lectures.map((lecture, index) => (
                   <LectureCard
-                      key={`${lecture.classId}-${index}`} // classId와 index를 조합해 고유한 key 생성
-                      classId={lecture.classId}
-                      bannerImage={lecture.bannerImage}
-                      name={lecture.name}
-                      instructor={lecture.instructor}
-                      category={lecture.category}
+                    key={`${lecture.classId}-${index}`}
+                    classId={lecture.classId}
+                    bannerImage={lecture.bannerImage}
+                    name={lecture.name}
+                    instructor={lecture.instructor}
+                    category={lecture.category} totalStudents={0}
                   />
               ))}
             </div>

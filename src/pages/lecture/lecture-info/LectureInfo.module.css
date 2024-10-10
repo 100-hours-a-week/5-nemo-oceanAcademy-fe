@@ -2,14 +2,13 @@
 
 .mobileContainer {
   width: 400px;
-  min-height: calc(100vh - 65px);
+  min-height: calc(100vh - 66px);
   display: flex;
   flex-direction: column;
   text-align: left;
   align-items: center;
   justify-content: flex-start;
   background-color: white;
-  padding-bottom: 80px;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
@@ -112,6 +111,7 @@ span {
   padding: 20px 24px;
   justify-content: flex-start;
   background-color: #FAFBFD;
+  text-align: left;
 }
 
 /* 소개 타이틀 ------------ */
