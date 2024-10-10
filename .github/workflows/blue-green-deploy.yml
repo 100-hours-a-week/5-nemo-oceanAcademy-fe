@@ -81,7 +81,7 @@ jobs:
               NEW_PORT=3000
               TARGET_GROUP_ARN=${{ secrets.BLUE_TARGET_GROUP_ARN }}
             fi
-
+            
             # 로그에 현재 포트 및 새 포트 정보 출력
             echo "Current port in use: $CURRENT_PORT"
             echo "New port to be used: $NEW_PORT"
