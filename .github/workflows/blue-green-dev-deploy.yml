@@ -1,10 +1,10 @@
 name: BlueGreen CICD Pipeline
 
-on:
-  push:
-    branches:
-      - wideview-deploy
-      - wideview
+#on:
+#  push:
+#    branches:
+#      - wideview-deploy
+#      - wideview
 
 jobs:
   build_and_push:
@@ -84,8 +84,8 @@ jobs:
             fi
             
             # 로그에 현재 포트 및 새 포트 정보 출력
-            echo "Current port in use: $CURRENT_PORT"
-            echo "New port to be used: $NEW_PORT"
+            echo "Current port in use:  ${{ env.CURRENT_PORT }}"
+            echo "New port to be used:  ${{ env.NEW_PORT }}"
 
             # 환경 변수로 CURRENT_PORT 및 NEW_PORT 설정
             echo "CURRENT_PORT=$CURRENT_PORT" > /tmp/deployment_ports.env
@@ -149,19 +149,19 @@ jobs:
             TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
             INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
             echo "INSTANCE_ID is: $INSTANCE_ID"
-
+            
             # 새로운 타겟 그룹에 인스턴스를 등록
             aws elbv2 register-targets --target-group-arn ${{ env.TARGET_GROUP_ARN }} --targets Id=$INSTANCE_ID
-  
-      - name: ELB 리스너를 새 타겟 그룹으로 업데이트
+
+      - name: ELB 리스너 규칙 업데이트
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            aws elbv2 modify-listener --region ap-northeast-2 --listener-arn ${{ secrets.DEV_LISTENER_ARN }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }} --debug
-  
+            aws elbv2 modify-rule --rule-arn ${{ secrets.DEV_RULE_ARN }} --actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
+
       - name: 이전 타겟 그룹에서 인스턴스 deregister
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -172,7 +172,7 @@ jobs:
             TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
             INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id)
             echo "INSTANCE_ID is: $INSTANCE_ID"
-
+            
             if [ "${{ env.CURRENT_PORT }}" -eq "4000" ]; then
               OLD_TARGET_GROUP_ARN=${{ secrets.DEV_BLUE_TARGET_GROUP_ARN }}
               echo "blue >> green"
