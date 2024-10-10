@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - wideview-deploy
+      - wideview
 
 jobs:
   build_and_push:
@@ -203,4 +204,4 @@ jobs:
             # 다음 사이클을 위해, nemo-dev-fe-green을 nemo-dev-fe로 이름 변경
             docker rename nemo-dev-fe-green nemo-dev-fe || true
 
-      # 히히힐
+      # 히히
