@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import InputField from '../../../components/input-field/InputField';
 import FileUpload from '../../../components/file-upload/FileUpload';
+import Modal from 'components/modal/Modal';
 import Button from '../../../components/button/Button';
-import Navigation from '../../../components/navigation/Navigation';
+import WideButton from 'components/wide-button/WideButton';
 import CategorySelect from 'components/category-select/CategorySelect';
+import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import styles from './LectureOpen.module.css';
 import { Container,Row, Column, Space } from '../../../styles/GlobalStyles';
 import axios from 'axios';
@@ -37,6 +39,9 @@ const LectureOpen: React.FC = () => {
   const [titleHelperText, setTitleHelperText] = useState<string>('강의 제목은 필수 항목입니다.');
   const [objectiveHelperText, setObjectiveHelperText] = useState<string>('강의 목표는 필수 항목입니다.');
   const [descriptionHelperText, setDescriptionHelperText] = useState<string>('강의 소개는 필수 항목입니다.');
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // 모달 상태 추가
+  const [createdClassId, setCreatedClassId] = useState<number | null>(null); // 생성된 강의 ID 상태 추가
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -97,7 +102,8 @@ const LectureOpen: React.FC = () => {
       });
 
       if (response.status === 200) {
-        navigate(`/lecture/created/${response.data.data.id}`);
+        setCreatedClassId(response.data.data.id);
+        setShowSuccessModal(true);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -112,6 +118,12 @@ const LectureOpen: React.FC = () => {
         console.error('Enrollment request failed:', error);
         alert('강의 개설에 실패했습니다.');
       }
+    }
+  };
+
+  const handleNavigateToClass = () => {
+    if (createdClassId) {
+      navigate(`/lecture/info/${createdClassId}`); // 강의 정보 페이지로 이동
     }
   };
 
@@ -169,8 +181,6 @@ const LectureOpen: React.FC = () => {
 
   useEffect(validateForm, [selectedCategory, title, objective, description]);
 
-  // 강의공지
-
   const [dashboard, setDashboard] = useState({
     instructor: '',
     category_id: 0,
@@ -191,17 +201,17 @@ const LectureOpen: React.FC = () => {
     }));
   };
 
+  const breadcrumbItems = [
+    { label: '홈', link: '/' },
+    { label: '내 강의실', link: '/mypage' },
+    { label: '내가 개설한 강의', link: '/mypage' },
+    { label: '강의 생성', link: '/lecture/open' },
+  ];
+
   return (
       <div>
-        <div className={styles.desktopNavigator}>
-          <a href="/">홈</a> &gt;
-          <a href="/mypage"> 내 강의실</a> &gt;
-          <span> 강의개설</span>
-        </div>
-        <hr />
-
+        <Breadcrumb items={breadcrumbItems} />
         {isMobile ? (
-            // 모바일 UI
             <Container>
               <Row align={"center"}>
                 <h1 className={styles.title}>강의 개설하기</h1>
@@ -272,7 +282,7 @@ const LectureOpen: React.FC = () => {
               <FileUpload onFileSelect={handleBannerImageUpload} />
 
               <div className={styles.buttonContainer}>
-                <Button
+                <WideButton
                     text="강의 개설하기"
                     onClick={handleSubmit}
                     disabled={!isFormValid}
@@ -281,7 +291,6 @@ const LectureOpen: React.FC = () => {
             </div>
             </Container>
         ) : (
-            // 데스크탑 UI
             <Column align={"all"}>
               <div className={styles.desktopContainer}>
                 <Space height={"30px"} />
@@ -397,8 +406,15 @@ const LectureOpen: React.FC = () => {
               </div>
             </Column>
         )}
-
-        <Navigation />
+        {showSuccessModal && (
+          <Modal
+            title="강의 개설이 완료되었습니다!"
+            content="개설한 강의를 확인하시겠습니까?"
+            rightButtonText="강의실 가기"
+            onRightButtonClick={handleNavigateToClass} 
+            showCancelButton={false} 
+          />
+        )}
       </div>
   );
 };

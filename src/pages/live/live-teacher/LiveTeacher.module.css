@@ -6,6 +6,7 @@
   flex-direction: column;
   text-align: left;
   align-items: center;
+  justify-content: center;
   background-color: white;
   padding-bottom: 80px;
 }
@@ -18,14 +19,11 @@
   .desktopContainer {
     margin: 0 auto;
     width: 1184px;
-    background: black;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 0;
-    margin: 0;
-    justify-self: center;
-    justify-items: center;
-    height: 100vh;
+    align-items: center;
+    justify-content: center;
   }
 
   .desktopVideoSection {
@@ -88,7 +86,7 @@
   }
 
   .desktopChatWindow {
-    width: 100%;
+    width: 1184px;
     min-height: 518px;
     background-color: #141516;
     border-radius: 8px;
@@ -192,12 +190,22 @@
 
   .desktopControls {
     padding: 5px 20px;
-    margin-top: 10px;
+    padding-top: 10px;
     width: 100%;
     height: 56px;
     display: flex;
     justify-content: flex-end;
     gap: 32px;
+    background-color: black;
+  }
+  .controlButtons {
+    width: 46px;
+    height: 46px;
+    background: none;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .desktopLeave{
@@ -205,7 +213,8 @@
     color: white;
     font-size: 16px;
     font-weight: bold;
-    padding: 6px 24px 8px 24px;
+    width: 141px;
+    height: 36px;
     border: none;
     border-radius: 4px;
   }
@@ -293,6 +302,7 @@
   justify-content: space-between;
   gap: 10px;
   border-radius: 5px;
+  background-color: black;
 }
 
 .icon {
@@ -305,7 +315,6 @@
   border: none;
   padding: 5px;
   border-radius: 5px;
-  background-color: white;
   font-size: 10px;
   font-weight: bold;
   transition: box-shadow 0.2s ease;

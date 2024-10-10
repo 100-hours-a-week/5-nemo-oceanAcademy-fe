@@ -329,12 +329,12 @@ const LiveStudent: React.FC = () => {
     <Container>
       {showModal && (
         <Modal 
-          title="강의를 나가시겠습니까?"
-          content="아직 강의 중이에요!"
-          leftButtonText="나가기"
-          rightButtonText="취소"
-          onLeftButtonClick={handleModalLeave}
-          onRightButtonClick={handleModalCancel}
+          title="강의를 종료하시겠습니까?"
+          content="강의가 끝났나요?"
+          rightButtonText="강의 나가기"
+          onLeftButtonClick={handleModalCancel}
+          onRightButtonClick={handleModalLeave}
+          color={'var(--red-color)'}
         />
       )}
       <div className={styles.videoSection}>
@@ -429,12 +429,12 @@ const LiveStudent: React.FC = () => {
       <div className={styles.desktopContainer}>
         {showModal && (
           <Modal 
-            title="강의를 나가시겠습니까?"
-            content="아직 강의 중이에요!"
-            leftButtonText="나가기"
-            rightButtonText="취소"
-            onLeftButtonClick={handleModalLeave}
-            onRightButtonClick={handleModalCancel}
+            title="강의를 종료하시겠습니까?"
+            content="강의가 끝났나요?"
+            rightButtonText="강의 나가기"
+            onLeftButtonClick={handleModalCancel}
+            onRightButtonClick={handleModalLeave}
+            color={'var(--red-color)'}
           />
         )}
         <div className={styles.desktopVideoSection}>

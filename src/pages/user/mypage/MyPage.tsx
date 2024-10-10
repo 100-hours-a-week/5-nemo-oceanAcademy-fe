@@ -169,16 +169,18 @@ const MyPage: React.FC = () => {
 
       if (response.status === 200) {
         alert('강의가 삭제되었습니다😢');
-        window.location.reload();
+        // window.location.reload();
+        setLectures(lectures.filter(lecture => lecture.classId !== classId));
       } else {
         alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
       }
     } catch (error) {
       console.error('Error deleting lecture:', error);
       alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
+    } finally {
+      console.log(`강의 ${classId} 삭제`);
+      setShowDeleteModal(false);
     }
-    console.log(`강의 ${classId} 삭제`);
-    setShowDeleteModal(false);
   };
 
   const handleLogout = () => {
