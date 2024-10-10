@@ -59,6 +59,12 @@ jobs:
 
       - name: 타겟 그룹 선택 및 포트 설정
         run: |
+          echo "Current branch: ${GITHUB_REF}"
+          echo "Current Target Group ARN: $CURRENT_TARGET_GROUP_ARN"
+          echo "Target Group ARN: $TARGET_GROUP_ARN"
+          echo "Current Port: $CURRENT_PORT"
+          echo "New Port: $NEW_PORT"
+  
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             # main 브랜치: Blue-Green 타겟 그룹 설정
             CURRENT_TARGET_GROUP_ARN=$(aws elbv2 describe-listeners --listener-arn ${{ secrets.LISTENER_ARN }} --query "Listeners[0].DefaultActions[0].TargetGroupArn" --output text)
