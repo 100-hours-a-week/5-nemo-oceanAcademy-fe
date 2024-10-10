@@ -70,12 +70,11 @@ jobs:
             SERVER_HOST="${{ secrets.DEV_SERVER_HOST }}"
           fi
 
-          echo "Using server: $SERVER_HOST"
-          if [ -z "$SERVER_HOST" ]; then
-          echo "Error: SERVER_HOST is not set!"
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "Error: SSH_PRIVATE_KEY is not set!"
             exit 1
-            fi
-          
+          fi
+  
           echo "SERVER_HOST=$SERVER_HOST" >> $GITHUB_ENV
           ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts       
 
