@@ -21,25 +21,18 @@ interface LocationState {
 }
 
 const SignInfo = () => {
+  const navigate = useNavigate();
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [helperText, setHelperText] = useState('');
-  const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState | undefined;
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1184);
 
   // 오류 수정: location.state가 없을 때 기본값 처리 및 경고 메시지
   const token = location?.state?.token;
   const refreshToken = location?.state?.refreshToken;
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 1184);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -137,7 +130,7 @@ const SignInfo = () => {
         <div className={styles.divider} />
         <Space height='24px'/>
         <Row align='left'>
-          <label htmlFor="fileInput" className={styles.label}>프로필 사진<span className={styles.requiredMark}>*</span></label>
+          <label htmlFor="fileInput" className={styles.label}>프로필 사진</label>
           <Column>
             <div className={styles.imageContainer}>
               <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
@@ -182,7 +175,7 @@ const SignInfo = () => {
         </Row>
         <Space height='20px'/>
         <Row align='left'>
-          <label className={styles.label}>이메일<span className={styles.requiredMark}>*</span></label>
+          <label className={styles.label}>이메일</label>
           <Column>
             <input
               type="email"

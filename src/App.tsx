@@ -22,6 +22,7 @@ import StudentList from './pages/teacher/student-list/StudentList';
 import Login from './pages/user/login/Login';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
+import EditInfo from './pages/user/mypage/EditInfo';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import ScrollToTop from './components/utils/ScrollToTop';
 import PrivateRoute from 'components/utils/PrivateRoute';
@@ -223,6 +224,17 @@ const App: React.FC = () => {
               <PrivateRoute>
                 <Layout>
                   <MyPage />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/edit-info"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <EditInfo />
                 </Layout>
               </PrivateRoute>
             }

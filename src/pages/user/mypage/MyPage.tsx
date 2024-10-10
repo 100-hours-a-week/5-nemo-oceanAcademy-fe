@@ -1,4 +1,4 @@
-// #C-1: MyPage(/mypage) - 사용자 페이지 (프로필 수정, 내가 개설한 강의 조회, 강의 개설 페이지로 이동)
+// #C-1: MyPage(/mypage) - 사용자 페이지 (내가 개설한 강의 조회, 강의 개설 페이지로 이동)
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
@@ -182,6 +182,20 @@ const MyPage: React.FC = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    navigate('/');
+  };
+
+  const handleClassroom = () => {
+    navigate('/classroom');
+  }
+
+  const handleEdit = () => {
+    navigate('/edit-info');
+  }
+
   return (
     <Container>
       <Space height={"48px"} />
@@ -189,14 +203,16 @@ const MyPage: React.FC = () => {
         <div className={styles.user}>
           <Row align={"fill"}>
             <h3>강좌 관리 by {nickname}</h3>
-            <img src={editImage} alt="Edit Button" />    
+            <img src={editImage} className={styles.editIcon} onClick={handleEdit} alt="Edit Button" /> 
           </Row>
-
           <Space height={"32px"} />
           <button className={styles.myClassesButton}>
             내가 개설한 강의
           </button>
-          <button className={styles.logoutButton}>
+          <button className={styles.myClassroomButton} onClick={handleClassroom}>
+            내가 수강 중인 강의
+          </button>
+          <button className={styles.logoutButton} onClick={handleLogout}>
             로그아웃
           </button>
         </div>
