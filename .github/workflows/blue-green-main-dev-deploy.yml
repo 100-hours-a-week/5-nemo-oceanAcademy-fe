@@ -78,7 +78,7 @@ jobs:
             exit 1
           fi
           
-          echo "SERVER_HOST=SERVER_HOST"
+          echo "SERVER_HOST=$SERVER_HOST"
           ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
 
       - name: 타겟 그룹 선택 및 포트 설정
