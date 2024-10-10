@@ -7,8 +7,8 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface ModalProps {
   title: string;
-  content: string;
-  leftButtonText: string;  // cancel 시 실행될 내용 (x 아이콘으로만 표기 됨)
+  content: React.ReactNode; 
+  leftButtonText?: string;  // cancel 시 실행될 내용 (x 아이콘으로만 표기 됨)
   rightButtonText: string; // confirm 시 실행될 내용
   onLeftButtonClick?: () => void;  // cancel 액션
   onRightButtonClick?: () => void;  // confirm 액션

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import EmptyContent from 'components/empty-content/EmptyContent';
+import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './Classroom.module.css';
@@ -186,8 +187,15 @@ const Classroom: React.FC = () => {
     navigate('/edit-info');
   }
 
+  const breadcrumbItems = [
+    { label: '홈', link: '/' },
+    { label: '내 강의실', link: '/mypage' },
+    { label: '내가 수강 중인 강의', link: '/classroom' }
+  ];
+
   return (
     <Container>
+      <Breadcrumb items={breadcrumbItems} />
       <Space height={"40px"} />
       <section className={styles.filterSection}>
         <div className={styles.categoryList}>

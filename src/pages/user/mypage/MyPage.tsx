@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
+import Modal from 'components/modal/Modal';
 import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import LectureCard from '../../../components/lecture-card/LectureCard';
 import EmptyContent from '../../../components/empty-content/EmptyContent';
@@ -41,6 +42,8 @@ const MyPage: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const token = localStorage.getItem('accessToken');
 
   const getProfileImage = (nickname: string): string => {
@@ -174,6 +177,8 @@ const MyPage: React.FC = () => {
       console.error('Error deleting lecture:', error);
       alert('강의 삭제에 실패했습니다. 다시 시도해 주세요.');
     }
+    console.log(`강의 ${classId} 삭제`);
+    setShowDeleteModal(false);
   };
 
   const handleLogout = () => {
@@ -251,7 +256,14 @@ const MyPage: React.FC = () => {
 
                     <div className={styles.buttonContainer}>
                       <button className={styles.editButton} onClick={handleEditClick(lecture.classId)}>수정</button>
-                      <button className={styles.deleteButton} onClick={() => handleLectureDelete(lecture.classId)}>삭제</button>
+                      <button 
+                        className={styles.deleteButton}
+                        onClick={() => {
+                          setSelectedClassId(lecture.classId);
+                          setShowDeleteModal(true);
+                        }}>
+                          삭제
+                        </button>
                     </div>
                   </div>
                 ))}
@@ -261,6 +273,26 @@ const MyPage: React.FC = () => {
             {isLoading && <p>Loading more lectures...</p>}
         </div>
       </Row>
+      {showDeleteModal && (
+        <Modal
+          title="강의를 삭제하시겠습니까?"
+          content={(
+            <>
+              삭제한 강의는 복구할 수 없습니다. <br />
+              그래도 삭제하시겠습니까?
+            </>
+          )}
+          rightButtonText="강의 삭제"
+          onRightButtonClick={() => {
+            if (selectedClassId !== null) {
+              handleLectureDelete(selectedClassId);
+            } else {
+              console.error('강의를 삭제할 수 없습니다: classId가 null입니다.');
+            }
+          }}
+          onLeftButtonClick={() => setShowDeleteModal(false)}
+        />
+      )}
     </Container>
   );
 };

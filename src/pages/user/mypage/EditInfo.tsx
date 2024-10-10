@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './EditInfo.module.css';
+import Modal from 'components/modal/Modal';
 import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import WideButton from '../../../components/wide-button/WideButton';
 import { Container, Space, Row, Column } from '../.\./../styles/GlobalStyles';
@@ -30,8 +31,6 @@ const EditInfo: React.FC = () => {
     const [initialNickname, setInitialNickname] = useState('');
     const [initialEmail, setInitialEmail] = useState('');
     const [initialProfilePic, setInitialProfilePic] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const [isButtonActive, setIsButtonActive] = useState(false);
@@ -301,19 +300,28 @@ const EditInfo: React.FC = () => {
                         />
                     </Column>
                     </Row>
-                    <Space height='64px'/>
+                    <Space height='48px'/>
                     <WideButton 
                     text="저장" 
                     onClick={handleSaveClick}
                     />
                     <Space height={"24px"} />
-                    <button className={styles.quitButton} onClick={confirmDeleteAccount}>
+                    <button className={styles.quitButton} onClick={() => setShowDeleteModal(true)}>
                         회원탈퇴
                     </button>
                     <Space height={"48px"} />
                 </Column>
             </section>
         </Row>
+        {showDeleteModal && (
+          <Modal
+            title="회원 탈퇴 하시겠습니까?"
+            content="삭제한 계정은 복구할 수 없습니다. 그래도 탈퇴하시겠습니까?"
+            rightButtonText="회원 탈퇴"
+            onRightButtonClick={confirmDeleteAccount}
+            onLeftButtonClick={() => setShowDeleteModal(false)}
+          />
+        )}
       </div>
     )
 };
