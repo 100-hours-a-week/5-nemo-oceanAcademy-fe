@@ -140,6 +140,7 @@ jobs:
           script: |
             docker stop nemo-fe-green || true
             docker rm nemo-fe-green || true
+          debug: true  # 디버그 모드 활성화
 
       - name: 새로운 Docker 컨테이너 배포
         uses: appleboy/ssh-action@v0.1.6
