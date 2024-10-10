@@ -62,18 +62,24 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
+
           # 환경에 따라 호스트 선택
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             SERVER_HOST="${{ secrets.SERVER_HOST }}"
           elif [[ "${{ github.ref }}" == "refs/heads/wideview-deploy" ]]; then
             SERVER_HOST="${{ secrets.DEV_SERVER_HOST }}"
           fi
-          
-          echo "Using server: $SERVER_HOST"
+
+          # 서버 호스트 값 출력 (디버깅용)
+          echo "SERVER_HOST is set to: $SERVER_HOST"
+
+          if [ -z "$SERVER_HOST" ]; then
+            echo "Error: SERVER_HOST is not set!"
+            exit 1
+          fi
+
           echo "SERVER_HOST=$SERVER_HOST" >> $GITHUB_ENV
-          
-          ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
 
       - name: 타겟 그룹 선택 및 포트 설정
         run: |
