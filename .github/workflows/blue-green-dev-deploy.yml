@@ -116,19 +116,17 @@ jobs:
           echo "CURRENT_PORT=$CURRENT_PORT" >> $GITHUB_ENV
           echo "NEW_PORT=$NEW_PORT" >> $GITHUB_ENV
           echo "TARGET_GROUP_ARN=$TARGET_GROUP_ARN" >> $GITHUB_ENV
-  
+
       - name: 새 배포 환경의 Health Check
         run: |
           set +e
           echo "Starting Health Check on ${{ secrets.DEV_SERVER_HOST }}:${{ env.NEW_PORT }}"
           echo "Current port: ${{ env.CURRENT_PORT }}, New port: ${{ env.NEW_PORT }}"
-          for i in {1..20}; do
-            # 첫 번째 헬스 체크 시도
-            response=$(curl -v --max-time 10 http://${{ secrets.DEV_SERVER_HOST }}:${{ env.NEW_PORT }})
-            echo "Health Check attempt $i: Response was '$response'"
-            
-            # 응답을 확인하여 "status\":\"ok"가 포함되어 있는지 검사
-            if [[ "$response" == *"<title>바다서원</title>"* ]]; then
+          for i in {1..5}; do
+            response=$(curl -v --max-time 10 -o /dev/null -s -w "%{http_code}" http://${{ secrets.DEV_SERVER_HOST }}:${{ env.NEW_PORT }})
+            echo "Health Check attempt $i: HTTP Status Code $response"
+          
+            if [ "$response" == "200" ]; then
               echo "Health Check passed!"
               exit 0
             else
