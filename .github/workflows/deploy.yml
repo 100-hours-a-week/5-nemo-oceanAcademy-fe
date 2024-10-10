@@ -1,9 +1,10 @@
 name: 도커 CI/CD 파이프라인
 
-# on:
-#   push:
-#     branches:
-#       - main
+#on:
+#  push:
+#    branches:
+#      - wideview-deploy
+#      - wideview
 
 jobs:
   build_and_push:
@@ -31,7 +32,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: judykimsohui/nemo-fe:latest
+          tags: judykimsohui/nemo-dev-fe:latest
 
   deploy:
     needs: build_and_push
@@ -43,12 +44,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.DEV_SERVER_HOST }} >> ~/.ssh/known_hosts
 
       - name: 서버에 SSH 접속 및 배포
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -62,17 +63,17 @@ jobs:
             echo "${{ secrets.ENV_FILE }}" | sudo tee /app/config/.env
 
             # Docker 이미지 최신 버전 가져오기
-            docker pull judykimsohui/nemo-fe:latest
+            docker pull judykimsohui/nemo-dev-fe:latest
 
-            # 이전에 실행 중인 nemo-fe 컨테이너 중지 및 제거
-            docker stop nemo-fe || true
-            docker rm nemo-fe || true
+            # 이전에 실행 중인 nemo-dev-fe 컨테이너 중지 및 제거
+            docker stop nemo-dev-fe || true
+            docker rm nemo-dev-fe || true
 
             # 새로운 Docker 컨테이너 실행
-            docker run -d --name nemo-fe -p 3000:3000 \
+            docker run -d --name nemo-dev-fe -p 4000:4000 \
               --env-file /app/config/.env \
-              judykimsohui/nemo-fe:latest
+              judykimsohui/nemo-dev-fe:latest
 
             # 컨테이너 상태 확인 및 로그 출력
             docker ps -a
-            docker logs nemo-fe || echo "컨테이너 로그가 없습니다."
+            docker logs nemo-dev-fe || echo "컨테이너 로그가 없습니다."
