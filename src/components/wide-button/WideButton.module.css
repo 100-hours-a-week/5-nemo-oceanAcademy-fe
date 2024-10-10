@@ -1,18 +1,14 @@
 .wideButton {
-  width: 370px;
-  height: 45px;
+  width: 100%;
+  height: 44px;
   background-color: var(--blue-color);
   color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 4px;
   font-size: 16px;
   font-weight: bold;
-  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .wideButton:disabled {
@@ -26,13 +22,4 @@
 
 .wideButton:hover {
   background-color: var(--blue-hover-color);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.fixed {
-  position: fixed;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
 }

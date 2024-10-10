@@ -1,13 +1,12 @@
 .modal {
-  width: 300px;
-  height: 170px;
+  width: 344px;
+  height: 196px;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 28px 32px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
   position: fixed;
   top: 50%;
@@ -27,17 +26,17 @@
 }
 
 .title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
+  color: black;
   margin: 0;
-  color: #333;
 }
   
 .content {
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
-  color: #555;
-  margin: 10px 0;
+  margin: 4px 0;
+  color: black;
 }
   
 .buttonContainer {
@@ -68,4 +67,27 @@
   border: 1px solid var(--primary-color);
   border-radius: 5px;
   cursor: pointer;
+}
+
+.cancelButton{
+  width: 100%;
+  cursor: 'pointer';
+  color: #555555;
+  font-size: 18px;
+  background-color: transparent;
+  display: flex;
+  justify-content: flex-end; 
+}
+
+.confirmButton{
+  width: 280px;
+  height: 44px;
+  color: white;
+  background-color: var(--button-bg-color, #2A62F2);
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

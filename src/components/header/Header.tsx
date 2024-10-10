@@ -7,15 +7,17 @@ import axios from 'axios';
 import endpoints from '../../api/endpoints';
 
 // image import
-import profileDefault1 from '../../assets/images/profile/jellyfish.png';
-import profileDefault2 from '../../assets/images/profile/whale.png';
-import profileDefault3 from '../../assets/images/profile/crab.png';
 import backIcon from '../../assets/images/icon/back.png';
 import settingIcon from '../../assets/images/icon/setting.png';
 import outIcon from '../../assets/images/icon/out.png';
 import closeIcon from '../../assets/images/icon/close.png';
+import profile1 from '../../assets/images/profile/crab.png';
+import profile2 from '../../assets/images/profile/jellyfish.png';
+import profile3 from '../../assets/images/profile/seahorse.png';
+import profile4 from '../../assets/images/profile/turtle.png';
+import profile5 from '../../assets/images/profile/whale.png';
 
-const profileImages = [profileDefault1, profileDefault2, profileDefault3];
+const profileImages = [ profile1, profile2, profile3, profile4, profile5 ];
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -201,66 +203,55 @@ const Header: React.FC = () => {
     ) {
       return null;
     }
-    if (location.pathname === '/mypage') {
+    if (!isLoggedIn) {
       return (
-        <>
-          <img
-            src={settingIcon}
-            alt="설정"
-            className={styles.icon}
-            onClick={handleSettingClick}
-          />
-          {showDropdown && (
-            <div className={styles.dropdown}>
-              <div onClick={handleLogout}>로그아웃</div>
-              <div onClick={handleDeleteAccount}>회원탈퇴</div>
-            </div>
-          )}
-        </>
-      );
-    } else if (!isLoggedIn) {
-      return (
-        <div className={styles.loginButton} onClick={handleLogin}>
+        <button className={styles.loginButton} onClick={handleLogin}>
           로그인
-        </div>
+        </button>
       );
     } else if (
       location.pathname === '/' ||
       location.pathname === '/list' ||
       location.pathname === '/live-list' ||
       location.pathname === '/classroom' ||
+      location.pathname === '/mypage' || 
       location.pathname.includes('/lecture/open') ||
       location.pathname.includes('/lecture/info') ||
       location.pathname.includes('/dashboard') ||
       location.pathname.includes('/lecture/students')
     ) {
       return (
-        <img
-          src={profileImage}
-          alt="프로필"
-          className={styles.icon}
-          onClick={handleProfileClick}
-          onError={(e) => {
-            // 이미지 로드에 실패하면 기본 이미지로 교체
-            // (e.target as HTMLImageElement).src = getProfileImage(nickname);
-          }}
-        />
+        <div className={styles.classroom} onClick={handleProfileClick}>
+          <h5>내 강의실</h5>
+          <img
+            src={profileImage}
+            alt="프로필"
+            className={styles.profileImage}
+            onError={(e) => {
+              // 이미지 로드에 실패하면 기본 이미지로 교체
+              // (e.target as HTMLImageElement).src = getProfileImage(nickname);
+            }}
+          />
+        </div>
       );
     }
     return null;
   };
   
   return (
-    <header className={styles.header}>
-      <div className={styles.leftButton}>
-        {renderLeftButton()}
+    <div className={styles.container}>
+      <div className={styles.innerContainer}>
+        <div className={styles.leftButton}>
+          {renderLeftButton()}
+        </div>
+        <div onClick={handleLogoClick} className={styles.logo}>
+          바다서원
+        </div>
+        <div className={styles.rightButton}>
+          {renderRightButton()}
+        </div>
       </div>
-      <div onClick={handleLogoClick} className={styles.logo}>
-        바다서원
-      </div>
-      <div className={styles.rightButton}>
-        {renderRightButton()}
-      </div>
+      <div className={styles.divider} />
       {showModal && (
         <Modal
           title="강의를 나가시겠습니까?"
@@ -282,7 +273,7 @@ const Header: React.FC = () => {
           onRightButtonClick={cancelDeleteAccount}
         />
       )}
-    </header>
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
 import styles from './Login.module.css';
-import { Empty } from '../../../styles/GlobalStyles';
+import { Space } from '../../../styles/GlobalStyles';
 
 const Login: React.FC = () => {
     const [isKakaoLoaded, setIsKakaoLoaded] = useState(false); // SDK 로드 상태 추적
@@ -71,14 +71,16 @@ const Login: React.FC = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>로그인</h1>
+            <Space height="32px" />
             <button className={styles.kakaoButton} onClick={handleKakaoLogin} disabled={!isKakaoLoaded}>
                 <img src="/kakao_icon.svg" alt="Kakao Icon" className={styles.icon} />
                 카카오로 로그인
             </button>
+            <Space height="12px" />
             <button className={styles.alternativeButton} onClick={handleAltClick}>
                 다른 방법으로 로그인
             </button>
-            <Empty height="80px" />
+            <Space height="120px" />
         </div>
     );
 };

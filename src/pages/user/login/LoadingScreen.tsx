@@ -1,24 +1,33 @@
 // 콜백 로딩 중 화면
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Empty } from '../../../styles/GlobalStyles';
+import { Space } from '../../../styles/GlobalStyles';
 
 const LoadingScreen: React.FC = () => {
   return (
     <LoaderContainer>
+      <Emoji>
+        🪼 🪼 🪼
+      </Emoji>
+
+      <Space height={"30px"} />
+    
       <LoadingText>
-        🪼🪼 <br />
-        <br />
-        바다서원으로 <br />
-        이동 중입니다 <br />
-        <br />
+        바다서원으로 이동 중 . . .
       </LoadingText>
+
+      {/*
+      <Space height={"30px"} />
       <Loader />
-      <LoadingText>
-        <br />
-        🐙🐙
-      </LoadingText>
-      <Empty height="120px" />
+      */}
+      
+      <Space height={"40px"} />
+
+      <Emoji>
+        🐟 🐟 🐟
+      </Emoji>
+      
+      <Space height="100px" />
     </LoaderContainer>
   );
 };
@@ -35,30 +44,50 @@ const spin = keyframes`
   }
 `;
 
+const float = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
+
 const LoaderContainer = styled.div`
+  margin: 0 auto;
   width: 400px;
-  height: 100vh;
+  height: calc(100vh - 66px);
   background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media (min-width: 1184px) {
+    margin: 0 auto;
+    width: 1184px;
+  }
 `;
 
 const Loader = styled.div`
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
+  border: 6px solid var(--blue-color);
+  border-top: 6px solid var(--blue-bgr-color);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   animation: ${spin} 1s linear infinite;
-  margin-bottom: 20px;
 `;
 
 const LoadingText = styled.p`
-  margin-top: 20px;
   font-size: 18px;
   font-weight: bold;
   color: #555;
   text-align: center;
+`;
+
+const Emoji = styled.h1`
+  animation: ${float} 2s ease-in-out infinite;
 `;

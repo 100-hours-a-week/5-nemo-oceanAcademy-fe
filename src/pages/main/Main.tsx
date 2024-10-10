@@ -2,40 +2,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Advertisement from '../../components/advertisement/Advertisement';
+import LiveCard from '../../components/lecture-card/LiveCard';
 import LectureCard from '../../components/lecture-card/LectureCard';
-import Navigation from '../../components/navigation/Navigation';
+import Slider from 'react-slick';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';
 import styles from './Main.module.css';
-import { Empty } from '../../styles/GlobalStyles';
+import { Container, Row, Space, Divider } from '../../styles/GlobalStyles';
 
 // import images
-import emptyImage from '../../assets/images/utils/empty.png';
-import feedbackImage from '../../assets/images/ad/feedback.png';
-import image1 from '../../assets/images/banner/image1.png';
-import image2 from '../../assets/images/banner/image2.jpeg';
-import image3 from '../../assets/images/banner/image3.png';
-import image4 from '../../assets/images/banner/image4.png';
-import image5 from '../../assets/images/banner/image5.jpeg';
-import image6 from '../../assets/images/banner/image6.png';
-import image7 from '../../assets/images/banner/image7.png';
-import image8 from '../../assets/images/banner/image8.jpeg';
-import image9 from '../../assets/images/banner/image9.png';
-import image10 from '../../assets/images/banner/image10.jpeg';
-
-// 기본 이미지 배열
-const defaultImages = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-];
+import whiteArrow from '../../assets/images/icon/arrow_w.svg';
+import blackArrow from '../../assets/images/icon/arrow_bl.svg';
 
 interface Lecture {
   classId: number;
@@ -49,11 +26,20 @@ const Main: React.FC = () => {
   const navigate = useNavigate();
   const [liveClasses, setLiveClasses] = useState<Lecture[]>([]);
   const [topTenClasses, setTopTenClasses] = useState<Lecture[]>([]); 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(0); // 페이지 번호
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
+  const [page, setPage] = useState(0);
+  const isBlackBackground = true;
+
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />
+  };
   
   useEffect(() => {
     axios.get(`${endpoints.classes}?target=live?page=${page}`)
@@ -61,11 +47,11 @@ const Main: React.FC = () => {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          bannerImage: item.banner_image_path,
           instructor: item.instructor,
           category: item.category
         }));
-        
+        console.log(endpoints.classes);
         setLiveClasses(classes);
       })
       .catch(error => {
@@ -81,7 +67,7 @@ const Main: React.FC = () => {
         const classes = response.data.data.map((item: any) => ({
           classId: item.id,
           name: item.name,
-          bannerImage: item.banner_image_path || defaultImages[item.id % 10],
+          bannerImage: item.banner_image_path,
           instructor: item.instructor,
           category: item.category
         }));
@@ -100,64 +86,102 @@ const Main: React.FC = () => {
     window.open('https://forms.gle/vN3RDGNmM1okqRfq7', '_blank');
   }
 
+  const moveList = () => {
+    navigate('/list');
+  }
+
+  const moveLive = () => {
+    navigate('/live-list');
+  }
+
   return (
-      <div className={styles.container}>
-        <section className={styles.adSection}>
-          <div className={styles.feedback} onClick={handleFeedbackClick}>
-            <img src={feedbackImage} alt="move to google form" />
+      <Container isBlackBackground={isBlackBackground}>
+        <Advertisement />
+
+        <section className={styles.top10Section}>
+
+          <div className={styles.top10Content}>
+            <Row align={"fill"} className={styles.top10Slides}>
+              <h1 className={styles.sectionTitle}>
+                수강생이 많은 강의 TOP 10
+              </h1>
+
+              <div className={styles.link} onClick={moveList}>
+                <p>전체 강의 보기</p>
+                <img src={whiteArrow} />
+              </div>
+            </Row>
+            <Space height={"24px"} />
+
+            <div className={styles.carousel}>
+              <Slider {...sliderSettings}>
+                {topTenClasses.map((lecture, index) => (
+                  <div key={lecture.classId} className={styles.lectureCardWrapper}>
+                    <div className={styles.rankNumber}>{String(index + 1).padStart(2, '0')}</div>
+                    <LiveCard
+                      classId={lecture.classId}
+                      bannerImage={lecture.bannerImage}
+                      name={lecture.name}
+                      instructor={lecture.instructor}
+                      category={lecture.category}
+                      rank={index + 1}
+                    />
+                  </div>
+                ))}
+              </Slider>
+            </div>
+
           </div>
         </section>
 
+        <Divider />
+
         <section className={styles.liveSection}>
-          <Empty height="10px" />
-          <div className={styles.titleSection}>
+          <Space height={"40px"} />
+          <Row align={"fill"}>
             <h1 className={styles.sectionTitle}>
               🔴 Live: 모두가 주목하는 실시간 라이브 강의
             </h1>
-            <span className={styles.link} onClick={() => navigate('/live-list')}>
-              라이브 중인 강의 보러 가기 &gt;
-            </span>
-          </div>
+            
+            <div className={styles.link} onClick={moveLive}>
+              <p>현재 라이브 중인 강의 보기</p>
+              <img src={whiteArrow} />
+            </div>
+          </Row>
+          <Space height={"24px"} />
           <div className={styles.lectureGrid}>
-            {liveClasses.slice(0, 4).map((lecture) => (
-              <LectureCard 
+            {liveClasses.map((lecture) => (
+              <LectureCard
                 key={lecture.classId}
                 classId={lecture.classId}
                 bannerImage={lecture.bannerImage}
                 name={lecture.name}
-                instructor={lecture.instructor} 
-                category={lecture.category} 
+                instructor={lecture.instructor}
+                category={lecture.category} totalStudents={0}
               />
             ))}
           </div>
+          <Space height={"40px"} />
         </section>
+      </Container>
+  );
+};
 
-        <Empty />
+const NextArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <div className={styles.nextArrow} onClick={onClick}>
+      <img src={blackArrow} className={styles.sliderNext} />
+    </div>
+  );
+};
 
-        <section className={styles.toptenSection}>
-          <div className={styles.titleSection}>
-            <h1 className={styles.sectionTitle}>
-              📌 수강생이 많은 강의 Top10
-            </h1>
-            <span className={styles.link} onClick={() => navigate('/list')}>
-              전체 강의 보러 가기 &gt;
-            </span>
-          </div>
-          <div className={styles.lectureGrid}>
-            {topTenClasses.map((lecture) => (
-              <LectureCard 
-                key={lecture.classId} 
-                classId={lecture.classId}
-                bannerImage={lecture.bannerImage} 
-                name={lecture.name} 
-                instructor={lecture.instructor} 
-                category={lecture.category} 
-              />
-            ))}
-          </div>
-        </section>
-        <Navigation />
-      </div>
+const PrevArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <div className={styles.prevArrow} onClick={onClick}>
+      <img src={blackArrow} className={styles.sliderPrev} />
+    </div>
   );
 };
 

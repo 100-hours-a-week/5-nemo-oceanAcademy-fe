@@ -1,25 +1,30 @@
-body {
+html, body, #root {
   margin: 0;
-  background-color: black;
-  /* background-color: #445ca5; 진한 색 */
-  /* background-color: #FCFAC5; 미아 픽 */ 
-  /* background-color: #c1d1ee; 주디 픽 */
-  /* 이미지 삽입 시 다음 스타일 참고: */
-  /*
-  background-image: url('/src/assets/images/background1.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  */
-  display: flex;
-  justify-content: center;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
-.App {
-  width: 100%;
-  min-height: 100vh;
+body {
+  margin: 0;
+  padding: 0;
   background-color: white;
-  position: relative;
+  display: flex;
+  justify-content: center;
   text-align: center;
+  overflow-x: hidden;
 }
+
+@media (min-width: 1184px) {
+  body {
+    margin: 0 auto;
+    background-color: white;
+  }
+}
+
+.black-background {
+  background-color: #141516;
+  color: white;
+}
+
+.App {}

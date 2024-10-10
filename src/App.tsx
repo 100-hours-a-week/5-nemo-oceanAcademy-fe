@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import ReactGA from "react-ga4";
 import * as Sentry from '@sentry/react';
 import './App.css';
-import ScrollToTop from './components/ScrollToTop';
 import Header from './components/header/Header';
 import Main from './pages/main/Main';
 import Enrollment from './pages/lecture/enrollment/Enrollment';
@@ -22,9 +21,11 @@ import StudentList from './pages/teacher/student-list/StudentList';
 import Login from './pages/user/login/Login';
 import KakaoCallback from 'pages/user/login/KakaoCallback';
 import MyPage from './pages/user/mypage/MyPage';
+import EditInfo from './pages/user/mypage/EditInfo';
 import SignInfo from './pages/user/sign-info/SignInfo';
-import PrivateRoute from 'components/PrivateRoute';
-import NotFound from 'components/NotFound';
+import ScrollToTop from './components/utils/ScrollToTop';
+import PrivateRoute from 'components/utils/PrivateRoute';
+import NotFound from './components/utils/NotFound';
 
 const Analytics = () => {
   const location = useLocation();
@@ -42,6 +43,27 @@ const Analytics = () => {
   return null;
 };
 
+const BackgroundManager = () => {
+  const location = useLocation();
+  useEffect(() => {
+    const body = document.body;
+
+    if (
+      location.pathname === '/' || 
+      location.pathname === '/list' || 
+      location.pathname === '/live-list' ||
+      location.pathname.startsWith('/live/teacher') || 
+      location.pathname.startsWith('/live/student')
+    ) {
+      body.classList.add('black-background');
+    } else {
+      body.classList.remove('black-background');
+    }
+  }, [location]);
+
+  return null;
+};
+
 const App: React.FC = () => {
   return (
     <Sentry.ErrorBoundary 
@@ -52,6 +74,7 @@ const App: React.FC = () => {
     >
       <Router>
         <Analytics />
+        <BackgroundManager />
         <Header />
         <ScrollToTop />
         <Routes>
@@ -61,7 +84,6 @@ const App: React.FC = () => {
           <Route path="/sign-info" element={<SignInfo />} />
           <Route path="/list" element={<LectureList />} />
           <Route path="/live-list" element={<LiveList />} />
-          <Route path="/test-sign" element={<SignInfo />} />
 
           {/* 이하 로그인 후 접근 가능 */}
           <Route
@@ -106,7 +128,7 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           />
-          
+
           {/* Student Routes */}
           <Route
             path="/classroom"
@@ -162,7 +184,7 @@ const App: React.FC = () => {
             path="/lecture/open"
             element={
               <PrivateRoute>
-                <LectureOpen />
+                 <LectureOpen />
               </PrivateRoute>
             }
           />
@@ -174,13 +196,22 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           />
-          
+
           {/* User Routes */}
           <Route
             path="/mypage"
             element={
               <PrivateRoute>
                 <MyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/edit-info"
+            element={
+              <PrivateRoute>
+                <EditInfo />
               </PrivateRoute>
             }
           />

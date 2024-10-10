@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../components/button/Button';
-import Navigation from '../../../components/navigation/Navigation';
 import styles from './Enrollment.module.css';
 
 const Enrollment: React.FC = () => {
@@ -43,7 +42,6 @@ const Enrollment: React.FC = () => {
             <button className={styles.navButton} onClick={handleButtonClick}>
                 강의실 바로 가기
             </button>
-            <Navigation />
         </div>
     );
 };

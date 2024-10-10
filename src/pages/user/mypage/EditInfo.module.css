@@ -1,0 +1,150 @@
+.container {
+    margin: 0 auto;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    background-color: white;
+}
+
+@media (min-width: 1184px) {
+    .container {
+        width: 1184px;       
+    }
+}
+
+.user {
+    width: 236px;
+}
+
+.myClassesButton, .myClassroomButton, .logoutButton {
+    width: 236px;
+    height: 59px;
+    margin-bottom: 12px;
+    padding-left: 24px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: white;
+    border: 1px solid #E5E5E5;
+    &:hover {
+      color: white;
+      background-color: black;
+    }    
+}
+
+.profile {
+    margin-left: 64px;
+}
+
+.quitButton {
+    font-size: 12px;
+    width: 100%;
+    background: none;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 32px;
+}
+  
+.divider {
+    width: 100%;
+    height: 2px;
+    background-color: var(--divider-color);
+}
+
+.label {
+    width: 118px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 5px;
+    text-align: left;
+}
+  
+.imageContainer {
+    width: 300px;
+}
+.uploadImageButton {
+    margin-bottom: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.previewImage {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.buttonContainer {
+    display: flex;
+    align-items: center;
+}
+.uploadButton {
+    padding: 8px 16px;
+    width: 88px;
+    height: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: white;
+    color: var(--blue-color);
+    border: 1.5px solid var(--blue-color);
+    border-radius: 4px;
+}
+.deleteButton {
+    padding: 8px 16px;
+    width: 60px;
+    height: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: white;
+    color: black;
+    border: 1.5px solid black;
+    border-radius: 4px;
+    margin-left: 12px;
+}
+.bulletList {
+    font-size: 12px;
+    color: var(--profile-txt-color);
+    margin-top: 20px;
+    text-align: left;
+    list-style-type: none;
+}
+.listItem {
+    margin-bottom: 2px;
+}
+  
+.inputContainer {
+    border: 1px solid var(--blue-color);
+    display: flex;
+    flex-direction: row;
+}
+  
+.inputField {
+    width: 100%;
+    height: 40px;
+    padding-left: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--placeholder);
+    border: 1px solid var(--stroke);
+    border-radius: 4px;
+}
+.requiredMark {
+    color: var(--blue-color);
+    margin-left: 3px;
+}
+.helperText {
+    margin-top: 6px;
+    margin-left: 8px;
+    color: var(--red-color);
+    font-size: 10px;
+}

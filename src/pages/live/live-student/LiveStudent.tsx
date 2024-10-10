@@ -18,6 +18,10 @@ import share from '../../../assets/images/icon/share.png';
 import audioOn from '../../../assets/images/icon/audio.png';
 import audioOff from '../../../assets/images/icon/no_audio.png';
 
+// icon
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
 const profileImages = [profileDefault1, profileDefault2, profileDefault3];
 
 interface Message {
@@ -58,6 +62,9 @@ const LiveStudent: React.FC = () => {
     const index = Math.abs(hash % profileImages.length);
     return profileImages[index];
   };
+
+   // Wide View 관련
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1184);
 
   const setConnectedState = (connected: boolean) => {
     setConnected(connected);
@@ -316,15 +323,18 @@ const LiveStudent: React.FC = () => {
   const handleToggleAudio = () => {};
 
   return (
-    <div className={styles.container}>
+    <>
+      {isMobile ? (
+      // 모바일 UI
+    <Container>
       {showModal && (
         <Modal 
-          title="강의를 나가시겠습니까?"
-          content="아직 강의 중이에요!"
-          leftButtonText="나가기"
-          rightButtonText="취소"
-          onLeftButtonClick={handleModalLeave}
-          onRightButtonClick={handleModalCancel}
+          title="강의를 종료하시겠습니까?"
+          content="강의가 끝났나요?"
+          rightButtonText="강의 나가기"
+          onLeftButtonClick={handleModalCancel}
+          onRightButtonClick={handleModalLeave}
+          color={'var(--red-color)'}
         />
       )}
       <div className={styles.videoSection}>
@@ -412,7 +422,103 @@ const LiveStudent: React.FC = () => {
           </button>
         </div>
       </div>
-    </div>
+    </Container>
+    ) : (
+      // ******************************************** //
+      // 데스크톱 UI
+      <div className={styles.desktopContainer}>
+        {showModal && (
+          <Modal 
+            title="강의를 종료하시겠습니까?"
+            content="강의가 끝났나요?"
+            rightButtonText="강의 나가기"
+            onLeftButtonClick={handleModalCancel}
+            onRightButtonClick={handleModalLeave}
+            color={'var(--red-color)'}
+          />
+        )}
+        <div className={styles.desktopVideoSection}>
+          <div className={styles.desktopScreenShare}>
+            <video 
+              ref={screenShareVideoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              style={{ objectFit: isScreenClicked ? 'cover' : 'contain' }}
+            />
+          </div>
+          <div className={styles.desktopSmallVideo}>
+            <video 
+              ref={webcamVideoRef} 
+              autoPlay
+              playsInline
+              muted 
+            />
+          </div>
+        </div>
+
+        <div className={styles.desktopInfo}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.instructor}>{instructor}</p>
+        </div>
+
+        <div className={styles.desktopChatSection}>
+          <div className={styles.desktopChatWindow} ref={chatWindowRef}>
+          {messages.map((msg, index) => {
+              const isMyMessage = msg.nickname === userInfo?.nickname;
+              
+              return (
+                <div
+                key={index}
+                className={`${styles.desktopChat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
+                >
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatUserInfo}>
+                  {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
+                  {!isMyMessage && (
+                    <div className={styles.desktopProfContainer}>
+                      <img src={msg.profileImage} alt="프로필" className={styles.icon} />
+                    </div>
+                  )}
+                  <div className={styles.desktopChatInfo}>
+                      {!isMyMessage && <h5>{msg.nickname}</h5>}
+                      <p>{msg.time}</p>
+                    </div>
+                  </div>
+                  <div className={`${styles.desktopChatBubble} ${isMyMessage ? styles.desktopMyChatBubble : ''}`}>
+                      <p>{msg.message}</p>
+                    </div>
+                </div>
+              </div>);
+            })}
+          </div>
+          <div className={styles.desktopChatBackground}>
+            <div className={styles.desktopChatInput}>
+              <textarea
+                placeholder="채팅을 입력하세요."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                rows={1} // 기본 행의 높이 설정
+                style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+              />
+              <button 
+                onClick={sendMessage}
+                disabled={!connected}
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

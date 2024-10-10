@@ -1,4 +1,6 @@
-.container {
+/* Mobile ---------------------------------------------------- */
+
+.mobileContainer {
     padding: 20px;
 }
   
@@ -15,7 +17,16 @@
 }
 
 .inputField {
+  width: 100%;
   margin-bottom: 20px;
+}
+
+input:focus {
+  outline: 1px solid #007bff;
+}
+
+textarea:focus {
+  outline: 1px solid #007bff;
 }
   
 .label {
@@ -23,17 +34,46 @@
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
-  margin-left: 10px;
 }
   
 .required {
-  color: red;
+  color: #2A62F2;
 }
 
 .helperText {
   font-size: 12px;
-  color: #D13939;
+  color: #2A62F2;
   margin-top: 5px;
-  margin-left: 10px;
+  min-height: 16px;
 }
-  
+
+/* Desktop ---------------------------------------------------- */
+
+.desktopContainer {
+  width: 1184px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  justify-self: center;
+  justify-items: center;
+  text-align: left;
+}
+
+/* 홈 > 내 강의실 > 강의소개 ------------ */
+.desktopNavigator {
+  padding: 15px 20px;
+  color: #888888;
+  text-align: left;
+}
+
+/* 전체 화이트 박스 ------------ */
+.desktopBox {
+  display: flex;
+  width: 100%;
+  border-radius: 16px;
+  padding: 40px 40px 20px 40px;
+  justify-content: flex-start;
+  border: 1px solid #ccc;
+}

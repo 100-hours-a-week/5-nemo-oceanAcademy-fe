@@ -1,70 +1,90 @@
 .container {
-    margin: 10px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    position: relative;
+    width: 384px;
     cursor: pointer;
 }
 
-.container:hover {
-    background-color: #efefef;
-    border-radius: 5px;
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .banner {
-    width: 280px;
-    height: 150px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
+    border-radius: 8px;
 }
 
-.title {
-    font-size: 13px;
-    /* font-weight: bold; */
-    margin-top: 10px;
-    margin-bottom: 3px;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    text-align: center;
-}
-
-.details {
-    margin-top: 0;
-    font-size: 10px;
-    font-weight: 400;
-    color: #555;
-    margin-bottom: 5px;
-  }
-
-
-.cardContainer {
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    width: 320px;
-    margin-bottom: 20px;
-    text-align: left;
-}
-  
-.liveBox {
-    width: 350px;
-    height: 200px;
-    background-color: #B2B6D0;
+    justify-content: flex-end;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
     border-radius: 8px;
+}
+
+.topContainer {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.hotBadge {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--red-txt-color);
+    background-color: var(--red-bgr-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.category {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--blue-color);
+    background-color: var(--blue-bgr-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.bottomContainer {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 16px;
+}
+
+.rank {
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    margin-right: 12px;
+  }
+
+.infoContainer {
+    display: flex;
+    flex-direction: column;
     color: white;
 }
 
-.divider {
-    width: 280px;
-    height: 0.5px;
-    color: #707274;
-    margin-bottom: 10px;
+.title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.instructor {
+    font-size: 14px;
+    margin-top: 4px;
 }

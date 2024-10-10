@@ -1,11 +1,207 @@
-.container {
-  width: 400px;
-  height: calc(100vh - 65px);
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  align-items: center;
-  background-color: white;
+@media (min-width: 1184px) {
+  .container {
+    margin: 0 auto;
+    width: 1184px;
+  }
+
+  .desktopContainer {
+    margin: 0 auto;
+    width: 1184px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .desktopVideoSection {
+    position: relative;
+    width: 100%;
+  }
+
+  .desktopScreenShare {
+    width: 100%;
+    height: 666px;
+    background-color: #707274;
+  /*  background-color: #B2B6D0; */
+  }
+
+  .desktopScreenShare video {
+    width: 100%;
+    height: 100%;
+    /* 화면 터치하면 object-fit으로 바뀌는 거 */
+    /* object-fit: cover; */
+  }
+
+  .desktopSmallVideo{
+    width: 200px;
+    height: 112px;
+    background-color: #4A4B4D;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+  }
+
+  .desktopSmallVideo video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .desktopInfo {
+    text-align: left;
+    width: 100%;
+    margin: 24px 0 30px;
+    padding-left: 4px;
+    h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+    }
+    p {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+    }
+  }
+
+  .desktopChatSection{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .desktopChatWindow {
+    width: 1184px;
+    min-height: 518px;
+    background-color: #141516;
+    border-radius: 8px;
+    overflow-y: scroll;
+    padding: 32px 40px;
+    flex-grow: 1;
+    border:  #2D2D2D 1px solid;
+    max-height: calc(100vh - 930px); 
+    padding-bottom: 120px;
+  }
+
+  .desktopChat {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    color: white;
+  }
+  
+  .desktopProfContainer {
+    img {
+      width: 36px;
+      height: 36px;
+    }
+  }
+  
+  .chatUserInfo{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .desktopChatInfo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 4px;
+    h5 {
+      margin: 8px;
+      padding-bottom: 2px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    p {
+      font-size: 12px;
+      color: #888888;
+    }
+  }
+  
+  .desktopChatBubble {
+    padding: 6px 12px;
+    margin-left: 44px;
+    font-size: 12px;
+    background-color: #424242;
+    border-radius: 4px;
+    color:white;
+  }
+
+  .desktopChatBackground{
+    width: 1184px;
+    height: 120px;
+    display: flex;
+    position: fixed;
+    z-index: 999;
+    background-color: #141516;
+    bottom: 0px;
+    border:  #2D2D2D 1px solid;
+  }
+
+  .desktopChatInput {
+    width: 1022px;
+    height: 56px;
+    display: flex;
+    position: fixed;
+    bottom: 32px;
+    z-index: 1000;
+    margin: 0px 80px;
+    background-color: #2C2C2C;
+    border-radius: 4px;
+  }
+    
+  .desktopChatInput textarea {
+    flex: 1;
+    padding: 20px 16px;;
+    border-radius: 5px;
+    border: 0px;
+    background-color: #2C2C2C;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+  }
+    
+  .desktopChatInput button {
+    margin-left: 10px;
+    padding: 5px 20px 5px 10px;
+    border-radius: 5px;
+    background-color: #2C2C2C;
+    color: #888888;
+    border: none;
+    cursor: pointer;
+  }
+
+  .desktopControls {
+    padding: 5px 20px;
+    margin-top: 10px;
+    width: 100%;
+    height: 56px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 32px;
+  }
+
+  .desktopLeave{
+    background-color: #FF3333;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 6px 24px 8px 24px;
+    border: none;
+    border-radius: 4px;
+  }
+
+  .desktopMyChatBubble{
+    background-color: #FAFBFD;
+    color: black;
+    font-size: 14px;
+    margin-left: 0px;
+  }
 }
 
 .videoSection {
@@ -191,4 +387,8 @@
   background-color: var(--blue-color);
   color: white;
   font-weight: bold;
+}
+
+.myChat {
+  justify-content: flex-end;
 }
