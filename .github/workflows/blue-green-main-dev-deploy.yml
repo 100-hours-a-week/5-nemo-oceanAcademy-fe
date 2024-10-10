@@ -150,9 +150,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-            docker run -d --name nemo-fe-green -p ${{ env.$NEW_PORT }}:${{ env.$NEW_PORT }} \
+            docker run -d --name nemo-fe-green -p ${{ env.NEW_PORT }}:${{ env.NEW_PORT }} \
             --env-file /app/config/.env \
-            -e PORT=${{ env.$NEW_PORT }} \
+            -e PORT=${{ env.NEW_PORT }} \
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: 새 배포 환경의 Health Check
