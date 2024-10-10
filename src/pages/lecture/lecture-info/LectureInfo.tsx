@@ -6,6 +6,7 @@ import endpoints from '../../../api/endpoints';
 import styles from './LectureInfo.module.css';
 import { Container, Row, Column, Space } from '../../../styles/GlobalStyles';
 import Button from '../../../components/button/Button';
+import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import DefaultInstructorImage from './InstructorImage.png';
 import DefaultLecturebannerImage from './LecturebannerImage.png';
 
@@ -135,40 +136,32 @@ const LectureInfo: React.FC = () => {
         return <Container>Loading...</Container>;
     }
 
+    const breadcrumbItems = [
+        { label: '홈', link: '/' },
+        { label: '내 강의실', link: '/mypage' },
+        { label: '강의 소개', link: '/lecture/info' }
+    ];
+
     return (
         <div>
             {isMobile ? (
                 // 모바일 UI
                 <div className={styles.mobileContainer}>
-
-                    {/* 강의 제목 */}
                     <h1 className={styles.title}>{lecture.name}</h1>
-
-                    {/* 강의 배너 이미지 */}
                     <div className={styles.banner} style={{ backgroundImage: `url(${lecture.banner_image_path || DefaultLecturebannerImage})` }}></div>
-
-                    {/* 강의 카테고리 */}
                     <div className={styles.category}>{lecture.category}</div>
-
-                    {/* 강의 목표 정보 */}
                     <div className={styles.infoSection}>
                         <h3 className={styles.infoTitle}>강의 목표</h3>
                         <p className={styles.infoContent}>{lecture.object || '강의 목표 정보 없음'}</p>
                     </div>
-
-                    {/* 강의 소개 */}
                     <div className={styles.infoSection}>
                         <h3 className={styles.infoTitle}>강의 소개</h3>
                         <p className={styles.infoContent}>{lecture.description || '강의 소개 정보 없음'}</p>
                     </div>
-
-                    {/* 강사 소개 */}
                     <div className={styles.infoSection}>
                         <h3 className={styles.infoTitle}>강사 소개</h3>
                         <p className={styles.infoContent}>{lecture.instructor_info || '강사 소개 정보 없음'}</p>
                     </div>
-
-                    {/* 사전 준비 사항 */}
                     <div className={styles.infoSection}>
                         <h3 className={styles.infoTitle}>사전 준비 사항</h3>
                         <p className={styles.infoContent}>{lecture.prerequisite || '사전 준비 사항 정보 없음'}</p>
@@ -195,6 +188,7 @@ const LectureInfo: React.FC = () => {
                 */}
 
                 <div className={styles.desktopContainer}>
+                    <Breadcrumb items={breadcrumbItems} />
                     <Space height={"40px"}/>
 
                     {/* 강의 배너이미지 */}

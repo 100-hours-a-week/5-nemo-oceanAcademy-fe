@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Advertisement from '../../components/advertisement/Advertisement';
+import LiveCard from '../../components/lecture-card/LiveCard';
 import LectureCard from '../../components/lecture-card/LectureCard';
 import Slider from 'react-slick';
 import axios from 'axios';
@@ -10,8 +11,6 @@ import styles from './Main.module.css';
 import { Container, Row, Space, Divider } from '../../styles/GlobalStyles';
 
 // import images
-import emptyImage from '../../assets/images/utils/empty.png';
-import feedbackImage from '../../assets/images/ad/feedback.png';
 import whiteArrow from '../../assets/images/icon/arrow_w.svg';
 import blackArrow from '../../assets/images/icon/arrow_bl.svg';
 
@@ -116,17 +115,18 @@ const Main: React.FC = () => {
 
             <div className={styles.carousel}>
               <Slider {...sliderSettings}>
-              {topTenClasses.map((lecture, index) => (
-                <div key={lecture.classId} className={styles.lectureCardWrapper}>
-                  <div className={styles.rankNumber}>{String(index + 1).padStart(2, '0')}</div>
-                  <LectureCard
-                    classId={lecture.classId}
-                    bannerImage={lecture.bannerImage}
-                    name={lecture.name}
-                    instructor={lecture.instructor}
-                    category={lecture.category} totalStudents={0}
-                  />
-                </div>
+                {topTenClasses.map((lecture, index) => (
+                  <div key={lecture.classId} className={styles.lectureCardWrapper}>
+                    <div className={styles.rankNumber}>{String(index + 1).padStart(2, '0')}</div>
+                    <LiveCard
+                      classId={lecture.classId}
+                      bannerImage={lecture.bannerImage}
+                      name={lecture.name}
+                      instructor={lecture.instructor}
+                      category={lecture.category}
+                      rank={index + 1}
+                    />
+                  </div>
                 ))}
               </Slider>
             </div>

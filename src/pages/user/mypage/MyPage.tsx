@@ -198,13 +198,12 @@ const MyPage: React.FC = () => {
   const breadcrumbItems = [
     { label: '홈', link: '/' },
     { label: '내 강의실', link: '/mypage' },
-    { label: '내가 수강 중인 강의', link: '/mypage' }
+    { label: '내가 개설한 강의', link: '/mypage' }
   ];
 
   return (
     <Container>
       <Breadcrumb items={breadcrumbItems} />
-
       <Space height={"48px"} />
       <Row>
         <div className={styles.user}>

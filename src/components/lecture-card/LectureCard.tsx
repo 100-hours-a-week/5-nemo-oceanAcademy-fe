@@ -1,8 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LectureCard.module.css';
-import axios from 'axios';
-import endpoints from '../../api/endpoints';
 
 // import image
 import image1 from '../../assets/images/banner/image1.png';
@@ -31,7 +29,6 @@ interface LectureCardProps {
 
 const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, instructor, totalStudents, category, onClick, isMyPage = false }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('accessToken'); 
 
   const handleClick = () => {
     if (onClick) {
@@ -43,27 +40,27 @@ const LectureCard: React.FC<LectureCardProps> = ({ classId, bannerImage, name, i
 
   const displayImage = bannerImage || defaultImages[classId % defaultImages.length];
 
-    return (
-      <div className={styles.container} onClick={handleClick}>
-        <div
-            className={styles.banner}
-            style={{ backgroundImage: `url(${displayImage})` }}
-        />
-        <div className={styles.info}>
-          <div className={styles.categoryContainer}>
-            <div className={styles.category}>
-              {category}
-            </div>
+  return (
+    <div className={styles.container} onClick={handleClick}>
+      <div
+          className={styles.banner}
+          style={{ backgroundImage: `url(${displayImage})` }}
+      />
+      <div className={styles.info}>
+        <div className={styles.categoryContainer}>
+          <div className={styles.category}>
+            {category}
           </div>
-          <h2 className={styles.title}>{name}</h2>
-          {instructor && <p className={styles.instructor}>{instructor}</p>}
-
-          {isMyPage && (
-           <p className={styles.instructor}>총 수강생: {totalStudents}명</p>
-          )}
         </div>
+        <h2 className={styles.title}>{name}</h2>
+        {instructor && <p className={styles.instructor}>{instructor}</p>}
+
+        {isMyPage && (
+          <p className={styles.instructor}>총 수강생: {totalStudents}명</p>
+        )}
       </div>
-    );
+    </div>
+  );
 };
 
 export default LectureCard;

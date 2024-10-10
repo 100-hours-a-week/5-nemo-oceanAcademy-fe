@@ -4,12 +4,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import ScheduleList from '../../../components/dashboard/ScheduleList';
 import StudentCount from '../../../components/dashboard/StudentCount';
 import Modal from '../../../components/modal/Modal';
-import WideButton from '../../../components/wide-button/WideButton';
+import Breadcrumb from 'components/breadcrumb/Breadcrumb';
 import styles from './DashboardTeacher.module.css';
 import ScheduleForm from 'components/dashboard/ScheduleForm';
 import axios from 'axios';
 import endpoints from '../../../api/endpoints';
-
 import { Container, Row, Column, Space } from '../../../styles/GlobalStyles';
 import Button from '../../../components/button/Button';
 
@@ -214,6 +213,12 @@ const DashboardTeacher: React.FC = () => {
     }
   };
 
+  const breadcrumbItems = [
+    { label: '홈', link: '/' },
+    { label: '내 강의실', link: '/mypage' },
+    { label: '내가 수강 중인 강의', link: '/mypage' }
+  ];
+
   return (
     <div className={styles.wrapper}>
       {isMobile ? (
@@ -308,6 +313,7 @@ const DashboardTeacher: React.FC = () => {
     */
       ) : (<div>
         <div className={styles.desktopContainer}>
+          <Breadcrumb items={breadcrumbItems} />
                 {dashboard && (
                   /* 강의 소개 */
                   <>

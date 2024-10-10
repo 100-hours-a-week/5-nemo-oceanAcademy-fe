@@ -76,6 +76,9 @@ span {
   height: 373px;
   border-radius: 16px;
   background-color: #e0e0e0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 
 /* 강의 카테고리 ------------ */

@@ -135,15 +135,15 @@
 /* 여기서부터 기존 코드 */
 .buttonContainer {
     display: flex;
-    justify-content: flex-start; /* 왼쪽 정렬 */
-    margin-bottom: 8px; /* 아래 요소와의 간격 조절 */
+    justify-content: flex-start;
+    margin-bottom: 8px;
     width: 344px;
 }
 
 .primaryButton {
     width: 150px;
     height: 30px;
-    background-color:  var(--primary-color); /* Primary color */
+    background-color:  var(--blue-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -211,7 +211,7 @@ background-color: #e0e0e0;
 /* 강의 카테고리 ------------ */
 .desktopCategory {
 display: flex;
-color: #2A62F2;
+color: var(--blue-color);
 }
 
 /* 강의 제목 ------------ */
@@ -240,14 +240,14 @@ width: 100%;
 border-radius: 4px;
 padding: 20px 24px;
 justify-content: flex-start;
-background-color: #FAFBFD;
+background-color: var(--blue-container);
 }
 
 /* 소개 타이틀 ------------ */
 .desktopBoxTitle {
 font-size: 16px;
 font-weight: bold;
-color: #2A62F2;
+color: var(--blue-color);
 }
 
 /* 소개 내용 ------------ */
