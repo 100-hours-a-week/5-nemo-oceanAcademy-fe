@@ -6,7 +6,7 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './ScheduleList.module.css';
 
 interface Schedule {
-    schedule_id: number;
+    id: number;
     content: string;
     date: string;
     start_time: string;
@@ -16,7 +16,7 @@ interface Schedule {
 interface ScheduleListProps {
     schedules: Schedule[];
     isTeacher?: boolean;
-    onDeleteSchedule?: (schedule_id: number) => void;
+    onDeleteSchedule?: (id: number) => void;
 }
 
 const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher, onDeleteSchedule }) => {
@@ -25,7 +25,7 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher, onDel
             <h4>강의 일정</h4>
             <ul>
                 {schedules.map((schedule, index) => (
-                    <li key={schedule.schedule_id} className={styles.scheduleItem}>
+                    <li key={schedule.id} className={styles.scheduleItem}>
                         <div className={styles.schedule}>
                             <div className={styles.scheduleBox}>
                                 <span className={styles.scheduleItemNumber}>{`${index + 1}.`}</span>
@@ -38,7 +38,7 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, isTeacher, onDel
                             {isTeacher && onDeleteSchedule && (
                                 <button
                                     className={styles.deleteButton}
-                                    onClick={() => onDeleteSchedule(schedule.schedule_id)} // 삭제 버튼 클릭 시 동작
+                                    onClick={() => onDeleteSchedule(schedule.id)} // 삭제 버튼 클릭 시 동작
                                 >
                                     <FontAwesomeIcon icon={faTimesCircle} />
                                 </button>
