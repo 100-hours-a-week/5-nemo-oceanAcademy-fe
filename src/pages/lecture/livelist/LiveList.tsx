@@ -84,6 +84,7 @@ const LiveList: React.FC = () => {
       });
 
       const lecturesData = response.data.data;
+      console.log(lecturesData);
 
       if (lecturesData && lecturesData.length > 0) {
         const classes = lecturesData.map((item: any) => ({
@@ -94,7 +95,12 @@ const LiveList: React.FC = () => {
           category: item.category,
         }));
 
-        setLectures((prevLectures) => [...prevLectures, ...classes]);
+        if (page === 0) {
+          // 새 카테고리로 변경될 때는 강의 목록을 초기화
+          setLectures(classes);
+        } else {
+          setLectures((prevLectures) => [...prevLectures, ...classes]); // 이전 강의에 이어서 추가
+        }
         setHasMore(classes.length > 0);
       } else {
         setHasMore(false);
@@ -175,18 +181,23 @@ const LiveList: React.FC = () => {
         </div>
         <Space height={"32px"} />
 
-        <div className={styles.lectureGrid}>
-          {lectures.map((lecture) => (
-            <LectureCard
-              key={lecture.classId}
-              classId={lecture.classId}
-              bannerImage={lecture.bannerImage}
-              name={lecture.name}
-              instructor={lecture.instructor}
-              category={lecture.category} totalStudents={0}
-            />
-          ))}
-        </div>
+        {lectures.length === 0 ? (
+          <EmptyContent />
+        ) : (
+          <div className={styles.lectureGrid}>
+            {lectures.map((lecture) => (
+              <LectureCard
+                key={lecture.classId}
+                classId={lecture.classId}
+                bannerImage={lecture.bannerImage}
+                name={lecture.name}
+                instructor={lecture.instructor}
+                category={lecture.category}
+                totalStudents={0}
+              />
+            ))}
+          </div>
+        )}
 
       </section>
 
