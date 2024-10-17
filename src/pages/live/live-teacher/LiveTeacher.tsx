@@ -766,16 +766,16 @@ const LiveTeacher: React.FC = () => {
           )}  
           <div className={styles.desktopControls}>
             <button className={styles.controlButtons} onClick={handleToggleWebcam}>
-              <img src={isWebcamOn ? videoOn : videoOff} alt="캠" className={styles.icon} />
+              <img src={isWebcamOn ? videoOff : videoOn} alt="캠" className={styles.icon} />
             </button>
             <button className={styles.controlButtons} onClick={handleToggleScreenShare}>
-              <img src={isScreenShareOn ? shareScreen : shareOn} alt="화면 공유" className={styles.icon} />
+              <img src={isScreenShareOn ? shareOn : shareScreen} alt="화면 공유" className={styles.icon} />
             </button>
             <button className={styles.controlButtons} onClick={handleToggleMicrophone}>
-              <img src={isMicrophoneOn ? micOn : micOff} alt="마이크" className={styles.icon} />
+              <img src={isMicrophoneOn ? micOff : micOn} alt="마이크" className={styles.icon} />
             </button>
             <button className={styles.controlButtons} onClick={handleToggleSystemAudio}>
-              <img src={isSystemAudioOn ? audioOn : audioOff} alt="오디오" className={styles.icon} />
+              <img src={isSystemAudioOn ? audioOff : audioOn} alt="오디오" className={styles.icon} />
             </button>
             <button 
                   onClick={handleLeaveClick}
@@ -816,11 +816,10 @@ const LiveTeacher: React.FC = () => {
                 return (
                   <div
                   key={index}
-                  className={`${styles.desktopChat} ${isMyMessage ? styles.myChat : ''}`} // 내가 보낸 메시지일 때 추가 클래스
+                  className={`${styles.desktopChat} ${isMyMessage ? styles.myChat : ''}`}
                   >
                   <div className={styles.chatContainer}>
                     <div className={styles.chatUserInfo}>
-                    {/* 현재 사용자가 보낸 메시지일 때는 프로필 이미지 숨김 */}
                     {!isMyMessage && (
                       <div className={styles.desktopProfContainer}>
                         <img src={msg.profileImage} alt="프로필" className={styles.icon} />
@@ -850,8 +849,8 @@ const LiveTeacher: React.FC = () => {
                       sendMessage();
                     }
                   }}
-                  rows={1} // 기본 행의 높이 설정
-                  style={{ resize: 'none', overflow: 'hidden' }} // 크기 조정 방지 및 스크롤 숨김
+                  rows={1}
+                  style={{ resize: 'none', overflow: 'hidden' }} 
                 />
                 <button 
                   onClick={sendMessage}

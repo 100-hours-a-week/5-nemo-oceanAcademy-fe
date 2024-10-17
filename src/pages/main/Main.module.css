@@ -56,7 +56,7 @@
 .slick-slide {
   display: flex;
   justify-content: center;
-  padding: 0 8px; /* 슬라이드 간격을 맞춰주는 패딩 */
+  padding: 0 16px; /* 슬라이드 간격을 맞춰주는 패딩 */
 }
 
 .lectureCardWrapper {
