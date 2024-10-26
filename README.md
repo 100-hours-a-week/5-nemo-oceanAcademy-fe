@@ -3,12 +3,6 @@
 <img alt="OceanAcademy Advertisement Image" src='https://github.com/user-attachments/assets/65a6d043-a54d-474c-b60e-fddbc173045e'>
 
 <br/>
-<br/>
-<div align="center">
-    <a href="https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be">Github</a> |
-    <a href="https://gobyeonghu.github.io/oceanacademy/2024/06/08/OceanAcademy.html">Blog</a>
-</div>
-<br/>
 <div align="center">
 
 [![Gmail](https://img.shields.io/badge/Email-ktb.nemo%40gmail.com-blue.svg)](mailto:ktb.nemo@gmail.com)
@@ -38,7 +32,7 @@
 - 클라우드 인프라를 도입하여 확장성 개선 및 동시 접속자가 많은 상황에서도 안정적인 스트리밍 환경 제공
 - **언제 어디서든 안정적인 환경에서 집중할 수 있는 교육 환경을 제공하는 것이 목표**
 
-<br/><br/>
+<br/>
 
 ## 🪼 Technologies
 
@@ -106,11 +100,13 @@
 <img width="1336" alt="nemo team" src="https://github.com/user-attachments/assets/02d01b54-a95a-46fd-8e57-d92128dc79b8">
 
 ---
+<br/>
 
 ## Acknowledgement
 
 - [mediasoup-sample-app](https://github.com/mkhahani/mediasoup-sample-app)
 
+<br/>
 
 ## License
 
