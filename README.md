@@ -30,28 +30,41 @@
 - 🦀 [미디어중계서버](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be-webrtc)
 
 <br/>
+
 ## 🪼 About the Project
+
 - 오프라인 교육의 실시간 소통과 온라인 플랫폼의 접근성을 결합한 라이브 강의 플랫폼
 - WebRTC 기반의 미디어 전송 최적화
 - 클라우드 인프라를 도입하여 확장성 개선 및 동시 접속자가 많은 상황에서도 안정적인 스트리밍 환경 제공
 - **언제 어디서든 안정적인 환경에서 집중할 수 있는 교육 환경을 제공하는 것이 목표**
+
 <br/><br/>
+
 ## 🪼 Technologies
+
 ### 🐡 Frontend
+
 - [React.js](https://ko.legacy.reactjs.org/) 18.3.1
 - [TypeScript](https://www.typescriptlang.org/) 4.9.5
+
 ### 🐡 Database
+
 - [MySQL](https://www.mysql.com/) 8.1.2
 - [Redis](https://redis.io/) 6.2.6
+
 ### 🐡 Backend  
+
 - [Spring Boot](https://spring.io/) 3.3.2
 - [Spring Security](https://spring.io/projects/spring-security) 6.2.1
 - [Spring Batch](https://spring.io/projects/spring-batch) 5.1.0
+
 ### 🐡 Media Server
 - [Node.js](https://nodejs.org/) 14.17.3
 - [Express](https://expressjs.com/) 4.16.4
 - [Mediasoup](https://mediasoup.org/) 3.0.0
+
 <br/><br/>
+
 ## 🌏 Technologies
 
 <p>
