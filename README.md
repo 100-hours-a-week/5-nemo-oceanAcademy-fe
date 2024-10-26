@@ -1,54 +1,82 @@
-# 바다서원 (NemoOceanAcademy) - 클라이언트
+# 바다서원 - Ocean Academy
 
-**바다서원**(**NemoOceanAcademy**)은 라이브 강의를 제공하는 교육용 플랫폼입니다. 이제 교육은 단순한 강의가 아닌, 몰입과 성장을 위한 완벽한 경험으로 거듭납니다.
-<br>
-줌과 같은 화상 미팅 도구는 일회성 강의로 그날의 수업을 마무리하지만, 바다서원은 다릅니다. 바다서원은 강의 그 이상의 것을 제공합니다. 우리가 직접 구축한 라이브 강의 플랫폼에서 수업을 듣고, 즉각적인 피드백을 받으며, 교육용 교재와 과제 채점 기능까지 원활하게 이용하세요.
-<br>
-유튜브나 트위치의 잡음 속에서 집중력을 잃지 마세요. 바다서원은 오직 교육을 위해 설계된 플랫폼입니다. 강의에 몰입하고, 실시간으로 소통하며, 당신의 학습 여정을 완벽하게 지원하는 바다서원에서 진정한 학습의 가치를 경험해보세요.
-<br>
-교육을 위한 진정한 플랫폼, 바다서원에서 미래를 준비하세요.
+![바다서원 홍보이미지](https://github.com/user-attachments/assets/65a6d043-a54d-474c-b60e-fddbc173045e)
 
-## 서비스 소개
 
-바다서원은 WebRTC 기술을 활용하여 강사와 학생 간의 실시간 소통을 지원하는 라이브 강의 플랫폼입니다. 사용자 친화적인 인터페이스와 안정적인 스트리밍 환경을 제공하여 최상의 교육 경험을 제공합니다.
+# 🌏 NEMO - Learning and Teaching Platform
 
-## 기술 스택
+## _"Today a student, tomorrow a teacher!"_
 
-바다서원의 프론트엔드 애플리케이션은 다음과 같은 기술 스택을 사용하여 개발되었습니다:
+NEMO provides a platform where anyone can quickly create live classes and participate in real-time sessions. Whether you want to teach or learn, NEMO makes it possible for everyone to exchange knowledge and passion instantly.
 
-- **React**: 사용자 인터페이스를 구축하기 위한 JavaScript 라이브러리
-- **Recoil**: 전역 상태 관리를 위한 상태 관리 라이브러리
-- **TypeScript**: 정적 타입을 제공하는 JavaScript의 상위 집합 언어
-- **CSS Modules**: 컴포넌트 단위의 스타일링을 위한 CSS 관리 방법론
+- 📌 **Teach or Learn**: Easily host or join classes in real-time with interactive features.
+- 📌 **Seamless Knowledge Sharing**: Share expertise and learn new skills from anywhere, at any time.
 
-## 기능
+---
 
-- **라이브 강의**: WebRTC를 활용한 실시간 비디오 스트리밍
-- **강사-학생 간 소통**: 실시간 채팅 및 화면 공유 기능 제공
+## 🌏 Project Overview
 
-## CI/CD 구축
+- **Duration**: 2022.08.26 - 2022.10.07
+- [Watch NEMO Service Video 🔗](https://www.youtube.com/watch?v=U2c2a5uuEmo)
 
-바다서원 클라이언트는 **AWS**와 **GitHub Actions**를 사용하여 CI/CD 파이프라인이 완전히 구축되어 있습니다. 이 파이프라인은 코드 변경 사항이 푸시되면 자동으로 빌드, 테스트, 배포 과정을 실행하여 안정적인 배포를 보장합니다.
+[![Watch NEMO Service Video](https://img.youtube.com/vi/U2c2a5uuEmo/0.jpg)](https://www.youtube.com/watch?v=U2c2a5uuEmo)
 
-## 설치 및 실행
+---
 
-다음은 로컬 환경에서 바다서원 클라이언트 애플리케이션을 실행하는 방법입니다.
+## 🌏 Technologies
 
-### 요구 사항
+<p>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=black">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black">
+  <img src="https://img.shields.io/badge/Styled Components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS Modules-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=Redux&logoColor=white">
+  <img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=WebRTC&logoColor=white">
+</p>
 
-- Node.js (v14 이상)
-- npm 또는 yarn
+---
 
-### 설치
+## 🌏 Key Features
 
-```bash
-git clone https://github.com/100-hours-a-week/NemoOceanAcademy_fe.git
-cd NemoOceanAcademy_fe
-npm install
-```
+> - **Real-Time Lecture**: Start teaching with a single click, share knowledge in real-time, and receive instant feedback.
+> - **Interactive Communication**: Engage in dynamic discussions through live chat, video, and quiz features.
+> - **Accessible Learning Anytime**: Join and learn from classes anytime, without restrictions on time or location.
 
-### 실행
+---
 
-```bash
-npm start
-```
+## 🌏 Architecture
+
+<img src="https://github.com/project-raidho/raidho_FE/blob/yoojin/docs/tech.png?raw=true" width="900">
+
+---
+
+## 🌏 Technical Decision
+
+[View Details on Technical Decision 🔗](https://github.com/project-raidho/raidho_FE/wiki/기술적-의사결정)
+
+---
+
+## 🌏 Modules
+
+> - 🛫 [Image Editing](https://github.com/project-raidho/raidho_FE/wiki/이미지-편집)
+> - 🛫 [Chat](https://github.com/project-raidho/raidho_FE/wiki/채팅)
+> - 🛫 [Infinite Scroll](https://github.com/project-raidho/raidho_FE/wiki/무한스크롤)
+> - 🛫 [Tag Search (Recent History)](https://github.com/project-raidho/raidho_FE/wiki/태그-검색)
+> - 🛫 [Input Validation](https://github.com/project-raidho/raidho_FE/wiki/유효성-검사)
+
+---
+
+## 🌏 Setup
+
+> - 🛫 [API Documentation](https://github.com/project-raidho/raidho_FE/wiki/api-%EB%AA%85%EC%84%B8%EC%84%9C)
+> - 🛫 [Component Details](https://github.com/project-raidho/raidho_FE/wiki/컨포넌트-정보)
+> - 🛫 [Coding Conventions](https://github.com/project-raidho/raidho_FE/wiki/컨벤션룰)
+
+---
+
+## 🌏 Member Information
+<img width="1336" alt="nemo team" src="https://github.com/user-attachments/assets/02d01b54-a95a-46fd-8e57-d92128dc79b8">
+
+---
+
+Experience the joy of learning and teaching with NEMO, where everyone can be both a teacher and a student!
