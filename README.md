@@ -1,16 +1,27 @@
 # 바다서원 - Ocean Academy
 
-![바다서원 홍보이미지](https://github.com/user-attachments/assets/65a6d043-a54d-474c-b60e-fddbc173045e)
+<img alt="OceanAcademy Advertisement Image" src='https://github.com/user-attachments/assets/65a6d043-a54d-474c-b60e-fddbc173045e'>
 
+<br/>
+<br/>
+<div align="center">
+    <a href="https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be">Github</a> |
+    <a href="https://gobyeonghu.github.io/oceanacademy/2024/06/08/OceanAcademy.html">Blog</a>
+</div>
+<br/>
+<br/>
+<div align="center">
+  [![Gmail](https://img.shields.io/badge/Email-ktb.nemo%40gmail.com-blue.svg)](mailto:ktb.nemo@gmail.com)
+</div>
 
-# 🌏 NEMO - Learning and Teaching Platform
+## 🪼 프로젝트 소개
 
-## _"Today a student, tomorrow a teacher!"_
+### _오늘은 학생, 내일은 선생님!_
+바다서원은 누구나 빠르게 강의를 만들고 실시간으로 수업할 수 있는 플랫폼입니다.
+당신이 가지고 있는 지식과 열정을 바로 실시간으로 세상에 전하고, 동시에 배우고 싶은 모든 것을 즉시 배울 수 있는 배움의 플랫폼이죠.
 
-NEMO provides a platform where anyone can quickly create live classes and participate in real-time sessions. Whether you want to teach or learn, NEMO makes it possible for everyone to exchange knowledge and passion instantly.
-
-- 📌 **Teach or Learn**: Easily host or join classes in real-time with interactive features.
-- 📌 **Seamless Knowledge Sharing**: Share expertise and learn new skills from anywhere, at any time.
+- 📌 쉽고 빠른 가입과 강의 개설, 실시간 라이브 강의를 볼 수 있는 웹 어플리케이션
+- 📌 라이브 중 채팅을 통해 즉각적으로 이루어지는 의사소통
 
 ---
 
