@@ -8,7 +8,7 @@
     <a href="https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be">Github</a> |
     <a href="https://gobyeonghu.github.io/oceanacademy/2024/06/08/OceanAcademy.html">Blog</a>
 </div>
-
+<br/>
 <div align="center">
 
 [![Gmail](https://img.shields.io/badge/Email-ktb.nemo%40gmail.com-blue.svg)](mailto:ktb.nemo@gmail.com)
@@ -17,7 +17,6 @@
 <br />
 
 ## 🪼 프로젝트 소개
-🐠🪼🦀🐡🐙🦑🐬🐟🐳🐋🦈🦭🏯⚓🪝
 ### _오늘은 학생, 내일은 선생님!_
 바다서원은 누구나 빠르게 강의를 만들고 실시간으로 수업할 수 있는 플랫폼입니다. <br />
 당신이 가지고 있는 지식과 열정을 바로 실시간으로 세상에 전하고, 동시에 배우고 싶은 모든 것을 즉시 배울 수 있는 배움의 플랫폼이죠.
@@ -27,17 +26,17 @@
 
 ### 🐬 프로젝트 기간
 - 🦀 2024.07.25 - 2024.10.04
-
+<br/>
 ### 🐬 Github Repository
 - 🦀 [Backend](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be)
 - 🦀 [미디어중계서버](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be-webrtc)
-
+<br/><br/>
 ## 🪼 About the Project
 - 오프라인 교육의 실시간 소통과 온라인 플랫폼의 접근성을 결합한 라이브 강의 플랫폼
 - WebRTC 기반의 미디어 전송 최적화
 - 클라우드 인프라를 도입하여 확장성 개선 및 동시 접속자가 많은 상황에서도 안정적인 스트리밍 환경 제공
 - **언제 어디서든 안정적인 환경에서 집중할 수 있는 교육 환경을 제공하는 것이 목표**
-
+<br/><br/>
 ## 🪼 Technologies
 ### 🐡 Frontend
 - [React.js](https://ko.legacy.reactjs.org/) 18.3.1
@@ -53,7 +52,7 @@
 - [Node.js](https://nodejs.org/) 14.17.3
 - [Express](https://expressjs.com/) 4.16.4
 - [Mediasoup](https://mediasoup.org/) 3.0.0
-
+<br/><br/>
 ## 🌏 Technologies
 
 <p>
@@ -64,7 +63,7 @@
   <img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=Redux&logoColor=white">
   <img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=WebRTC&logoColor=white">
 </p>
-
+<br/><br/>
 ## 🪼 Key Features
 > - **Real-Time Lecture**: Start teaching with a single click, share knowledge in real-time, and receive instant feedback.
 > - **Interactive Communication**: Engage in dynamic discussions through live chat, video, and quiz features.
@@ -89,13 +88,13 @@
    
     강의 순위 결정 과정은 매일 오전 2시에 일괄적으로 수행되도록 설계되었다. 
     대용량 데이터의 효율적인 처리를 위해 Spring Batch를 활용하였다.
-
+<br/><br/>
 ## 🪼 Architecture
 ![architecture](https://gobyeonghu.github.io/PostImages/2024-10-22-OceanAcademy/architecture.png)
-
+<br/><br/>
 ## 🪼 데모 영상
 [![Video Label](http://img.youtube.com/vi/vAiGR7wuHDE/0.jpg)](https://youtu.be/vAiGR7wuHDE)
-
+<br/><br/>
 ## 🪼 Team Nemo
 <img width="1336" alt="nemo team" src="https://github.com/user-attachments/assets/02d01b54-a95a-46fd-8e57-d92128dc79b8">
 
