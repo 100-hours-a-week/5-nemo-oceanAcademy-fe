@@ -16,11 +16,13 @@
 - 🦀 쉽고 빠른 가입과 강의 개설, 실시간 라이브 강의를 볼 수 있는 웹 어플리케이션
 - 🦀 라이브 중 채팅을 통해 즉각적으로 이루어지는 의사소통
 
-### 🐬 프로젝트 기간
+### 🐬 Duration
 - 🦀 2024.07.25 - 2024.10.04
 
-### 🐬 Github Repository
+### 🐬 Sitemap
 
+- 🦀 [배포된 주소](https://www.nemooceanacademy.com/)
+- 🦀 [디스콰이엇](https://disquiet.io/product/nemo)
 - 🦀 [Backend](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be)
 - 🦀 [미디어중계서버](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be-webrtc)
 
