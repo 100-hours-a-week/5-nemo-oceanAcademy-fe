@@ -64,11 +64,9 @@
   <img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=WebRTC&logoColor=white">
 </p>
 <br/><br/>
+
 ## 🪼 Key Features
-> - **Real-Time Lecture**: Start teaching with a single click, share knowledge in real-time, and receive instant feedback.
-> - **Interactive Communication**: Engage in dynamic discussions through live chat, video, and quiz features.
-> - **Accessible Learning Anytime**: Join and learn from classes anytime, without restrictions on time or location.
----
+
 1. **강의 탐색 및 수강 신청**
    
     사용자들은 플랫폼 메인 페이지에서 다양한 개설된 강의를 둘러볼 수 있다. 강의 소개
