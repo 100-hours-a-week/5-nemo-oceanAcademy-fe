@@ -10,8 +10,12 @@
 </div>
 <br/>
 <br/>
+<div align="center">
 
 [![Gmail](https://img.shields.io/badge/Email-ktb.nemo%40gmail.com-blue.svg)](mailto:ktb.nemo@gmail.com)
+
+</div>
+
 
 ## 🪼 프로젝트 소개
 
