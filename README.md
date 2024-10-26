@@ -28,8 +28,10 @@
 - 🦀 2024.07.25 - 2024.10.04
 <br/>
 ### 🐬 Github Repository
+
 - 🦀 [Backend](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be)
 - 🦀 [미디어중계서버](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be-webrtc)
+
 <br/><br/>
 ## 🪼 About the Project
 - 오프라인 교육의 실시간 소통과 온라인 플랫폼의 접근성을 결합한 라이브 강의 플랫폼
