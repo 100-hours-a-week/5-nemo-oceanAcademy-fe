@@ -23,7 +23,7 @@
 
 ### 🐬 프로젝트 기간
 - 🦀 2024.07.25 - 2024.10.04
-<br/>
+
 ### 🐬 Github Repository
 
 - 🦀 [Backend](https://github.com/100-hours-a-week/5-nemo-oceanAcademy-be)
