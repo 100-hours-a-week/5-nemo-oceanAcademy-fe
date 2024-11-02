@@ -8,8 +8,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/material": "^5.16.7",
-    "@sentry/browser": "^8.31.0",
-    "@sentry/cli": "^2.36.2",
     "@stomp/stompjs": "^7.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -36,11 +34,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run sentry:sourcemaps",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-custom": "webpack --config webpack.config.js",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org ktb-0402 --project nemooceanacademy-fe ./build && sentry-cli --url https://sentry.io/ sourcemaps upload --org ktb-0402 --project nemooceanacademy-fe ./build"
+    "build-custom": "webpack --config webpack.config.js"
   },
   "eslintConfig": {
     "extends": [
