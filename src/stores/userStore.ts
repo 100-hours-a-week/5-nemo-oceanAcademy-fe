@@ -1,5 +1,5 @@
 // 사용자 상태 관리
-import create from 'zustand';
+import { create } from 'zustand';
 import axios from 'axios';
 import endpoints from '../api/endpoints';
 import { getProfileImage } from '../utils/profileImage';
