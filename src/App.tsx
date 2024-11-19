@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import ReactGA from "react-ga4";
-import * as Sentry from '@sentry/react';
 import './App.css';
 import Header from './components/header/Header';
 import Main from './pages/main/Main';
@@ -24,24 +22,7 @@ import MyPage from './pages/user/mypage/MyPage';
 import EditInfo from './pages/user/mypage/EditInfo';
 import SignInfo from './pages/user/sign-info/SignInfo';
 import ScrollToTop from './components/utils/ScrollToTop';
-import PrivateRoute from 'components/utils/PrivateRoute';
 import NotFound from './components/utils/NotFound';
-
-const Analytics = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    const trackingId = process.env.REACT_APP_GA_TRACKING_ID;
-    if (trackingId) {
-      ReactGA.initialize(trackingId);
-      ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
-    } else {
-      console.error('구글 애널리틱스 추적 ID가 설정되지 않았습니다.');
-    }
-  }, [location]);
-
-  return null;
-};
 
 const BackgroundManager = () => {
   const location = useLocation();
@@ -66,14 +47,7 @@ const BackgroundManager = () => {
 
 const App: React.FC = () => {
   return (
-    <Sentry.ErrorBoundary 
-      fallback={<p>앱에서 오류가 발생했습니다.</p>}
-      onError={(error, componentStack) => {
-        console.error("Sentry에 의해 잡힌 오류:", error);
-      }}
-    >
       <Router>
-        <Analytics />
         <BackgroundManager />
         <Header />
         <ScrollToTop />
@@ -85,142 +59,33 @@ const App: React.FC = () => {
           <Route path="/list" element={<LectureList />} />
           <Route path="/live-list" element={<LiveList />} />
 
-          {/* 이하 로그인 후 접근 가능 */}
-          <Route
-            path="/enrollment"
-            element={
-              <PrivateRoute>
-                <Enrollment />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/enrollment/:classId"
-            element={
-              <PrivateRoute>
-                <Enrollment />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/lecture/info/:classId"
-            element={
-              <PrivateRoute>
-                <LectureInfo />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/enrollment" element={<Enrollment />} />
+          <Route path="/enrollment/:classId" element={<Enrollment />} />
+          <Route path="/lecture/info/:classId" element={<LectureInfo />} />
 
           {/* Live Routes */}
-          <Route
-            path="/live/student/:classId"
-            element={
-              <PrivateRoute>
-                <LiveStudent />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/live/teacher/:classId"
-            element={
-              <PrivateRoute>
-                <LiveTeacher />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/live/student/:classId" element={<LiveStudent />} />
+          <Route path="/live/teacher/:classId" element={<LiveTeacher />} />
 
           {/* Student Routes */}
-          <Route
-            path="/classroom"
-            element={
-              <PrivateRoute>
-                <Classroom />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/dashboard/student/:classId"
-            element={
-              <PrivateRoute>
-                <DashboardStudent />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/classroom" element={<Classroom />} />
+          <Route path="/dashboard/student/:classId" element={<DashboardStudent /> }/>
 
           {/* Teacher Routes */}
-          <Route
-            path="/dashboard/teacher/:classId"
-            element={
-              <PrivateRoute>
-                <DashboardTeacher />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/dashboard/edit/:classId"
-            element={
-              <PrivateRoute>
-                <EditDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/lecture/created"
-            element={
-              <PrivateRoute>
-                <LectureCreated />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/lecture/created/:classId"
-            element={
-              <PrivateRoute>
-                <LectureCreated />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/lecture/open"
-            element={
-              <PrivateRoute>
-                 <LectureOpen />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/lecture/students/:classId"
-            element={
-              <PrivateRoute>
-                <StudentList />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/dashboard/teacher/:classId" element={<DashboardTeacher />} />
+          <Route path="/dashboard/edit/:classId" element={<EditDashboard />} />
+          <Route path="/lecture/created" element={<LectureCreated />} />
+          <Route path="/lecture/created/:classId" element={<LectureCreated />} />
+          <Route path="/lecture/open" element={<LectureOpen />} />
+          <Route path="/lecture/students/:classId" element={<StudentList />} />
 
           {/* User Routes */}
-          <Route
-            path="/mypage"
-            element={
-              <PrivateRoute>
-                <MyPage />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/edit-info"
-            element={
-              <PrivateRoute>
-                <EditInfo />
-              </PrivateRoute>
-            }
-          />
-
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/edit-info" element={<EditInfo />} />
+          
           <Route path="*" element={<NotFound />} />
-        
         </Routes>
       </Router>
-    </Sentry.ErrorBoundary>
   );
 }
 
