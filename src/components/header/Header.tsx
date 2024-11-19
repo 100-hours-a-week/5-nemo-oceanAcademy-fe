@@ -1,14 +1,14 @@
-// Header Component - in App.tsx
+// Header Component - App.tsx에서 사용 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
 import Modal from '../modal/Modal';
 import axios from 'axios';
 import endpoints from '../../api/endpoints';
-import { useUserStore } from '../../stores/userStore';
 
 // image import
 import backIcon from '../../assets/images/icon/back.png';
+import settingIcon from '../../assets/images/icon/setting.png';
 import outIcon from '../../assets/images/icon/out.png';
 import closeIcon from '../../assets/images/icon/close.png';
 import profile1 from '../../assets/images/profile/crab.png';
